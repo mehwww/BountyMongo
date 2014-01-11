@@ -50,18 +50,20 @@ app.get('/test', function(req, res) {
 	res.send(dump(query))
 })
 
-app.get('/servers/:server_name', databases.findAll)
+
+app.get('/servers/:serverName', servers.find)
+//app.get('/servers/:serverName', databases.findAll)
 
 
-app.get('/servers/:server_name/databases/:db_name', databases.find);
-app.post('/servers/:server_name/databases/:db_name', databases.add);
-app.delete('/servers/:server_name/databases/:db_name', databases.delete);
-app.put('/servers/:server_name/databases/:db_name', databases.update);
+app.get('/servers/:serverName/databases/:databaseName', databases.find);
+app.post('/servers/:serverName/databases/:databaseName', databases.add);
+app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
+app.put('/servers/:serverName/databases/:databaseName', databases.update);
 
-// app.get('/databases/:db_name/collections',collections.findAll)
-app.get('/servers/:server_name/databases/:db_name/collections/:collection_name', collections.find)
-app.post('/servers/:server_name/databases/:db_name/collections/:collection_name', collections.add)
-app.delete('/servers/:server_name/databases/:db_name/collections/:collection_name', collections.delete)
+// app.get('/databases/:databaseName/collections',collections.findAll)
+app.get('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
+app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 
 

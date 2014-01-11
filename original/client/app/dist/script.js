@@ -2,32 +2,208 @@
 
 var bountyMongo = angular.module('bountyMongo', []);
 
-bountyMongo.value('DATABASE_NAME','localhost')
 
 
-bountyMongo.controller('sidebar',['$scope','databasesResource',function($scope,databasesResource){
-    databasesResource('localhost').query().then(function(res){
-        $scope.test = res;
-    })
+bountyMongo.controller('sidebar', [
+
+    '$scope',
+    '$q',
+    'config',
+    'server',
+    'database',
+    'collection',
+
+    function ($scope, $q, config, server,database,collection) {
+        $scope.serversList = config.serverConfig.list;
+        $scope.selectedServer = $scope.serversList[0];
+
+        $scope.$watch('selectedServer', function () {
+            config.serverConfig.selectServer($scope.selectedServer);
+            server().query().then(function (response) {
+                $scope.databases = response;//test use
+                $scope.databasesList = response;
+                $scope.selectedDatabase = null;
+                $scope.collections = [];
+            });
+        });
+
+        $scope.$watch('selectedDatabase',function(){
+            config.databaseConfig.selectDatabase($scope.selectedDatabase);
+            if(!$scope.selectedDatabase) return;
+            database().query().then(function(response){
+                $scope.collections = response;
+                $scope.collectionsList = response;
+            })
+        });
+
+        $scope.$watch('selectedCollection',function(){
+            config.collectionConfig.selectCollection($scope.selectedCollection);
+            if(!$scope.selectedCollection) return;
+            collection().query().then(function(response){
+                $scope.documents = response;
+            })
+        })
+
+//        $scope.ngCity = 'asdf';
+
+//    $scope.$watch('selectedDatabase', function (newValue, oldValue) {
+//        if (!newValue) return;
+//        databasesResource($scope.selectedServer.host, $scope.selectedDatabase.name).query().then(function (res) {
+//            $scope.collectionsList = res.data.collectionNames
+//            $scope.database = res;
+//        });
+//    });
 
 
 //    databasesResource();
-}])
-bountyMongo.factory('databasesResource', [ '$http', function ($http) {
-    return function (databaseName) {
-        var databasesUrl = 'http://localhost:3000/servers/' + databaseName;
-        var Resource = function (data) {
-            angular.extend(this, data);
-        };
-        Resource.query = function () {
-            return $http.get(databasesUrl).then(function (response) {
-                var result = [];
-                angular.forEach(response.data, function (value, key) {
-                    result[key] = new Resource(value);
-                });
-                return result;
-            });
+    }])
+bountyMongo.directive('ngSparkline', function() {
+    return {
+        restrict: 'A',
+//        require: 'ngModel',
+        scope: {
+            ngCity: '@'
+        },
+        template: '<div class="sparkline"><h4>Weather for {{ngCity}}</h4><pre>{{weather|json}}</pre></div>',
+        controller: ['$scope', '$http', function($scope, $http) {
+            var url = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=imperial&cnt=7&callback=JSON_CALLBACK&q=";
+            $scope.getTemp = function(city) {
+                $http({
+                    method: 'JSONP',
+                    url: url + city
+                }).success(function(data) {
+                        var weather = [];
+                        angular.forEach(data.list, function(value){
+                            weather.push(value);
+                        });
+                        $scope.weather = weather;
+                    });
+            }
+        }],
+        link: function(scope, element, attr) {
+            scope.getTemp(attr.ngCity);
+
         }
-        return Resource;
     }
+});
+/**
+ * Created by meh on 14-1-10.
+ */
+
+bountyMongo.factory('collection', [
+
+    '$http',
+    'config',
+
+    function ($http, config) {
+        return function () {
+            var collection = config.collectionConfig.selected;
+            var database = config.databaseConfig.selected;
+            var server = config.serverConfig.selected;
+            var serverURL = config.serverURL;
+            var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name;
+            var Resource = function (data) {
+                angular.extend(this, data);
+            };
+            Resource.query = function () {
+                return $http.get(url).then(function (response) {
+                    return response.data.data.find;
+                });
+            }
+            return Resource;
+        }
+    }])
+bountyMongo.factory('config', [function () {
+    //app server url
+    var serverURL = 'http://localhost:3000/';
+
+    var serverConfig = {};
+    serverConfig.list = [
+        {'host': 'localhost', 'port': '27017'},
+        {'host': '127.0.0.1', 'port': '27017'},
+        {'host': '192.168.1.100', 'port': '27017'}
+    ];
+    serverConfig.selected = {};
+    serverConfig.selectServer = function (selected) {
+        this.selected = selected;
+    };
+
+    var databaseConfig = {};
+    databaseConfig.list = [];
+    databaseConfig.selected = {};
+    databaseConfig.selectDatabase = function (selected) {
+        this.selected = selected;
+    }
+
+    var collectionConfig = {};
+    collectionConfig.list = [];
+    collectionConfig.selected = {};
+    collectionConfig.selectCollection = function (selected) {
+        this.selected = selected;
+    }
+
+
+    return {
+        serverURL: serverURL,
+        serverConfig: serverConfig,
+        databaseConfig: databaseConfig,
+        collectionConfig:collectionConfig
+    };
+//
+//    var database = {
+//        list: [],
+//        selected: {}
+//    }
 }])
+bountyMongo.factory('database', [
+
+    '$http',
+    'config',
+
+    function ($http, config) {
+        return function () {
+            var database = config.databaseConfig.selected;
+            var server = config.serverConfig.selected;
+            var serverURL = config.serverURL;
+            var url = serverURL + 'servers/' + server.host + '/databases/' + database.name;
+            var Resource = function (data) {
+                angular.extend(this, data);
+            };
+            Resource.query = function () {
+                return $http.get(url).then(function (response) {
+                    //返回该服务器上的所有collections
+                    var collectionsList = [];
+                    angular.forEach(response.data.data.collectionNames,function(value,key){
+                        value.name = value.name.substr(value.name.indexOf('.')+1);
+                        this.push(value);
+                    },collectionsList)
+                    return collectionsList;
+                });
+            }
+            return Resource;
+        }
+    }])
+
+bountyMongo.factory('server', [
+
+    '$http',
+    'config',
+
+    function ($http, config) {
+        return function () {
+            var server = config.serverConfig.selected;
+            var serverURL = config.serverURL;
+
+            var url = serverURL + 'servers/' + server.host;
+            var Resource = function (data) {
+                angular.extend(this, data);
+            };
+            Resource.query = function () {
+                return $http.get(url).then(function (response) {
+                    //返回该服务器上的所有databases
+                    return response.data.data.databases;
+                });
+            }
+            return Resource;
+        }
+    }])

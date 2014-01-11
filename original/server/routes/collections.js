@@ -45,7 +45,8 @@ exports.find = function(req, res) {
 				})
 			}
 		}, function(err, result) {
-			res.send(respond(err, result));
+            res.set('Access-Control-Allow-Origin','*')
+            res.send(respond(err, result));
 		})
 	})
 }

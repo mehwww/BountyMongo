@@ -1,26 +1,18 @@
-var mongoClient = require('../mongodb/client'),
-  respond = require('../respond'),
-  async = require('async');
-
-// exports.findAll = function(req, res) {
-// 	mongoClient(function(client) {
-// 		var db = client.db(req.param('db_name'));
-// 		db.collectionNames(function(err, items) {
-// 			if (err) {
-// 				res.send(respond.error({
-// 					name: err.name,
-// 					err: err.err
-// 				}))
-// 			} else {
-// 				res.send(respond.success(items))
-// 			}
-// 		})
-// 	})
-// }
+var mongoClient = require('../mongodb/client');
+var respond = require('../respond');
+var async = require('async');
 
 exports.find = function (req, res) {
-  mongoClient(req.param('server_name'), function (client) {
-    var collection = client.db(req.param('db_name')).collection(req.param('collection_name'));
+  var serverName = req.param('serverName');
+  var server = serverName.split(':', 2)
+  var host = server[0];
+  var port = server[1];
+  var databaseName = req.param('databaseName');
+  var collectionName = req.param('collectionName');
+
+  var findCollection = function(err,client){
+    if (err) return res.send('Connect to mongo server failed');
+    var collection = client.db(databaseName).collection(collectionName);
     async.parallel({
       find: function (callback) {
         var query = eval('(' + req.query.query + ')');
@@ -48,7 +40,9 @@ exports.find = function (req, res) {
       res.set('Access-Control-Allow-Origin', '*')
       res.send(respond(err, result));
     })
-  })
+  }
+
+  mongoClient(host,port,findCollection);
 }
 
 exports.add = function (req, res) {

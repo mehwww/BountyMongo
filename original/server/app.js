@@ -40,15 +40,15 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-
-app.get('/test', function(req, res) {
-	var query = eval('(' + req.query.query + ')')
-	// var query = req.query.query
-	// console.dir(req.query)
-	// console.dir(query)
-	res.send(dump(query))
-})
+//app.get('/', routes.index);
+//
+//app.get('/test', function(req, res) {
+//	var query = eval('(' + req.query.query + ')')
+//	// var query = req.query.query
+//	// console.dir(req.query)
+//	// console.dir(query)
+//	res.send(dump(query))
+//})
 
 
 app.get('/servers/:serverName', servers.find)
@@ -56,14 +56,13 @@ app.get('/servers/:serverName', servers.find)
 
 
 app.get('/servers/:serverName/databases/:databaseName', databases.find);
-app.post('/servers/:serverName/databases/:databaseName', databases.add);
-app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
-app.put('/servers/:serverName/databases/:databaseName', databases.update);
+//app.post('/servers/:serverName/databases/:databaseName', databases.add);
+//app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
+//app.put('/servers/:serverName/databases/:databaseName', databases.update);
 
-// app.get('/databases/:databaseName/collections',collections.findAll)
 app.get('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
-app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
-app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
+//app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+//app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 
 

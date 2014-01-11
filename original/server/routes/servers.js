@@ -5,7 +5,7 @@ var async = require('async');
 exports.find = function (req, res) {
 //mongoClient(req.param('serverName'),req.param())
   var serverName = req.param('serverName');
-  var server = serverName.split(':', 2)
+  var server = serverName.split(':', 2);
   var host = server[0];
   var port = server[1];
 
@@ -16,7 +16,7 @@ exports.find = function (req, res) {
       res.set('Access-Control-Allow-Origin', '*')
       res.send(respond(err, dbs));
     });
-  }
+  };
 
-  mongoClient(host, port, findServer)
+  mongoClient(host, port, findServer);
 }

@@ -5,11 +5,14 @@ var clientInstance = {};
 
 /**
  *
- * @param host
- * @param port
+ * @param serverName
  * @param callback
  */
-module.exports = function (host, port, callback) {
+module.exports = function (serverName, callback) {
+  var server = serverName.split(':', 2)
+  var host = server[0];
+  var port = server[1];
+
   if (clientInstance[host + ':' + port]) {
     callback(null, clientInstance[host + ':' + port]);
     return

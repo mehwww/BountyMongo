@@ -4,9 +4,6 @@ var async = require('async');
 
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
-  var server = serverName.split(':', 2)
-  var host = server[0];
-  var port = server[1];
   var databaseName = req.param('databaseName');
 
   var findDatabase = function(err,client){
@@ -34,7 +31,7 @@ exports.find = function (req, res) {
     });
   }
 
-  mongoClient(host,port,findDatabase);
+  mongoClient(serverName,findDatabase);
 
 //  mongoClient(req.param('server_name'), function (client) {
 //    if (!client) return res.send('Connect to mongo server failed')

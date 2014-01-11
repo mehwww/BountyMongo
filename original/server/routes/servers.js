@@ -5,9 +5,6 @@ var async = require('async');
 exports.find = function (req, res) {
 //mongoClient(req.param('serverName'),req.param())
   var serverName = req.param('serverName');
-  var server = serverName.split(':', 2);
-  var host = server[0];
-  var port = server[1];
 
   var findServer = function (err, client) {
     if (err) return res.send('Connect to mongo server failed');
@@ -18,5 +15,5 @@ exports.find = function (req, res) {
     });
   };
 
-  mongoClient(host, port, findServer);
+  mongoClient(serverName, findServer);
 }

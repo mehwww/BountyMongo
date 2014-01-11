@@ -4,9 +4,6 @@ var async = require('async');
 
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
-  var server = serverName.split(':', 2)
-  var host = server[0];
-  var port = server[1];
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
@@ -20,7 +17,7 @@ exports.find = function (req, res) {
         var page = req.query.page;
         var options = {
           limit: limit ? limit : 20,
-          skip: page ? (page - 1) * req.query.limit : 0,
+          skip: page ? (page - 1) * req.query.limit : 0
         }
         collection.find(query, options).toArray(function (err, docs) {
           callback(err, docs)
@@ -42,7 +39,7 @@ exports.find = function (req, res) {
     })
   }
 
-  mongoClient(host,port,findCollection);
+  mongoClient(serverName,findCollection);
 }
 
 exports.add = function (req, res) {

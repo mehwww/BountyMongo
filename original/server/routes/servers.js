@@ -3,7 +3,6 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
-//mongoClient(req.param('serverName'),req.param())
   var serverName = req.param('serverName');
 
   var findServer = function (err, client) {

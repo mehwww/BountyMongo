@@ -32,31 +32,6 @@ exports.find = function (req, res) {
   }
 
   mongoClient(serverName,findDatabase);
-
-//  mongoClient(req.param('server_name'), function (client) {
-//    if (!client) return res.send('Connect to mongo server failed')
-//    var db = client.db(req.param('db_name'));
-//    async.parallel({
-//      stats: function (callback) {
-//        db.stats(function (err, stats) {
-//          callback(err, stats)
-//        })
-//      },
-//      collectionNames: function (callback) {
-//        db.collectionNames(function (err, items) {
-//          callback(err, items)
-//        })
-//      },
-//      users: function (callback) {
-//        db.collection('system.users').find().toArray(function (err, docs) {
-//          callback(err, docs)
-//        })
-//      }
-//    }, function (err, result) {
-//      res.set('Access-Control-Allow-Origin', '*')
-//      res.send(respond(err, result));
-//    })
-//  })
 }
 
 exports.add = function (req, res) {

@@ -7,17 +7,26 @@ exports.find = function (req, res) {
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
+  //query parameters
+  try {
+    var query = JSON.parse(req.query.q);
+  }
+  catch(e) {
+    res.send(respond('Invaild query string'))
+  }
+  //limit parameters
+  var limit = req.query.l ? req.query.l :20;
+  //skip parameters
+  var skip = req.query.p ? (req.query.p -1) * limit : 0;
+
   var findCollection = function(err,client){
     if (err) return res.send('Connect to mongo server failed');
     var collection = client.db(databaseName).collection(collectionName);
     async.parallel({
       find: function (callback) {
-        var query = eval('(' + req.query.query + ')');
-        var limit = req.query.limit;
-        var page = req.query.page;
         var options = {
-          limit: limit ? limit : 20,
-          skip: page ? (page - 1) * req.query.limit : 0
+          limit: limit,
+          skip: skip
         }
         collection.find(query, options).toArray(function (err, docs) {
           callback(err, docs)

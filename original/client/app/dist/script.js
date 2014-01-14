@@ -6,43 +6,47 @@ var bountyMongo = angular.module('bountyMongo', []);
 
 bountyMongo.controller('sidebar', [
 
-    '$scope',
-    '$q',
-    'config',
-    'server',
-    'database',
-    'collection',
+  '$scope',
+  '$q',
+  'config',
+  'server',
+  'database',
+  'collection',
 
-    function ($scope, $q, config, server,database,collection) {
-        $scope.serversList = config.serverConfig.list;
-        $scope.selectedServer = $scope.serversList[0];
+  function ($scope, $q, config, server, database, collection) {
+    $scope.currentPage = 3;
+    $scope.numPages = 5;
+    $scope.selectCount = 0;
 
-        $scope.$watch('selectedServer', function () {
-            config.serverConfig.selectServer($scope.selectedServer);
-            server().query().then(function (response) {
-                $scope.databases = response;//test use
-                $scope.databasesList = response;
-                $scope.selectedDatabase = null;
-                $scope.collections = [];
-            });
-        });
+    $scope.serversList = config.serverConfig.list;
+    $scope.selectedServer = $scope.serversList[0];
 
-        $scope.$watch('selectedDatabase',function(){
-            config.databaseConfig.selectDatabase($scope.selectedDatabase);
-            if(!$scope.selectedDatabase) return;
-            database().query().then(function(response){
-                $scope.collections = response;
-                $scope.collectionsList = response;
-            })
-        });
+    $scope.$watch('selectedServer', function () {
+      config.serverConfig.selectServer($scope.selectedServer);
+      server().query().then(function (response) {
+        $scope.databases = response;//test use
+        $scope.databasesList = response;
+        $scope.selectedDatabase = null;
+        $scope.collections = [];
+      });
+    });
 
-        $scope.$watch('selectedCollection',function(){
-            config.collectionConfig.selectCollection($scope.selectedCollection);
-            if(!$scope.selectedCollection) return;
-            collection().query().then(function(response){
-                $scope.documents = response;
-            })
-        })
+    $scope.$watch('selectedDatabase', function () {
+      config.databaseConfig.selectDatabase($scope.selectedDatabase);
+      if (!$scope.selectedDatabase) return;
+      database().query().then(function (response) {
+        $scope.collections = response;
+        $scope.collectionsList = response;
+      })
+    });
+
+    $scope.$watch('selectedCollection', function () {
+      config.collectionConfig.selectCollection($scope.selectedCollection);
+      if (!$scope.selectedCollection) return;
+      collection().query().then(function (response) {
+        $scope.documents = response;
+      })
+    })
 
 //        $scope.ngCity = 'asdf';
 
@@ -56,35 +60,54 @@ bountyMongo.controller('sidebar', [
 
 
 //    databasesResource();
-    }])
-bountyMongo.directive('ngSparkline', function() {
-    return {
-        restrict: 'A',
-//        require: 'ngModel',
-        scope: {
-            ngCity: '@'
-        },
-        template: '<div class="sparkline"><h4>Weather for {{ngCity}}</h4><pre>{{weather|json}}</pre></div>',
-        controller: ['$scope', '$http', function($scope, $http) {
-            var url = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&units=imperial&cnt=7&callback=JSON_CALLBACK&q=";
-            $scope.getTemp = function(city) {
-                $http({
-                    method: 'JSONP',
-                    url: url + city
-                }).success(function(data) {
-                        var weather = [];
-                        angular.forEach(data.list, function(value){
-                            weather.push(value);
-                        });
-                        $scope.weather = weather;
-                    });
-            }
-        }],
-        link: function(scope, element, attr) {
-            scope.getTemp(attr.ngCity);
-
+  }])
+bountyMongo.directive('pagination', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      numPages: '=',
+      currentPage: '='
+    },
+    templateUrl:'partials/page.html',
+    replace: true,
+    link: function(scope) {
+      scope.$watch('numPages', function(value) {
+        scope.pages = [];
+        for(var i=1;i<=value;i++) {
+          scope.pages.push(i);
         }
+        if ( scope.currentPage > value ) {
+          scope.selectPage(value);
+        }
+      });
+      scope.noPrevious = function() {
+        return scope.currentPage === 1;
+      };
+      scope.noNext = function() {
+        return scope.currentPage === scope.numPages;
+      };
+      scope.isActive = function(page) {
+        return scope.currentPage === page;
+      };
+
+      scope.selectPage = function(page) {
+        if ( ! scope.isActive(page) ) {
+          scope.currentPage = page;
+        }
+      };
+
+      scope.selectPrevious = function() {
+        if ( !scope.noPrevious() ) {
+          scope.selectPage(scope.currentPage-1);
+        }
+      };
+      scope.selectNext = function() {
+        if ( !scope.noNext() ) {
+          scope.selectPage(scope.currentPage+1);
+        }
+      };
     }
+  };
 });
 /**
  * Created by meh on 14-1-10.

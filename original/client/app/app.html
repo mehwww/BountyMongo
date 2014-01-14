@@ -23,20 +23,24 @@
 </div>
 
 <div class="container" ng-controller="sidebar">
-    <div class="col-lg-6" >
+    <div class="col-lg-6">
         <div class="well-sm">
             <label>Server List:</label>
             <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
+
             <p>Chose server: {{selectedServer}}</p>
         </div>
         <div class="well-sm">
             <label>Database List:</label>
             <select ng-model="selectedDatabase" ng-options="database.name for database in databasesList"></select>
+
             <p>Chose database: {{selectedDatabase}}</p>
         </div>
         <div class="well-sm">
             <label>Collection List:</label>
-            <select ng-model="selectedCollection" ng-options="collection.name for collection in collectionsList"></select>
+            <select ng-model="selectedCollection"
+                    ng-options="collection.name for collection in collectionsList"></select>
+
             <p>Chose collection: {{selectedCollection}}</p>
         </div>
         <div class="well-sm">
@@ -45,12 +49,15 @@
     </div>
 
     <div class="col-lg-6">
-        <div class="well-sm">
-            <pre>{{databases|json}}</pre>
-        </div>
-        <div class="well-sm">
-            <pre>{{collections|json}}</pre>
-        </div>
+        <!--<div class="well-sm">-->
+        <!--<pre>{{databases|json}}</pre>-->
+        <!--</div>-->
+        <!--<div class="well-sm">-->
+        <!--<pre>{{collections|json}}</pre>-->
+        <!--</div>-->
+        <pagination num-pages="numPages" current-page="currentPage"></pagination>
+        <div>Number of Pages: <input ng-model="numPages" type="number"></div>
+        <div>Current Page: <input ng-model="currentPage" type="number"></div>
     </div>
 </div>
 

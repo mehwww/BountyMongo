@@ -3,17 +3,22 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
+  res.set('Access-Control-Allow-Origin', '*')
+
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
   //query parameters
-  try {
-    var query = JSON.parse(req.query.q);
+  if(req.query.q){
+    try {
+      var query = JSON.parse(req.query.q);
+    }
+    catch(e) {
+      res.send(respond('Invaild query string'))
+    }
   }
-  catch(e) {
-    res.send(respond('Invaild query string'))
-  }
+
   //limit parameters
   var limit = req.query.l ? req.query.l :20;
   //skip parameters

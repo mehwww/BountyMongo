@@ -3,6 +3,8 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
+  res.set('Access-Control-Allow-Origin', '*')
+
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
 

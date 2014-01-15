@@ -68,7 +68,7 @@ bountyMongo.directive('pagination', function() {
       numPages: '=',
       currentPage: '='
     },
-    templateUrl:'partials/page.html',
+    templateUrl:'partials/pagination.html',
     replace: true,
     link: function(scope) {
       scope.$watch('numPages', function(value) {
@@ -113,6 +113,48 @@ bountyMongo.directive('pagination', function() {
  * Created by meh on 14-1-10.
  */
 
+bountyMongo.factory('bucket', [function () {
+  //app server url
+  var serverURL = 'http://localhost:3000/';
+
+  var serverConfig = {};
+  serverConfig.list = [
+    {'host': 'localhost', 'port': '27017'},
+    {'host': '127.0.0.1', 'port': '27017'},
+    {'host': '192.168.1.100', 'port': '27017'}
+  ];
+  serverConfig.selected = {};
+  serverConfig.selectServer = function (selected) {
+    this.selected = selected;
+  };
+
+  var databaseConfig = {};
+  databaseConfig.list = [];
+  databaseConfig.selected = {};
+  databaseConfig.selectDatabase = function (selected) {
+    this.selected = selected;
+  }
+
+  var collectionConfig = {};
+  collectionConfig.list = [];
+  collectionConfig.selected = {};
+  collectionConfig.selectCollection = function (selected) {
+    this.selected = selected;
+  }
+
+
+  return {
+    serverURL: serverURL,
+    serverConfig: serverConfig,
+    databaseConfig: databaseConfig,
+    collectionConfig: collectionConfig
+  };
+//
+//    var database = {
+//        list: [],
+//        selected: {}
+//    }
+}])
 bountyMongo.factory('collection', [
 
     '$http',
@@ -136,48 +178,6 @@ bountyMongo.factory('collection', [
             return Resource;
         }
     }])
-bountyMongo.factory('config', [function () {
-    //app server url
-    var serverURL = 'http://localhost:3000/';
-
-    var serverConfig = {};
-    serverConfig.list = [
-        {'host': 'localhost', 'port': '27017'},
-        {'host': '127.0.0.1', 'port': '27017'},
-        {'host': '192.168.1.100', 'port': '27017'}
-    ];
-    serverConfig.selected = {};
-    serverConfig.selectServer = function (selected) {
-        this.selected = selected;
-    };
-
-    var databaseConfig = {};
-    databaseConfig.list = [];
-    databaseConfig.selected = {};
-    databaseConfig.selectDatabase = function (selected) {
-        this.selected = selected;
-    }
-
-    var collectionConfig = {};
-    collectionConfig.list = [];
-    collectionConfig.selected = {};
-    collectionConfig.selectCollection = function (selected) {
-        this.selected = selected;
-    }
-
-
-    return {
-        serverURL: serverURL,
-        serverConfig: serverConfig,
-        databaseConfig: databaseConfig,
-        collectionConfig:collectionConfig
-    };
-//
-//    var database = {
-//        list: [],
-//        selected: {}
-//    }
-}])
 bountyMongo.factory('database', [
 
     '$http',
@@ -207,6 +207,9 @@ bountyMongo.factory('database', [
         }
     }])
 
+bountyMongo.factory('records',[function(){
+
+}])
 bountyMongo.factory('server', [
 
     '$http',

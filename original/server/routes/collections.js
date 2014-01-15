@@ -15,6 +15,7 @@ exports.find = function (req, res) {
       var query = JSON.parse(req.query.q);
     }
     catch(e) {
+      res.set('Access-Control-Allow-Origin', '*')
       res.send(respond('Invaild query string'))
     }
   }

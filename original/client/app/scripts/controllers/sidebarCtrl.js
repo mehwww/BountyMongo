@@ -35,7 +35,6 @@ bountyMongo.controller('sidebarCtrl', [
       if (!$scope.selectedCollection) return;
       collection().query().then(function (response) {
         $scope.documents = response;
-        bucket.records = response;
       })
     })
 

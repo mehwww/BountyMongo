@@ -3,8 +3,6 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
-  res.set('Access-Control-Allow-Origin', '*')
-
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
@@ -29,6 +27,11 @@ exports.find = function (req, res) {
     if (err) return res.send('Connect to mongo server failed');
     var collection = client.db(databaseName).collection(collectionName);
     async.parallel({
+      count:function(callback){
+        collection.count(query,function(err,count){
+          callback(err,count)
+        })
+      },
       find: function (callback) {
         var options = {
           limit: limit,

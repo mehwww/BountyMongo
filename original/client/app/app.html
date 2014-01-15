@@ -25,8 +25,8 @@
     </div>
 </div>
 
-<div class="container" ng-controller="sidebar">
-    <div class="col-lg-6">
+<div class="container">
+    <div class="col-lg-6" ng-controller="sidebarCtrl">
         <div class="well-sm">
             <label>Server List:</label>
             <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
@@ -51,16 +51,18 @@
         </div>
     </div>
 
-    <div class="col-lg-6">
+    <div class="col-lg-6" ng-controller="recordsCtrl">
+        <pre>{{records|json}}</pre>
+
         <!--<div class="well-sm">-->
         <!--<pre>{{databases|json}}</pre>-->
         <!--</div>-->
         <!--<div class="well-sm">-->
         <!--<pre>{{collections|json}}</pre>-->
         <!--</div>-->
-        <pagination num-pages="numPages" current-page="currentPage"></pagination>
-        <div>Number of Pages: <input ng-model="numPages" type="number"></div>
-        <div>Current Page: <input ng-model="currentPage" type="number"></div>
+        <!--<pagination num-pages="numPages" current-page="currentPage"></pagination>-->
+        <!--<div>Number of Pages: <input ng-model="numPages" type="number"></div>-->
+        <!--<div>Current Page: <input ng-model="currentPage" type="number"></div>-->
     </div>
 </div>
 

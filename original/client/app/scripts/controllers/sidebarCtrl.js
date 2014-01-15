@@ -1,32 +1,28 @@
-bountyMongo.controller('sidebar', [
+bountyMongo.controller('sidebarCtrl', [
 
   '$scope',
   '$q',
-  'config',
+  'bucket',
   'server',
   'database',
   'collection',
 
-  function ($scope, $q, config, server, database, collection) {
-    $scope.currentPage = 3;
-    $scope.numPages = 5;
-    $scope.selectCount = 0;
-
-    $scope.serversList = config.serverConfig.list;
+  function ($scope, $q, bucket, server, database, collection) {
+    $scope.serversList = bucket.config.server.list;
     $scope.selectedServer = $scope.serversList[0];
 
     $scope.$watch('selectedServer', function () {
-      config.serverConfig.selectServer($scope.selectedServer);
+      bucket.config.server.selectServer($scope.selectedServer);
       server().query().then(function (response) {
-        $scope.databases = response;//test use
         $scope.databasesList = response;
         $scope.selectedDatabase = null;
+        $scope.selectedCollection = null;
         $scope.collections = [];
       });
     });
 
     $scope.$watch('selectedDatabase', function () {
-      config.databaseConfig.selectDatabase($scope.selectedDatabase);
+      bucket.config.database.selectDatabase($scope.selectedDatabase);
       if (!$scope.selectedDatabase) return;
       database().query().then(function (response) {
         $scope.collections = response;
@@ -35,10 +31,11 @@ bountyMongo.controller('sidebar', [
     });
 
     $scope.$watch('selectedCollection', function () {
-      config.collectionConfig.selectCollection($scope.selectedCollection);
+      bucket.config.collection.selectCollection($scope.selectedCollection);
       if (!$scope.selectedCollection) return;
       collection().query().then(function (response) {
         $scope.documents = response;
+        bucket.records = response;
       })
     })
 

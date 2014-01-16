@@ -5,7 +5,7 @@ bountyMongo.directive('pagination', function() {
       numPages: '=',
       currentPage: '='
     },
-    templateUrl:'partials/pagination.html',
+    templateUrl:'./partials/pagination.html',
     replace: true,
     link: function(scope) {
       scope.$watch('numPages', function(value) {

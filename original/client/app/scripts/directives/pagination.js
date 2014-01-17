@@ -1,3 +1,6 @@
+bountyMongo.controller('paginationController')
+
+
 bountyMongo.directive('pagination', function() {
   return {
     restrict: 'E',
@@ -6,6 +9,9 @@ bountyMongo.directive('pagination', function() {
       currentPage: '='
     },
     templateUrl:'./partials/pagination.html',
+    controller:['$scope',function($scope){
+      $scope.numPages = 22;
+    }],
     replace: true,
     link: function(scope) {
       scope.$watch('numPages', function(value) {
@@ -17,6 +23,7 @@ bountyMongo.directive('pagination', function() {
           scope.selectPage(value);
         }
       });
+
       scope.noPrevious = function() {
         return scope.currentPage === 1;
       };

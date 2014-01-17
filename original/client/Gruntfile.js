@@ -13,11 +13,10 @@ module.exports = function (grunt) {
         spawn: false
       },
       development: {
-        files: ['./app/assets/less/*.less', './app/scripts/**/*.js'],
+        files: ['./app/assets/less/*.less', './app/scripts/**/*.js','./app/**/*.html'],
         tasks: ['concat:development', 'less:development'],
         options: {
-          livereload: true,
-
+          livereload: true
         }
       }
 //            less: {

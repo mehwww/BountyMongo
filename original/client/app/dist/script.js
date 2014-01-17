@@ -4,21 +4,27 @@ var bountyMongo = angular.module('bountyMongo', []);
 
 
 
-bountyMongo.controller('recordsCtrl', [
+bountyMongo.controller('RecordsCtrl', [
 
   '$scope',
   'bucket',
 
   function ($scope, bucket) {
-    $scope.bucket = bucket;
+//    $scope.bucket = bucket;
     $scope.records = bucket.records;
-    $scope.$watch('bucket.records',function(newVal,oldVal,scope){
-      if(newVal){
-        scope.records = newVal;
-      }
-    })
+    $scope.$watch(
+      function () {
+        return bucket.records
+      },
+      function (newVal) {
+          $scope.records = newVal;
+          $scope.currentPage = bucket.config.queryOptions.p;
+          $scope.numPages = parseInt($scope.records.count/bucket.config.queryOptions.l,10)+1;
+      })
+
+
   }])
-bountyMongo.controller('sidebarCtrl', [
+bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
   '$q',
@@ -71,6 +77,9 @@ bountyMongo.controller('sidebarCtrl', [
 
 //    databasesResource();
   }])
+bountyMongo.controller('paginationController')
+
+
 bountyMongo.directive('pagination', function() {
   return {
     restrict: 'E',
@@ -79,6 +88,9 @@ bountyMongo.directive('pagination', function() {
       currentPage: '='
     },
     templateUrl:'./partials/pagination.html',
+    controller:['$scope',function($scope){
+      $scope.numPages = 22;
+    }],
     replace: true,
     link: function(scope) {
       scope.$watch('numPages', function(value) {
@@ -90,6 +102,7 @@ bountyMongo.directive('pagination', function() {
           scope.selectPage(value);
         }
       });
+
       scope.noPrevious = function() {
         return scope.currentPage === 1;
       };
@@ -157,12 +170,22 @@ bountyMongo.factory('bucket', [function () {
   }
   config.collection = collection;
 
+  var queryOptions = {};
+  queryOptions.q = {};
+  queryOptions.l = 10;
+  queryOptions.p = 1;
+  queryOptions.init = function(){
+    this.q = {};
+    this.p = 1;
+  }
+  config.queryOptions = queryOptions;
+
   var records = {};
 
 
   return {
     serverURL: serverURL,
-    config:config,
+    config: config,
     records: records
   };
 //
@@ -186,6 +209,7 @@ bountyMongo.factory('collection', [
       var collection = bucket.config.collection.selected;
       var database = bucket.config.database.selected;
       var server = bucket.config.server.selected;
+      var queryOptions = bucket.config.queryOptions;
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
@@ -194,9 +218,9 @@ bountyMongo.factory('collection', [
         angular.extend(this, data);
       };
       Resource.query = function () {
-        if (arguments[0])url = url + 'q=' + JSON.stringify(arguments[0]) + '&';
-        if (arguments[1])url = url + 'p=' + arguments[1] + '&';
-        if (arguments[2])url = url + 'l=' + arguments[2];
+        if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
+        if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
+        if (queryOptions.l)url = url + 'l=' + queryOptions.l;
 
         return $http.get(url).then(function (response) {
           if (response.data.status === 'error') {

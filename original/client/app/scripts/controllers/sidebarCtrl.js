@@ -1,4 +1,4 @@
-bountyMongo.controller('sidebarCtrl', [
+bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
   '$q',

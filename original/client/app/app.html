@@ -7,7 +7,8 @@
     <script src="//localhost:35729/livereload.js"></script>
 
     <script src="./vendor/components/jquery/jquery.js"></script>
-    <script src="./vendor/components/bootstrap/dist/js/bootstrap.js"></script>
+    <!--<script src="./vendor/components/bootstrap/dist/js/bootstrap.js"></script>-->
+
     <script src="./vendor/components/angular/angular.js"></script>
     <!--<script src="./vendor/components/angular-resource/angular-resource.js"></script>-->
     <!--<script src="./vendor/components/angular-route/angular-route.js"></script>-->
@@ -26,7 +27,7 @@
 </div>
 
 <div class="container">
-    <div class="col-lg-6" ng-controller="sidebarCtrl">
+    <div class="col-lg-6" ng-controller="SidebarCtrl">
         <div class="well-sm">
             <label>Server List:</label>
             <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
@@ -51,7 +52,8 @@
         </div>
     </div>
 
-    <div class="col-lg-6" ng-controller="recordsCtrl">
+    <div class="col-lg-6" ng-controller="RecordsCtrl">
+        <!--<pagination num-pages="numPages" current-page="currentPage"></pagination>-->
         <pre>{{records|json}}</pre>
 
         <!--<div class="well-sm">-->

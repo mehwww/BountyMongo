@@ -13,6 +13,7 @@ bountyMongo.factory('collection', [
       var collection = bucket.config.collection.selected;
       var database = bucket.config.database.selected;
       var server = bucket.config.server.selected;
+      var queryOptions = bucket.config.queryOptions;
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
@@ -21,9 +22,9 @@ bountyMongo.factory('collection', [
         angular.extend(this, data);
       };
       Resource.query = function () {
-        if (arguments[0])url = url + 'q=' + JSON.stringify(arguments[0]) + '&';
-        if (arguments[1])url = url + 'p=' + arguments[1] + '&';
-        if (arguments[2])url = url + 'l=' + arguments[2];
+        if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
+        if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
+        if (queryOptions.l)url = url + 'l=' + queryOptions.l;
 
         return $http.get(url).then(function (response) {
           if (response.data.status === 'error') {

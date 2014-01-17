@@ -32,12 +32,22 @@ bountyMongo.factory('bucket', [function () {
   }
   config.collection = collection;
 
+  var queryOptions = {};
+  queryOptions.q = {};
+  queryOptions.l = 10;
+  queryOptions.p = 1;
+  queryOptions.init = function(){
+    this.q = {};
+    this.p = 1;
+  }
+  config.queryOptions = queryOptions;
+
   var records = {};
 
 
   return {
     serverURL: serverURL,
-    config:config,
+    config: config,
     records: records
   };
 //

@@ -1,26 +1,54 @@
-//describe('pagination directive', function () {
-//  describe('has few pages: ',function(){
-//    var $scope, element, lis;
-//    beforeEach(module('bountyMongo'));
-//    beforeEach(inject(function($compile, $rootScope,$templateCache) {
-//      $templateCache.put('./partials/pagination.html',window.__html__['app/partials/pagination.html']);
-//      $scope = $rootScope;
-//      $scope.count = 40;
-//      $scope.currentPage = 5;
-//      element = $compile('<pagination total-Items="count" current-page="currentPage"></pagination>')($scope);
-//      $scope.$digest();
-//      lis = function() { return element.find('li'); };
-//    }));
-//
-//    it('has a "pagination" css class', function() {
-//      expect(element.hasClass('page')).toBe(true);
-//    });
-//  })
-//});
+describe('database directive', function () {
+  var $scope, element, lis;
+  beforeEach(module('bountyMongo'));
+  beforeEach(inject(function ($compile, $rootScope, $templateCache) {
+    $templateCache.put('./partials/database.html', window.__html__['app/partials/database.html']);
+    $scope = $rootScope;
+    $scope.databaseList = [
+      {
+        name: 'test1',
+        sizeOnDisk: 83886080,
+        empty: false
+      },
+      {
+        name: 'test2',
+        sizeOnDisk: 218103808,
+        empty: false
+      },
+      {
+        name: 'test3',
+        sizeOnDisk: 218103808,
+        empty: true
+      },
+      {
+        name: 'test4',
+        sizeOnDisk: 218103808,
+        empty: true
+      }
+    ];
+    element = $compile('<database database-list="databaseList"></database>')($scope);
+    $scope.$digest();
+    lis = function () {
+      return element.find('li');
+    };
+  }));
 
+  it('has a "database" css class', function () {
+    expect(element.hasClass('database')).toBe(true);
+  });
 
+  it('contains one ul and databases num li elements', function () {
+    expect(element.prop('tagName').toLowerCase() === 'ul').toBe(true);
+    expect(lis().length).toBe(4);
+  });
 
+  it('each li has its database name text', function () {
+    for (var i = 0; i < $scope.databaseList.length; i++) {
+      expect(lis().eq(i).find('a').text()).toBe($scope.databaseList[i].name)
+    }
+  });
 
+});
 
 //  it('has ')
 

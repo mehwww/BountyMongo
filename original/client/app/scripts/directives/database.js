@@ -2,7 +2,8 @@ bountyMongo.directive('database', [function () {
   return {
     restrict:'E',
     scope:{
-      databaseList:"="
+      databaseList:'=',
+      selectedDatabase:'='
     },
     templateUrl:'./partials/database.html',
     replace:true

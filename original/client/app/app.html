@@ -31,8 +31,10 @@
         <div class="well-sm">
             <label>Server List:</label>
             <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
-
             <p>Chose server: {{selectedServer}}</p>
+        </div>
+        <div class="well-sm">
+            <database selected-database="selectedDatabase" database-list="databaseList"></database>
         </div>
         <div class="well-sm">
             <label>Database List:</label>

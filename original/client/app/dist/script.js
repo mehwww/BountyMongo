@@ -41,6 +41,7 @@ bountyMongo.controller('SidebarCtrl', [
       bucket.config.server.selectServer($scope.selectedServer);
       server().query().then(function (response) {
         $scope.databasesList = response;
+        $scope.databaseList = response;
         $scope.selectedDatabase = null;
         $scope.selectedCollection = null;
         $scope.collections = [];
@@ -81,7 +82,8 @@ bountyMongo.directive('database', [function () {
   return {
     restrict:'E',
     scope:{
-      databaseList:"="
+      databaseList:'=',
+      selectedDatabase:'='
     },
     templateUrl:'./partials/database.html',
     replace:true

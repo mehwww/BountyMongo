@@ -15,6 +15,7 @@ bountyMongo.controller('SidebarCtrl', [
       bucket.config.server.selectServer($scope.selectedServer);
       server().query().then(function (response) {
         $scope.databasesList = response;
+        $scope.databaseList = response;
         $scope.selectedDatabase = null;
         $scope.selectedCollection = null;
         $scope.collections = [];

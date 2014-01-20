@@ -1,12 +1,9 @@
-bountyMongo.directive('database', [function () {
+bountyMongo.directive('sidebarDatabase', ['database','collection', function (database,collection) {
   return {
-    restrict:'E',
-    scope:{
-      databaseList:'=',
-      selectedDatabase:'='
-    },
-    templateUrl:'./partials/database.html',
-    replace:true,
+    restrict: 'A',
+//    scope:true,
+    templateUrl: './partials/sidebarDatabase.html',
+//    replace:true,
 //    controller:['$scope',function(){
 //      var self = this;
 //      this.collections = [];
@@ -30,9 +27,13 @@ bountyMongo.directive('database', [function () {
 //        }
 //      }
 //    }],
-    link:function(scope,element,attrs){
-      scope.select = function(){
-
+    link: function (scope, element, attrs) {
+      scope.toggle = function(){
+        scope.isOpen = !scope.isOpen;
+        console.log(scope.selectedServer)
+//        database().query().then(function (response) {
+//          scope.collectionList = response;
+//        })
       }
     }
   }

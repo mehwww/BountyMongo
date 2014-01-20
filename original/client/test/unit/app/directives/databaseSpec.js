@@ -34,7 +34,7 @@ describe('database directive', function () {
   }));
 
   it('has a "database" css class', function () {
-    expect(element.hasClass('database')).toBe(true);
+    expect(element.hasClass('database-list')).toBe(true);
   });
 
   it('contains one ul and databases num li elements', function () {
@@ -48,7 +48,11 @@ describe('database directive', function () {
     }
   });
 
-  it()
+  it('add database',function(){
+    $scope.databaseList.push({name:'test5'});
+    $scope.$digest();
+    expect(element.find('li').length).toBe(5)
+  })
 
 });
 

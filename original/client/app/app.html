@@ -33,8 +33,13 @@
             <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
             <p>Chose server: {{selectedServer}}</p>
         </div>
+        <!--<div class="well-sm">-->
+            <!--<database selected-database="selectedDatabase" database-list="databaseList"></database>-->
+        <!--</div>-->
         <div class="well-sm">
-            <database selected-database="selectedDatabase" database-list="databaseList"></database>
+            <ul class="sidebar-database-list">
+                <li sidebar-database ng-repeat="database in databaseList"></li>
+            </ul>
         </div>
         <div class="well-sm">
             <label>Database List:</label>

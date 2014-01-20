@@ -8,36 +8,32 @@ bountyMongo.controller('SidebarCtrl', [
   'collection',
 
   function ($scope, $q, bucket, server, database, collection) {
-    $scope.serversList = bucket.config.server.list;
-    $scope.selectedServer = $scope.serversList[0];
+    $scope.serverList = bucket.config.server.list;
+    $scope.server = $scope.serverList[0];
 
-    $scope.$watch('selectedServer', function () {
-      bucket.config.server.selectServer($scope.selectedServer);
-      server().query().then(function (response) {
-        $scope.databasesList = response;
+    $scope.$watch('server', function () {
+//      bucket.config.server.selectServer($scope.selectedServer);
+      server($scope.server).query().then(function (response) {
         $scope.databaseList = response;
-        $scope.selectedDatabase = null;
-        $scope.selectedCollection = null;
-        $scope.collections = [];
       });
     });
 
-    $scope.$watch('selectedDatabase', function () {
-      bucket.config.database.selectDatabase($scope.selectedDatabase);
-      if (!$scope.selectedDatabase) return;
-      database().query().then(function (response) {
-        $scope.collections = response;
-        $scope.collectionsList = response;
-      })
-    });
-
-    $scope.$watch('selectedCollection', function () {
-      bucket.config.collection.selectCollection($scope.selectedCollection);
-      if (!$scope.selectedCollection) return;
-      collection().query().then(function (response) {
-        $scope.documents = response;
-      })
-    })
+//    $scope.$watch('selectedDatabase', function () {
+//      bucket.config.database.selectDatabase($scope.selectedDatabase);
+//      if (!$scope.selectedDatabase) return;
+//      database($scope.selectedServer,$scope.selectedDatabase).query().then(function (response) {
+//        $scope.collections = response;
+//        $scope.collectionsList = response;
+//      })
+//    });
+//
+//    $scope.$watch('selectedCollection', function () {
+//      bucket.config.collection.selectCollection($scope.selectedCollection);
+//      if (!$scope.selectedCollection) return;
+//      collection().query().then(function (response) {
+//        $scope.documents = response;
+//      })
+//    })
 
 //        $scope.ngCity = 'asdf';
 

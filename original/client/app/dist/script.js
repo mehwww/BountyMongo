@@ -34,36 +34,32 @@ bountyMongo.controller('SidebarCtrl', [
   'collection',
 
   function ($scope, $q, bucket, server, database, collection) {
-    $scope.serversList = bucket.config.server.list;
-    $scope.selectedServer = $scope.serversList[0];
+    $scope.serverList = bucket.config.server.list;
+    $scope.server = $scope.serverList[0];
 
-    $scope.$watch('selectedServer', function () {
-      bucket.config.server.selectServer($scope.selectedServer);
-      server().query().then(function (response) {
-        $scope.databasesList = response;
+    $scope.$watch('server', function () {
+//      bucket.config.server.selectServer($scope.selectedServer);
+      server($scope.server).query().then(function (response) {
         $scope.databaseList = response;
-        $scope.selectedDatabase = null;
-        $scope.selectedCollection = null;
-        $scope.collections = [];
       });
     });
 
-    $scope.$watch('selectedDatabase', function () {
-      bucket.config.database.selectDatabase($scope.selectedDatabase);
-      if (!$scope.selectedDatabase) return;
-      database().query().then(function (response) {
-        $scope.collections = response;
-        $scope.collectionsList = response;
-      })
-    });
-
-    $scope.$watch('selectedCollection', function () {
-      bucket.config.collection.selectCollection($scope.selectedCollection);
-      if (!$scope.selectedCollection) return;
-      collection().query().then(function (response) {
-        $scope.documents = response;
-      })
-    })
+//    $scope.$watch('selectedDatabase', function () {
+//      bucket.config.database.selectDatabase($scope.selectedDatabase);
+//      if (!$scope.selectedDatabase) return;
+//      database($scope.selectedServer,$scope.selectedDatabase).query().then(function (response) {
+//        $scope.collections = response;
+//        $scope.collectionsList = response;
+//      })
+//    });
+//
+//    $scope.$watch('selectedCollection', function () {
+//      bucket.config.collection.selectCollection($scope.selectedCollection);
+//      if (!$scope.selectedCollection) return;
+//      collection().query().then(function (response) {
+//        $scope.documents = response;
+//      })
+//    })
 
 //        $scope.ngCity = 'asdf';
 
@@ -165,16 +161,19 @@ bountyMongo.directive('pagination', function () {
     }
   };
 });
-bountyMongo.directive('collection', [function () {
+bountyMongo.directive('sidebarCollection', ['collection', 'bucket', function (collection, bucket) {
   return {
-    restrict:'E',
-    scope:{
-    },
-    templateUrl:'./partials/collection.html',
-    replace:true,
-    controller:['$scope',function($scope){
+    restrict: 'A',
+    templateUrl: './partials/sidebarCollection.html',
+    link: function (scope, element, attrs) {
+      scope.selectCollection = function () {
+        //scope.server and scope.database are prototypically inheritance from parent
+        collection(scope.server, scope.database, scope.collection, {}).query().then(function (response) {
+          bucket.records = response;
+        })
+      }
 
-    }]
+    }
   }
 
 }])
@@ -183,37 +182,13 @@ bountyMongo.directive('sidebarDatabase', ['database','collection', function (dat
     restrict: 'A',
 //    scope:true,
     templateUrl: './partials/sidebarDatabase.html',
-//    replace:true,
-//    controller:['$scope',function(){
-//      var self = this;
-//      this.collections = [];
-//      this.closeOthers = function(selectedCollection){
-//        angular.forEach(self.collections,function(collection){
-//          if(collection !== selectedCollection){
-//            collection.isSelected = false;
-//          }
-//        });
-//      };
-//      this.addCollection = function(collectionScope){
-//        self.collections.push(collectionScope);
-//        collectionScope.$on('$destroy',function(){
-//          self.removeCollection(collectionScope)
-//        })
-//      }
-//      this.removeCollection = function(collection){
-//        var index = self.collections.indexOf(collection);
-//        if(index !== -1){
-//          this.collections.splice(index, 1);
-//        }
-//      }
-//    }],
     link: function (scope, element, attrs) {
-      scope.toggle = function(){
+      scope.toggleDatabase = function(){
         scope.isOpen = !scope.isOpen;
-        console.log(scope.selectedServer)
-//        database().query().then(function (response) {
-//          scope.collectionList = response;
-//        })
+        //scope.selectedServer is prototypically inheritance from parent
+        database(scope.server,scope.database).query().then(function (response) {
+          scope.collectionList = response;
+        })
       }
     }
   }
@@ -288,11 +263,11 @@ bountyMongo.factory('collection', [
      *  @param2 : page
      *  @param3 : limit
      */
-    return function () {
-      var collection = bucket.config.collection.selected;
-      var database = bucket.config.database.selected;
-      var server = bucket.config.server.selected;
-      var queryOptions = bucket.config.queryOptions;
+    return function (server, database, collection, queryOptions) {
+//      var collection = bucket.config.collection.selected;
+//      var database = bucket.config.database.selected;
+//      var server = bucket.config.server.selected;
+//      var queryOptions = bucket.config.queryOptions;
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
@@ -301,17 +276,19 @@ bountyMongo.factory('collection', [
         angular.extend(this, data);
       };
       Resource.query = function () {
-        if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
-        if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
-        if (queryOptions.l)url = url + 'l=' + queryOptions.l;
+        if (queryOptions) {
+          if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
+          if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
+          if (queryOptions.l)url = url + 'l=' + queryOptions.l;
+        }
 
         return $http.get(url).then(function (response) {
           if (response.data.status === 'error') {
-            bucket.records = response.data;
+//            bucket.records = response.data;
             return response.data.error
           }
-          bucket.records = response.data.data;
-          return response.data.data.find;
+//          bucket.records = response.data.data;
+          return response.data.data;
         });
       }
       return Resource;
@@ -323,9 +300,9 @@ bountyMongo.factory('database', [
   'bucket',
 
   function ($http, bucket) {
-    return function () {
-      var database = bucket.config.database.selected;
-      var server = bucket.config.server.selected;
+    return function (server,database) {
+//      var database = bucket.config.database.selected;
+//      var server = bucket.config.server.selected;
       var serverURL = bucket.serverURL;
       var url = serverURL + 'servers/' + server.host + '/databases/' + database.name;
       var Resource = function (data) {
@@ -334,12 +311,12 @@ bountyMongo.factory('database', [
       Resource.query = function () {
         return $http.get(url).then(function (response) {
           //返回该服务器上的所有collections
-          var collectionsList = [];
+          var collections = [];
           angular.forEach(response.data.data.collectionNames, function (value, key) {
             value.name = value.name.substr(value.name.indexOf('.') + 1);
             this.push(value);
-          }, collectionsList)
-          return collectionsList;
+          }, collections)
+          return collections;
         });
       }
       return Resource;
@@ -355,8 +332,7 @@ bountyMongo.factory('server', [
   'bucket',
 
   function ($http, bucket) {
-    return function () {
-      var server = bucket.config.server.selected;
+    return function (server) {
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host;

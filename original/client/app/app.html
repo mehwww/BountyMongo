@@ -30,8 +30,8 @@
     <div class="col-lg-6" ng-controller="SidebarCtrl">
         <div class="well-sm">
             <label>Server List:</label>
-            <select ng-model="selectedServer" ng-options="server.host for server in serversList"></select>
-            <p>Chose server: {{selectedServer}}</p>
+            <select ng-model="server" ng-options="server.host for server in serverList"></select>
+            <p>Chose server: {{server}}</p>
         </div>
         <!--<div class="well-sm">-->
             <!--<database selected-database="selectedDatabase" database-list="databaseList"></database>-->
@@ -41,19 +41,19 @@
                 <li sidebar-database ng-repeat="database in databaseList"></li>
             </ul>
         </div>
-        <div class="well-sm">
-            <label>Database List:</label>
-            <select ng-model="selectedDatabase" ng-options="database.name for database in databasesList"></select>
+        <!--<div class="well-sm">-->
+            <!--<label>Database List:</label>-->
+            <!--<select ng-model="selectedDatabase" ng-options="database.name for database in databasesList"></select>-->
 
-            <p>Chose database: {{selectedDatabase}}</p>
-        </div>
-        <div class="well-sm">
-            <label>Collection List:</label>
-            <select ng-model="selectedCollection"
-                    ng-options="collection.name for collection in collectionsList"></select>
+            <!--<p>Chose database: {{selectedDatabase}}</p>-->
+        <!--</div>-->
+        <!--<div class="well-sm">-->
+            <!--<label>Collection List:</label>-->
+            <!--<select ng-model="selectedCollection"-->
+                    <!--ng-options="collection.name for collection in collectionsList"></select>-->
 
-            <p>Chose collection: {{selectedCollection}}</p>
-        </div>
+            <!--<p>Chose collection: {{selectedCollection}}</p>-->
+        <!--</div>-->
         <div class="well-sm">
             <pre>{{documents|json}}</pre>
         </div>

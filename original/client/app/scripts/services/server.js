@@ -4,8 +4,7 @@ bountyMongo.factory('server', [
   'bucket',
 
   function ($http, bucket) {
-    return function () {
-      var server = bucket.config.server.selected;
+    return function (server) {
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host;

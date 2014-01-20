@@ -1,4 +1,5 @@
-<a ng-click="toggle()">{{database.name}}</a>
-<ul ng-show="isOpen">
-    hahahaahahahahaha
+<a ng-click="toggleDatabase()">{{database.name}}</a>
+<ul ng-if="isOpen">
+    <li sidebar-collection ng-repeat="collection in collectionList">
+    </li>
 </ul>

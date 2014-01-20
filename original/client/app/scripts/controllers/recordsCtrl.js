@@ -4,7 +4,6 @@ bountyMongo.controller('RecordsCtrl', [
   'bucket',
 
   function ($scope, bucket) {
-//    $scope.bucket = bucket;
     $scope.records = bucket.records;
     $scope.$watch(
       function () {
@@ -12,9 +11,7 @@ bountyMongo.controller('RecordsCtrl', [
       },
       function (newVal) {
           $scope.records = newVal;
-          $scope.currentPage = bucket.config.queryOptions.p;
-          $scope.numPages = parseInt($scope.records.count/bucket.config.queryOptions.l,10)+1;
+//          $scope.currentPage = bucket.config.queryOptions.p;
+//          $scope.numPages = parseInt($scope.records.count/bucket.config.queryOptions.l,10)+1;
       })
-
-
   }])

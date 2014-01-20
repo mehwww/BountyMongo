@@ -8,9 +8,13 @@ bountyMongo.factory('server', [
       var serverURL = bucket.serverURL;
 
       var url = serverURL + 'servers/' + server.host;
-      var Resource = function (data) {
-        angular.extend(this, data);
-      };
+
+//      待研究
+//      var Resource = function (data) {
+//        angular.extend(this, data);
+//      };
+
+      var Resource = {}
       Resource.query = function () {
         return $http.get(url).then(function (response) {
           //返回该服务器上的所有databases

@@ -1,7 +1,6 @@
 bountyMongo.directive('sidebarDatabase', ['database','collection', function (database,collection) {
   return {
     restrict: 'A',
-//    scope:true,
     templateUrl: './partials/sidebarDatabase.html',
     link: function (scope, element, attrs) {
       scope.toggleDatabase = function(){

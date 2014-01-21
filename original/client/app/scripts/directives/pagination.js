@@ -24,18 +24,23 @@
  }]);
  */
 
-bountyMongo.directive('pagination', function () {
+bountyMongo.directive('pagination', ['bucket',function (bucket) {
   return {
     restrict: 'E',
     scope: {
-      totalItems: '=count',
-      currentPage: '='
+      totalItems: '=',
+//      currentPage: '='
     },
     templateUrl: './partials/pagination.html',
 //    controller: 'PaginationController',
     replace: true,
     link: function (scope, element, attrs) {
 
+//      scope.$watch('totalItems', function (newValue, oldValue) {
+//        console.log(newValue)
+//      });
+      
+      
       var makePage = function(number, text, isActive, isDisabled) {
         return {
           number: number,
@@ -84,4 +89,4 @@ bountyMongo.directive('pagination', function () {
       };
     }
   };
-});
+}]);

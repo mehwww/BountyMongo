@@ -5,12 +5,15 @@ bountyMongo.controller('SidebarCtrl', [
   'server',
 
   function ($scope, bucket, server) {
-    $scope.serverList = bucket.config.serverList;
+    $scope.serverList = bucket.serverList;
     $scope.server = $scope.serverList[0];
 
-    $scope.$watch('server', function () {
-      server($scope.server).query().then(function (response) {
+    $scope.$watch('server', function (newVal) {
+      server(newVal).query().then(function (response) {
         $scope.databaseList = response;
+        bucket.queryOptions('server',newVal);
+        bucket.queryOptions('database','');
+        bucket.queryOptions('collection','');
       });
     });
   }])

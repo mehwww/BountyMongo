@@ -2,7 +2,8 @@ describe('database directive', function () {
   var $scope, element, lis;
   beforeEach(module('bountyMongo'));
   beforeEach(inject(function ($compile, $rootScope, $templateCache) {
-    $templateCache.put('./partials/database.html', window.__html__['app/partials/database.html']);
+    $templateCache.put('./partials/sidebarDatabase.html', window.__html__['app/partials/sidebarDatabase.html']);
+    $templateCache.put('./partials/sidebarCollection.html', window.__html__['app/partials/sidebarCollection.html']);
     $scope = $rootScope;
     $scope.databaseList = [
       {
@@ -26,19 +27,14 @@ describe('database directive', function () {
         empty: true
       }
     ];
-    element = $compile('<database database-list="databaseList"></database>')($scope);
+    element = $compile('<ul><li sidebar-database ng-repeat="database in databaseList"></li></ul>')($scope);
     $scope.$digest();
     lis = function () {
       return element.find('li');
     };
   }));
 
-  it('has a "database" css class', function () {
-    expect(element.hasClass('database-list')).toBe(true);
-  });
-
   it('contains one ul and databases num li elements', function () {
-    expect(element.prop('tagName').toLowerCase() === 'ul').toBe(true);
     expect(lis().length).toBe(4);
   });
 
@@ -53,6 +49,8 @@ describe('database directive', function () {
     $scope.$digest();
     expect(element.find('li').length).toBe(5)
   })
+
+
 
 });
 

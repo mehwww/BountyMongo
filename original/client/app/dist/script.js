@@ -28,12 +28,15 @@ bountyMongo.controller('SidebarCtrl', [
   'server',
 
   function ($scope, bucket, server) {
-    $scope.serverList = bucket.config.serverList;
+    $scope.serverList = bucket.serverList;
     $scope.server = $scope.serverList[0];
 
-    $scope.$watch('server', function () {
-      server($scope.server).query().then(function (response) {
+    $scope.$watch('server', function (newVal) {
+      server(newVal).query().then(function (response) {
         $scope.databaseList = response;
+        bucket.queryOptions('server',newVal);
+        bucket.queryOptions('database','');
+        bucket.queryOptions('collection','');
       });
     });
   }])
@@ -63,18 +66,23 @@ bountyMongo.controller('SidebarCtrl', [
  }]);
  */
 
-bountyMongo.directive('pagination', function () {
+bountyMongo.directive('pagination', ['bucket',function (bucket) {
   return {
     restrict: 'E',
     scope: {
-      totalItems: '=count',
-      currentPage: '='
+      totalItems: '=',
+//      currentPage: '='
     },
     templateUrl: './partials/pagination.html',
 //    controller: 'PaginationController',
     replace: true,
     link: function (scope, element, attrs) {
 
+//      scope.$watch('totalItems', function (newValue, oldValue) {
+//        console.log(newValue)
+//      });
+      
+      
       var makePage = function(number, text, isActive, isDisabled) {
         return {
           number: number,
@@ -123,13 +131,20 @@ bountyMongo.directive('pagination', function () {
       };
     }
   };
-});
+}]);
 bountyMongo.directive('sidebarCollection', ['collection', 'bucket', function (collection, bucket) {
   return {
     restrict: 'A',
+    require:'^ngModel',
     templateUrl: './partials/sidebarCollection.html',
-    link: function (scope, element, attrs) {
+    link: function (scope, element, attrs,ctrl) {
       scope.selectCollection = function () {
+
+        console.log(ctrl.$viewValue)
+
+        bucket.queryOptions('server',scope.server);
+        bucket.queryOptions('database',scope.database);
+        bucket.queryOptions('collection',scope.collection);
         //scope.server and scope.database are prototypically inheritance from parent
         collection(scope.server, scope.database, scope.collection).query().then(function (response) {
           bucket.records = response;
@@ -140,15 +155,20 @@ bountyMongo.directive('sidebarCollection', ['collection', 'bucket', function (co
   }
 
 }])
-bountyMongo.directive('sidebarDatabase', ['database','collection', function (database,collection) {
+bountyMongo.directive('sidebarDatabase', ['database', 'bucket', function (database, bucket) {
   return {
     restrict: 'A',
     templateUrl: './partials/sidebarDatabase.html',
     link: function (scope, element, attrs) {
-      scope.toggleDatabase = function(){
+      scope.toggleDatabase = function () {
         scope.isOpen = !scope.isOpen;
-        //scope.selectedServer is prototypically inheritance from parent
-        database(scope.server,scope.database).query().then(function (response) {
+        if (scope.isOpen) {
+          bucket.queryOptions('server', scope.server);
+          bucket.queryOptions('database', scope.database);
+          bucket.queryOptions('collection','');
+        }
+        //scope.server is prototypically inheritance from parent
+        database(scope.server, scope.database).query().then(function (response) {
           scope.collectionList = response;
         })
       }
@@ -156,23 +176,33 @@ bountyMongo.directive('sidebarDatabase', ['database','collection', function (dat
   }
 
 }])
-bountyMongo.factory('bucket', [function () {
+bountyMongo.factory('bucket', ['$parse', function ($parse) {
   //app server url
   var serverURL = 'http://localhost:3000/';
 
-  var config = {};
-  config.serverList = [
+  var config = {
+    itemsPerPage:10
+  };
+  var serverList = [
     {'host': 'localhost', 'port': '27017'},
     {'host': '127.0.0.1', 'port': '27017'},
     {'host': '192.168.1.100', 'port': '27017'}
   ];
+
+  var queryOptions = {};
 
   var records = {};
 
 
   return {
     serverURL: serverURL,
+    serverList:serverList,
     config: config,
+    queryOptions: function (key, value) {
+      if (key === undefined) return queryOptions;
+      if (value === undefined) return queryOptions[key];
+      queryOptions[key] = value;
+    },
     records: records
   };
 }])

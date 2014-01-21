@@ -1,5 +1,7 @@
 <a ng-click="toggleDatabase()">{{database.name}}</a>
 <ul ng-if="isOpen" ng-model="collectionList">
-    <li sidebar-collection ng-repeat="collection in collectionList">
+    <li ng-repeat="collection in collectionList">
+        <!--<a ng-click="log(collection.name)">{{collection.name}}</a>-->
+        <a ng-click="selectCollection(collection)">{{collection.name}}</a>
     </li>
 </ul>

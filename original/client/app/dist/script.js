@@ -132,30 +132,7 @@ bountyMongo.directive('pagination', ['bucket',function (bucket) {
     }
   };
 }]);
-bountyMongo.directive('sidebarCollection', ['collection', 'bucket', function (collection, bucket) {
-  return {
-    restrict: 'A',
-    require:'^ngModel',
-    templateUrl: './partials/sidebarCollection.html',
-    link: function (scope, element, attrs,ctrl) {
-      scope.selectCollection = function () {
-
-        console.log(ctrl.$viewValue)
-
-        bucket.queryOptions('server',scope.server);
-        bucket.queryOptions('database',scope.database);
-        bucket.queryOptions('collection',scope.collection);
-        //scope.server and scope.database are prototypically inheritance from parent
-        collection(scope.server, scope.database, scope.collection).query().then(function (response) {
-          bucket.records = response;
-        })
-      }
-
-    }
-  }
-
-}])
-bountyMongo.directive('sidebarDatabase', ['database', 'bucket', function (database, bucket) {
+bountyMongo.directive('sidebarDatabase', ['database', 'collection','bucket', function (database, collection,bucket) {
   return {
     restrict: 'A',
     templateUrl: './partials/sidebarDatabase.html',
@@ -170,6 +147,17 @@ bountyMongo.directive('sidebarDatabase', ['database', 'bucket', function (databa
         //scope.server is prototypically inheritance from parent
         database(scope.server, scope.database).query().then(function (response) {
           scope.collectionList = response;
+        })
+      }
+      scope.selectCollection = function (coll) {
+
+        console.log(coll)
+
+        bucket.queryOptions('server',scope.server);
+        bucket.queryOptions('database', scope.database);
+        bucket.queryOptions('collection', coll);
+        collection(scope.server, scope.database, coll).query().then(function (response) {
+          bucket.records = response;
         })
       }
     }

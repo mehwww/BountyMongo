@@ -8,17 +8,29 @@ bountyMongo.controller('RecordsCtrl', [
 
   '$scope',
   'bucket',
+  'collection',
 
-  function ($scope, bucket) {
+  function ($scope, bucket,collection) {
     $scope.records = bucket.records;
+
+    $scope.$watch('page', function (newValue, oldValue) {
+      bucket.queryOptions('p',$scope.page);
+      var server = bucket.queryOptions('server');
+      var database = bucket.queryOptions('database');
+      var coll = bucket.queryOptions('collection');
+      if(!coll)return;
+      collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
+        bucket.records = response;
+      })
+      console.log(newValue)
+    });
+
     $scope.$watch(
       function () {
         return bucket.records
       },
       function (newVal) {
           $scope.records = newVal;
-//          $scope.currentPage = bucket.config.queryOptions.p;
-//          $scope.numPages = parseInt($scope.records.count/bucket.config.queryOptions.l,10)+1;
       })
   }])
 bountyMongo.controller('SidebarCtrl', [
@@ -40,50 +52,40 @@ bountyMongo.controller('SidebarCtrl', [
       });
     });
   }])
-/*
- bountyMongo.controller('PaginationController', [
- '$scope',
- '$attrs',
- function ($scope, $attrs) {
- var self = this;
-
- this.noPrevious = function () {
- return self.page === 1;
- };
-
- this.noNext = function () {
- return self.page === $scope.totalPages;
- }
-
- this.isActive = function (page) {
- return self.page === page;
- }
-
- this.calculateTotalPages = function () {
- var totalPages = self.itemsPerPage < 1 ? 1 : Math.ceil($scope.totalItems / this.itemsPerPage);
- return Math.max(totalPages || 0, 1);
- };
- }]);
- */
-
-bountyMongo.directive('pagination', ['bucket',function (bucket) {
+bountyMongo.directive('pagination', ['bucket', function (bucket) {
   return {
     restrict: 'E',
     scope: {
       totalItems: '=',
-//      currentPage: '='
+      currentPage: '='
     },
     templateUrl: './partials/pagination.html',
 //    controller: 'PaginationController',
     replace: true,
     link: function (scope, element, attrs) {
+      var self = this;
 
-//      scope.$watch('totalItems', function (newValue, oldValue) {
+//      scope.$watch('currentPage', function (newValue, oldValue) {
 //        console.log(newValue)
+//        console.log('pages',scope.pages)
 //      });
-      
-      
-      var makePage = function(number, text, isActive, isDisabled) {
+
+      this.noPrevious = function () {
+        return scope.currentPage === 1;
+      };
+      this.noNext = function () {
+        return scope.currentPage === scope.totalPages;
+      };
+      this.isActive = function (page) {
+        return scope.currentPage === page;
+      };
+      this.calculateTotalPages = function () {
+        var itemsPerPage = bucket.paginationConfig.itemsPerPage;
+        var totalPages = itemsPerPage < 1 ? 1 : Math.ceil(scope.totalItems / itemsPerPage);
+        return Math.max(totalPages || 0, 1);
+      };
+
+      var makePage = function (number, text, isActive, isDisabled) {
         return {
           number: number,
           text: text,
@@ -92,43 +94,77 @@ bountyMongo.directive('pagination', ['bucket',function (bucket) {
         };
       }
 
+      var getPages = function (currentPage, totalPages) {
+        if(totalPages===1)return;
+        var pages = [];
+        var maxsize = bucket.paginationConfig.maxsize;
+        var half = Math.ceil(maxsize / 2)
+        var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1;
+        var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;//21
+        var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min;
+        var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max;
 
-      scope.$watch('numPages', function (value) {
-        scope.pages = [];
-        for (var i = 1; i <= value; i++) {
-          scope.pages.push(i);
+        for (var i = start; i <= end; i++) {
+          var page = makePage(i, i, this.isActive(i), false);
+          pages.push(page);
         }
-        if (scope.currentPage > value) {
-          scope.selectPage(value);
+        if(start>3){
+          var page = makePage(0,'...',false,true);
+          pages.unshift(page);
+          page = makePage(1,1,this.isActive(1),false);
+          pages.unshift(page);
         }
+        if(end < totalPages -2){
+          var page = makePage(0,'...',false,true);
+          pages.push(page);
+          page = makePage(totalPages,totalPages,this.isActive(totalPages),false);
+          pages.push(page);
+        }
+        //add 'Previous' and 'Next'
+        pages.unshift(makePage(currentPage-1,'Previous',false,scope.currentPage === 1))
+        pages.push(makePage(currentPage+1,'Next',false,scope.currentPage === scope.totalPages))
+
+        return pages;
+      }
+
+
+//      this.render = function () {
+////        console.log('page',this.page);
+////        console.log('totalPages',scope.totalPages)
+//        scope.currentPage = 1;
+////        console.log('totalPages',scope.totalPages)
+//        scope.pages = getPages(scope.currentPage, scope.totalPages);
+//      };
+
+      scope.selectPage = function(page){
+        if(!self.isActive(page) && page>0 && page<= scope.totalPages){
+          scope.currentPage = page;
+          scope.pages = getPages(scope.currentPage, scope.totalPages);
+        }
+      }
+
+      scope.$watch('totalItems', function () {
+        scope.currentPage = 1;
+        scope.totalPages = self.calculateTotalPages();
+        scope.pages = getPages(scope.currentPage, scope.totalPages);
       });
 
-      scope.noPrevious = function () {
-        return scope.currentPage === 1;
-      };
-      scope.noNext = function () {
-        return scope.currentPage === scope.numPages;
-      };
-      scope.isActive = function (page) {
-        return scope.currentPage === page;
-      };
-
-      scope.selectPage = function (page) {
-        if (!scope.isActive(page)) {
-          scope.currentPage = page;
-        }
-      };
-
-      scope.selectPrevious = function () {
-        if (!scope.noPrevious()) {
-          scope.selectPage(scope.currentPage - 1);
-        }
-      };
-      scope.selectNext = function () {
-        if (!scope.noNext()) {
-          scope.selectPage(scope.currentPage + 1);
-        }
-      };
+//      scope.selectPage = function (page) {
+//        if (!scope.isActive(page)) {
+//          scope.currentPage = page;
+//        }
+//      };
+//
+//      scope.selectPrevious = function () {
+//        if (!scope.noPrevious()) {
+//          scope.selectPage(scope.currentPage - 1);
+//        }
+//      };
+//      scope.selectNext = function () {
+//        if (!scope.noNext()) {
+//          scope.selectPage(scope.currentPage + 1);
+//        }
+//      };
     }
   };
 }]);
@@ -150,13 +186,10 @@ bountyMongo.directive('sidebarDatabase', ['database', 'collection','bucket', fun
         })
       }
       scope.selectCollection = function (coll) {
-
-        console.log(coll)
-
         bucket.queryOptions('server',scope.server);
         bucket.queryOptions('database', scope.database);
         bucket.queryOptions('collection', coll);
-        collection(scope.server, scope.database, coll).query().then(function (response) {
+        collection(scope.server, scope.database, coll,bucket.queryOptions()).query().then(function (response) {
           bucket.records = response;
         })
       }
@@ -168,16 +201,21 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   //app server url
   var serverURL = 'http://localhost:3000/';
 
-  var config = {
-    itemsPerPage:10
+  var paginationConfig = {
+    itemsPerPage:50,
+    maxsize:9
   };
+
   var serverList = [
     {'host': 'localhost', 'port': '27017'},
     {'host': '127.0.0.1', 'port': '27017'},
     {'host': '192.168.1.100', 'port': '27017'}
   ];
 
-  var queryOptions = {};
+  var queryOptions = {
+    p:1,
+    l:50
+  };
 
   var records = {};
 
@@ -185,7 +223,7 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   return {
     serverURL: serverURL,
     serverList:serverList,
-    config: config,
+    paginationConfig: paginationConfig,
     queryOptions: function (key, value) {
       if (key === undefined) return queryOptions;
       if (value === undefined) return queryOptions[key];

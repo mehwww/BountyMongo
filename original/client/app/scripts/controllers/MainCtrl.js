@@ -1,4 +1,4 @@
-bountyMongo.controller('RecordsCtrl', [
+bountyMongo.controller('MainCtrl', [
 
   '$scope',
   'bucket',

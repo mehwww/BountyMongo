@@ -1,0 +1,3 @@
+bountyMongo.controller('QueryCtrl',[function(){
+
+}])

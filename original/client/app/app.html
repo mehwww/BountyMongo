@@ -27,11 +27,10 @@
 </div>
 
 <div class="container">
-    <div class="col-lg-6" ng-controller="SidebarCtrl">
+    <div class="col-lg-3" ng-controller="SidebarCtrl">
         <div class="well-sm">
             <label>Server List:</label>
             <select ng-model="server" ng-options="server.host for server in serverList"></select>
-            <p>Chose server: {{server}}</p>
         </div>
         <div class="well-sm">
             <ul class="sidebar-database-list">
@@ -40,7 +39,7 @@
         </div>
     </div>
 
-    <div class="col-lg-6" ng-controller="RecordsCtrl">
+    <div class="col-lg-9" ng-controller="MainCtrl">
         <pagination total-items="records.count" current-page="page"></pagination>
         <records records="records.find"></records>
         <!--<pre>{{records|json}}</pre>-->

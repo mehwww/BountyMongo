@@ -5957,7 +5957,8 @@ td.visible-print {
 .nav,
 .pagination,
 .carousel,
-.panel-title a {
+.panel-title,
+.sidebar-database-list a {
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;

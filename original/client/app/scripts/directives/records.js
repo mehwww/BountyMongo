@@ -4,6 +4,9 @@ bountyMongo.directive('records', ['bucket', function (bucket) {
     scope:{
       records:'='
     },
-    templateUrl: './partials/records.html'
+    templateUrl: './partials/records.html',
+    link: function (scope, element, attrs) {
+
+    }
   }
 }]);

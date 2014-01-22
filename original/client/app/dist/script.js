@@ -4,7 +4,7 @@ var bountyMongo = angular.module('bountyMongo', []);
 
 
 
-bountyMongo.controller('RecordsCtrl', [
+bountyMongo.controller('MainCtrl', [
 
   '$scope',
   'bucket',
@@ -33,6 +33,9 @@ bountyMongo.controller('RecordsCtrl', [
           $scope.records = newVal;
       })
   }])
+bountyMongo.controller('QueryCtrl',[function(){
+
+}])
 bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
@@ -139,7 +142,10 @@ bountyMongo.directive('records', ['bucket', function (bucket) {
     scope:{
       records:'='
     },
-    templateUrl: './partials/records.html'
+    templateUrl: './partials/records.html',
+    link: function (scope, element, attrs) {
+
+    }
   }
 }]);
 bountyMongo.directive('sidebarDatabase', ['database', 'collection','bucket', function (database, collection,bucket) {

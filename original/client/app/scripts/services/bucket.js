@@ -3,7 +3,7 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   var serverURL = 'http://localhost:3000/';
 
   var paginationConfig = {
-    itemsPerPage:50,
+//    itemsPerPage:50,
     maxsize:9
   };
 

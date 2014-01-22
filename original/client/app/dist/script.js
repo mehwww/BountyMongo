@@ -14,9 +14,21 @@ bountyMongo.controller('MainCtrl', [
 
 
   }])
-bountyMongo.controller('QueryCtrl',['$scope',function($scope){
+bountyMongo.controller('QueryCtrl',['$scope','bucket','collection',function($scope,bucket,collection){
   $scope.pageSizeOptions = [5,10,20,50,100,200];
   $scope.pageSize = $scope.pageSizeOptions[0];
+
+  $scope.$watch('pageSize',function(newVal){
+    bucket.queryOptions('l',newVal);
+    var server = bucket.queryOptions('server');
+    var database = bucket.queryOptions('database');
+    var coll = bucket.queryOptions('collection');
+    if(!coll)return;
+    collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
+      bucket.records = response;
+    })
+  })
+
 }])
 bountyMongo.controller('SidebarCtrl', [
 
@@ -48,11 +60,13 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
 //    controller: 'PaginationController',
     replace: true,
     link: function (scope, element, attrs) {
+
       var isActive = function (page) {
         return scope.currentPage === page;
       };
+
       var calculateTotalPages = function () {
-        var itemsPerPage = bucket.paginationConfig.itemsPerPage;
+        var itemsPerPage = bucket.queryOptions('l');
         var totalPages = itemsPerPage < 1 ? 1 : Math.ceil(scope.totalItems / itemsPerPage);
         return Math.max(totalPages || 0, 1);
       };
@@ -110,7 +124,22 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
         scope.pages = getPages(scope.currentPage, scope.totalPages);
       });
 
+//      scope.$on('recordsRefresh', function (event) {
+//        scope.currentPage = 1;
+//        scope.totalPages = calculateTotalPages();
+//        scope.pages = getPages(scope.currentPage, scope.totalPages);
+//      });
+
       scope.$watch('totalItems', function () {
+        scope.currentPage = 1;
+        scope.totalPages = calculateTotalPages();
+        scope.pages = getPages(scope.currentPage, scope.totalPages);
+      });
+      
+      scope.$watch(function(){
+        return bucket.queryOptions('l')
+      }, function (newVal) {
+        console.log(newVal)
         scope.currentPage = 1;
         scope.totalPages = calculateTotalPages();
         scope.pages = getPages(scope.currentPage, scope.totalPages);
@@ -126,7 +155,13 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
     },
     templateUrl: './partials/records.html',
     link: function (scope, element, attrs) {
-//      scope.records = bucket.records;
+      scope.$watch(
+        function () {
+          return bucket.records
+        },
+        function (newVal) {
+          scope.records = newVal;
+        });
 
       scope.$watch('page', function (newValue, oldValue) {
         bucket.queryOptions('p',scope.page);
@@ -137,22 +172,12 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
           bucket.records = response;
         })
-        console.log(newValue)
+//        console.log(newValue)
       });
-
-      scope.$watch(
-        function () {
-          return bucket.records
-        },
-        function (newVal) {
-          scope.records = newVal;
-
-        })
-
     }
   }
 }]);
-bountyMongo.directive('sidebarDatabase', ['database', 'collection','bucket', function (database, collection,bucket) {
+bountyMongo.directive('sidebarDatabase', ['$rootScope','database', 'collection','bucket', function ($rootScope,database, collection,bucket) {
   return {
     restrict: 'A',
     templateUrl: './partials/sidebarDatabase.html',
@@ -186,7 +211,7 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   var serverURL = 'http://localhost:3000/';
 
   var paginationConfig = {
-    itemsPerPage:50,
+//    itemsPerPage:50,
     maxsize:9
   };
 

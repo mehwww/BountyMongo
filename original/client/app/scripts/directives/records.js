@@ -6,7 +6,13 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
     },
     templateUrl: './partials/records.html',
     link: function (scope, element, attrs) {
-//      scope.records = bucket.records;
+      scope.$watch(
+        function () {
+          return bucket.records
+        },
+        function (newVal) {
+          scope.records = newVal;
+        });
 
       scope.$watch('page', function (newValue, oldValue) {
         bucket.queryOptions('p',scope.page);
@@ -17,18 +23,8 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
           bucket.records = response;
         })
-        console.log(newValue)
+//        console.log(newValue)
       });
-
-      scope.$watch(
-        function () {
-          return bucket.records
-        },
-        function (newVal) {
-          scope.records = newVal;
-
-        })
-
     }
   }
 }]);

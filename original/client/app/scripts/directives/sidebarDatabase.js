@@ -1,4 +1,4 @@
-bountyMongo.directive('sidebarDatabase', ['database', 'collection','bucket', function (database, collection,bucket) {
+bountyMongo.directive('sidebarDatabase', ['$rootScope','database', 'collection','bucket', function ($rootScope,database, collection,bucket) {
   return {
     restrict: 'A',
     templateUrl: './partials/sidebarDatabase.html',

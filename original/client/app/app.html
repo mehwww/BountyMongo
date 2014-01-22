@@ -36,13 +36,13 @@
             </ul>
         </div>
     </div>
-    <div class="col-lg-9" ng-controller="MainCtrl">
+    <div class="col-lg-9" >
         <div class="well" ng-controller="QueryCtrl">
             <label>Page Size:</label>
             <select ng-model="pageSize" ng-options="pageSize for pageSize in pageSizeOptions"></select>
             <button ng-click="query()" class="btn btn-default">Query</button>
         </div>
-        <div class="well">
+        <div class="well" ng-controller="MainCtrl">
             <records records="records.find"></records>
         </div>
     </div>

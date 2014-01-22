@@ -9,23 +9,10 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
 //    controller: 'PaginationController',
     replace: true,
     link: function (scope, element, attrs) {
-      var self = this;
-
-//      scope.$watch('currentPage', function (newValue, oldValue) {
-//        console.log(newValue)
-//        console.log('pages',scope.pages)
-//      });
-
-      this.noPrevious = function () {
-        return scope.currentPage === 1;
-      };
-      this.noNext = function () {
-        return scope.currentPage === scope.totalPages;
-      };
-      this.isActive = function (page) {
+      var isActive = function (page) {
         return scope.currentPage === page;
       };
-      this.calculateTotalPages = function () {
+      var calculateTotalPages = function () {
         var itemsPerPage = bucket.paginationConfig.itemsPerPage;
         var totalPages = itemsPerPage < 1 ? 1 : Math.ceil(scope.totalItems / itemsPerPage);
         return Math.max(totalPages || 0, 1);
@@ -51,19 +38,19 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
         var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max;
 
         for (var i = start; i <= end; i++) {
-          var page = makePage(i, i, this.isActive(i), false);
+          var page = makePage(i, i, isActive(i), false);
           pages.push(page);
         }
         if(start>3){
           var page = makePage(0,'...',false,true);
           pages.unshift(page);
-          page = makePage(1,1,this.isActive(1),false);
+          page = makePage(1,1,isActive(1),false);
           pages.unshift(page);
         }
         if(end < totalPages -2){
           var page = makePage(0,'...',false,true);
           pages.push(page);
-          page = makePage(totalPages,totalPages,this.isActive(totalPages),false);
+          page = makePage(totalPages,totalPages,isActive(totalPages),false);
           pages.push(page);
         }
         //add 'Previous' and 'Next'
@@ -73,44 +60,22 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
         return pages;
       }
 
-
-//      this.render = function () {
-////        console.log('page',this.page);
-////        console.log('totalPages',scope.totalPages)
-//        scope.currentPage = 1;
-////        console.log('totalPages',scope.totalPages)
-//        scope.pages = getPages(scope.currentPage, scope.totalPages);
-//      };
-
       scope.selectPage = function(page){
-        if(!self.isActive(page) && page>0 && page<= scope.totalPages){
+        if(!isActive(page) && page>0 && page<= scope.totalPages){
           scope.currentPage = page;
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         }
       }
 
-      scope.$watch('totalItems', function () {
-        scope.currentPage = 1;
-        scope.totalPages = self.calculateTotalPages();
+      scope.$watch('currentPage', function () {
         scope.pages = getPages(scope.currentPage, scope.totalPages);
       });
 
-//      scope.selectPage = function (page) {
-//        if (!scope.isActive(page)) {
-//          scope.currentPage = page;
-//        }
-//      };
-//
-//      scope.selectPrevious = function () {
-//        if (!scope.noPrevious()) {
-//          scope.selectPage(scope.currentPage - 1);
-//        }
-//      };
-//      scope.selectNext = function () {
-//        if (!scope.noNext()) {
-//          scope.selectPage(scope.currentPage + 1);
-//        }
-//      };
+      scope.$watch('totalItems', function () {
+        scope.currentPage = 1;
+        scope.totalPages = calculateTotalPages();
+        scope.pages = getPages(scope.currentPage, scope.totalPages);
+      });
     }
   };
 }]);

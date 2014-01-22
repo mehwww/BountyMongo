@@ -42,7 +42,8 @@
 
     <div class="col-lg-6" ng-controller="RecordsCtrl">
         <pagination total-items="records.count" current-page="page"></pagination>
-        <pre>{{records|json}}</pre>
+        <records records="records.find"></records>
+        <!--<pre>{{records|json}}</pre>-->
     </div>
 </div>
 

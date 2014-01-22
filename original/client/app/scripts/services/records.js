@@ -1,3 +1,0 @@
-bountyMongo.factory('records', [function () {
-
-}])

@@ -6,7 +6,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
     },
     templateUrl: './partials/records.html',
     link: function (scope, element, attrs) {
-      scope.records = bucket.records;
+//      scope.records = bucket.records;
 
       scope.$watch('page', function (newValue, oldValue) {
         bucket.queryOptions('p',scope.page);
@@ -26,6 +26,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         },
         function (newVal) {
           scope.records = newVal;
+
         })
 
     }

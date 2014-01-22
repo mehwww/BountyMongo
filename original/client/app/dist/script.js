@@ -14,8 +14,9 @@ bountyMongo.controller('MainCtrl', [
 
 
   }])
-bountyMongo.controller('QueryCtrl',[function(){
-
+bountyMongo.controller('QueryCtrl',['$scope',function($scope){
+  $scope.pageSizeOptions = [5,10,20,50,100,200];
+  $scope.pageSize = $scope.pageSizeOptions[0];
 }])
 bountyMongo.controller('SidebarCtrl', [
 
@@ -125,7 +126,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
     },
     templateUrl: './partials/records.html',
     link: function (scope, element, attrs) {
-      scope.records = bucket.records;
+//      scope.records = bucket.records;
 
       scope.$watch('page', function (newValue, oldValue) {
         bucket.queryOptions('p',scope.page);
@@ -145,6 +146,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         },
         function (newVal) {
           scope.records = newVal;
+
         })
 
     }
@@ -269,9 +271,6 @@ bountyMongo.factory('database', [
     }
   }])
 
-bountyMongo.factory('records', [function () {
-
-}])
 bountyMongo.factory('server', [
 
   '$http',

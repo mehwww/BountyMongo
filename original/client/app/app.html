@@ -28,20 +28,23 @@
 
 <div class="container">
     <div class="col-lg-3" ng-controller="SidebarCtrl">
-        <div class="well-sm">
+        <div class="well">
             <label>Server List:</label>
             <select ng-model="server" ng-options="server.host for server in serverList"></select>
-        </div>
-        <div class="well-sm">
             <ul class="sidebar-database-list">
                 <li sidebar-database ng-repeat="database in databaseList"></li>
             </ul>
         </div>
     </div>
-
     <div class="col-lg-9" ng-controller="MainCtrl">
-        <records records="records.find"></records>
-        <!--<pre>{{records|json}}</pre>-->
+        <div class="well" ng-controller="QueryCtrl">
+            <label>Page Size:</label>
+            <select ng-model="pageSize" ng-options="pageSize for pageSize in pageSizeOptions"></select>
+            <button ng-click="query()" class="btn btn-default">Query</button>
+        </div>
+        <div class="well">
+            <records records="records.find"></records>
+        </div>
     </div>
 </div>
 

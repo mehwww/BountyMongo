@@ -1,12 +1,9 @@
 bountyMongo.controller('MainCtrl', [
 
   '$scope',
-  'bucket',
-  'collection',
 
-  function ($scope, bucket,collection) {
+  function ($scope) {
     $scope.$on('recordsRefresh',function(event,response){
-//      console.log(response)
       $scope.records = response;
     })
   }])

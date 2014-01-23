@@ -3,7 +3,6 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   var serverURL = 'http://localhost:3000/';
 
   var paginationConfig = {
-//    itemsPerPage:50,
     maxsize:9
   };
 
@@ -13,23 +12,9 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
     {'host': '192.168.1.100', 'port': '27017'}
   ];
 
-  var queryOptions = {
-    p:1,
-    l:50
-  };
-
-  var records = {};
-
-
   return {
     serverURL: serverURL,
     serverList:serverList,
     paginationConfig: paginationConfig,
-    queryOptions: function (key, value) {
-      if (key === undefined) return queryOptions;
-      if (value === undefined) return queryOptions[key];
-      queryOptions[key] = value;
-    },
-    records: records
   };
 }])

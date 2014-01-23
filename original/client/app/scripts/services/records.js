@@ -29,19 +29,11 @@ bountyMongo.factory('records', [
       if (value === undefined) return queryOptions[key];
       queryOptions[key] = value;
     }
-    recordsService.initQueryOptions = function () {
-      queryOptions = {}
-    }
-
 
     recordsService.recordsRefresh = function () {
-//      console.log('server',server)
-//      console.log('database',database)
-//      console.log('collection',coll)
-      if (!server)return;
-      if (!database)return;
-      if (!coll)return;
-//      console.log('aaa')
+      if (!server)return console.log('need set server');
+      if (!database)return console.log('need set database');
+      if (!coll)return console.log('need set collection');
       collection(server, database, coll, queryOptions).query().then(function (response) {
         $rootScope.$broadcast('recordsRefresh', response)
       })

@@ -17,9 +17,8 @@ bountyMongo.controller('SidebarCtrl', [
 
       server(newVal).query().then(function (response) {
         $scope.databaseList = response.databases;
-//        bucket.queryOptions('server',newVal);
-//        bucket.queryOptions('database','');
-//        bucket.queryOptions('collection','');
+      },function(response){
+        console.log('failed request!!!',response)
       });
     });
   }])

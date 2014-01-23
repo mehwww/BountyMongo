@@ -5,7 +5,8 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, bucket,collection) {
-    $scope.totalItems = 64;
-    $scope.currentPage = 4;
-
+    $scope.$on('recordsRefresh',function(event,response){
+//      console.log(response)
+      $scope.records = response;
+    })
   }])

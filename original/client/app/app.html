@@ -44,7 +44,9 @@
             <button ng-click="query()" class="btn btn-default">Query</button>
         </div>
         <div class="well" ng-controller="MainCtrl">
-            <records records="records.find"></records>
+            <!--<pagination current-page="page"></pagination>-->
+            <pagination total-items="records.count" current-page="page"></pagination>
+            <records records="records"></records>
         </div>
     </div>
 </div>

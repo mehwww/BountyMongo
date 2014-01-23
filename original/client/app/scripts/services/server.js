@@ -18,7 +18,7 @@ bountyMongo.factory('server', [
       Resource.query = function () {
         return $http.get(url).then(function (response) {
           //返回该服务器上的所有databases
-          return response.data.data.databases;
+          return response.data.data;
         });
       }
       return Resource;

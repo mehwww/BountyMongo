@@ -16,7 +16,8 @@ bountyMongo.factory('database', [
             value.name = value.name.substr(value.name.indexOf('.') + 1);
             this.push(value);
           }, collections)
-          return collections;
+          response.data.data.collectionNames = collections;
+          return response.data.data;
         });
       }
       return Resource;

@@ -52,7 +52,7 @@ bountyMongo.controller('SidebarCtrl', [
       });
     });
   }])
-bountyMongo.directive('pagination', [
+bountyMongo.directive('bmPagination', [
 
   'bucket',
   'records',
@@ -63,7 +63,7 @@ bountyMongo.directive('pagination', [
       scope: {
         currentPage: '='
       },
-      templateUrl: './partials/pagination.html',
+      templateUrl: './partials/bmPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
 
@@ -142,26 +142,26 @@ bountyMongo.directive('pagination', [
       }
     };
   }]);
-bountyMongo.directive('records', ['bucket', 'collection', function (bucket, collection) {
+bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, collection) {
   return{
     restrict: 'E',
     scope: {
       records: '='
     },
-    templateUrl: './partials/records.html',
+    templateUrl: './partials/bmRecords.html',
     link: function (scope, element, attrs) {
 
     }
   }
 }]);
-bountyMongo.directive('sidebarDatabase', [
+bountyMongo.directive('bmSidebar', [
   'database',
   'collection',
   'records',
   function (database, collection, records) {
     return {
       restrict: 'A',
-      templateUrl: './partials/sidebarDatabase.html',
+      templateUrl: './partials/bmSidebar.html',
       link: function (scope, element, attrs) {
         scope.toggleDatabase = function () {
           scope.isOpen = !scope.isOpen;

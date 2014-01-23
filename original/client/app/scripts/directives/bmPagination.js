@@ -1,4 +1,4 @@
-bountyMongo.directive('pagination', [
+bountyMongo.directive('bmPagination', [
 
   'bucket',
   'records',
@@ -9,7 +9,7 @@ bountyMongo.directive('pagination', [
       scope: {
         currentPage: '='
       },
-      templateUrl: './partials/pagination.html',
+      templateUrl: './partials/bmPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
 

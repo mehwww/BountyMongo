@@ -33,7 +33,7 @@
             <label>Server List:</label>
             <select ng-model="server" ng-options="server.host for server in serverList"></select>
             <ul class="sidebar-database-list">
-                <li sidebar-database ng-repeat="database in databaseList"></li>
+                <li bm-sidebar ng-repeat="database in databaseList"></li>
             </ul>
         </div>
     </div>
@@ -44,8 +44,8 @@
             <button ng-click="query()" class="btn btn-default">Query</button>
         </div>
         <div class="well" ng-controller="MainCtrl">
-            <pagination current-page="page"></pagination>
-            <records records="records"></records>
+            <bm-pagination current-page="page"></bm-pagination>
+            <bm-records records="records"></bm-records>
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, bucket,collection) {
-
+    $scope.totalItems = 64;
+    $scope.currentPage = 4;
 
   }])

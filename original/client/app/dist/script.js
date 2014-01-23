@@ -11,7 +11,8 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, bucket,collection) {
-
+    $scope.totalItems = 64;
+    $scope.currentPage = 4;
 
   }])
 bountyMongo.controller('QueryCtrl',['$scope','bucket','collection',function($scope,bucket,collection){
@@ -124,22 +125,16 @@ bountyMongo.directive('pagination', ['bucket', function (bucket) {
         scope.pages = getPages(scope.currentPage, scope.totalPages);
       });
 
-//      scope.$on('recordsRefresh', function (event) {
-//        scope.currentPage = 1;
-//        scope.totalPages = calculateTotalPages();
-//        scope.pages = getPages(scope.currentPage, scope.totalPages);
-//      });
-
+      //so stupid lol XD
+      //but enough for a demo
       scope.$watch('totalItems', function () {
         scope.currentPage = 1;
         scope.totalPages = calculateTotalPages();
         scope.pages = getPages(scope.currentPage, scope.totalPages);
       });
-      
       scope.$watch(function(){
         return bucket.queryOptions('l')
       }, function (newVal) {
-        console.log(newVal)
         scope.currentPage = 1;
         scope.totalPages = calculateTotalPages();
         scope.pages = getPages(scope.currentPage, scope.totalPages);
@@ -160,6 +155,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
           return bucket.records
         },
         function (newVal) {
+          console.log('records watcher')
           scope.records = newVal;
         });
 
@@ -172,7 +168,6 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
           bucket.records = response;
         })
-//        console.log(newValue)
       });
     }
   }
@@ -296,6 +291,32 @@ bountyMongo.factory('database', [
     }
   }])
 
+bountyMongo.factory('records', [
+  '$rootScope',
+  'server',
+  'database',
+  'collection',
+  function ($rootScope, server, database, collection) {
+    var recordsService = {};
+
+    var queryOptions = {};
+
+    recordsService.queryOptions = function (key, value) {
+      if (key === undefined) return queryOptions;
+      if (value === undefined) return queryOptions[key];
+      queryOptions[key] = value;
+    }
+
+    recordsService.recordsRefresh = function(){
+      var server = queryOptions.server;
+      var database = queryOptions.database;
+      var coll = queryOptions.collection;
+      if(!coll)return;
+      collection(server,database,coll,queryOptions).query().then(function (response) {
+        $rootScope.$broadcast('recordsRefresh',response)
+      })
+    }
+  }])
 bountyMongo.factory('server', [
 
   '$http',

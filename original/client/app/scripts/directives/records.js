@@ -11,6 +11,7 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
           return bucket.records
         },
         function (newVal) {
+          console.log('records watcher')
           scope.records = newVal;
         });
 
@@ -23,7 +24,6 @@ bountyMongo.directive('records', ['bucket','collection', function (bucket,collec
         collection(server,database,coll,bucket.queryOptions()).query().then(function (response) {
           bucket.records = response;
         })
-//        console.log(newValue)
       });
     }
   }

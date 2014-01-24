@@ -8,9 +8,13 @@ exports.find = function (req, res) {
   var serverName = req.param('serverName');
 
   var findServer = function (err, client) {
-    if (err) return res.send('Connect to mongo server failed');
+    if (err) {
+      res.statusCode = 404;
+      res.send('Connect to mongo server failed');
+    }
     var admin = client.db('test').admin();
     admin.listDatabases(function (err, dbs) {
+      if (err)res.statusCode = 404;
       res.send(respond(err, dbs));
     });
   };

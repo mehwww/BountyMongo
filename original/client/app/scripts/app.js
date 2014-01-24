@@ -1,5 +1,5 @@
 //"use strict"
 
-var bountyMongo = angular.module('bountyMongo', []);
+var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap']);
 
 

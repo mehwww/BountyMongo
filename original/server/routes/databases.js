@@ -9,7 +9,10 @@ exports.find = function (req, res) {
   var databaseName = req.param('databaseName');
 
   var findDatabase = function(err,client){
-    if (err) return res.send('Connect to mongo server failed');
+    if (err) {
+      res.statusCode = 404;
+      res.send('Connect to mongo server failed');
+    }
     var db = client.db(databaseName);
     async.parallel({
       stats: function (callback) {
@@ -28,7 +31,7 @@ exports.find = function (req, res) {
         })
       }
     }, function (err, result) {
-      res.set('Access-Control-Allow-Origin', '*')
+      if(err)res.statusCode = 404;
       res.send(respond(err, result));
     });
   }

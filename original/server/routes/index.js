@@ -4,7 +4,8 @@
 var util = require('util')
 var dump = require('dump')
 
-var mongoClient = require('../mongodb/client')
+var mongoClient = require('../mongodb/cl' +
+  'ient')
 // var adminDb = require('../mongodb/adminDb')
 
 exports.index = function (req, res) {
@@ -45,8 +46,9 @@ exports.index = function (req, res) {
   // console.dir(respond.E200())
   // console.dir(respond.NotFound())
 
-  res.statusCode = 403;
-  res.render('index', {
-    title: 'Express'
-  });
+  res.statusCode = 400;
+  res.send('aaa');
+//  res.render('index', {
+//    title: 'Express'
+//  });
 };

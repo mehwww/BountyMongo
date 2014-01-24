@@ -40,7 +40,7 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
-//app.get('/', routes.index);
+app.get('/', routes.index);
 //
 //app.get('/test', function(req, res) {
 //	var query = eval('(' + req.query.query + ')')

@@ -3,33 +3,38 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
+  res.set('Access-Control-Allow-Origin', '*')
+
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
   //query parameters
-  if(req.query.q){
+  if (req.query.q) {
     try {
       var query = JSON.parse(req.query.q);
     }
-    catch(e) {
-      res.set('Access-Control-Allow-Origin', '*')
+    catch (e) {
+      res.statusCode = 400;
       res.send(respond('Invaild query string'))
     }
   }
 
   //limit parameters
-  var limit = req.query.l ? req.query.l :20;
+  var limit = req.query.l ? req.query.l : 20;
   //skip parameters
-  var skip = req.query.p ? (req.query.p -1) * limit : 0;
+  var skip = req.query.p ? (req.query.p - 1) * limit : 0;
 
-  var findCollection = function(err,client){
-    if (err) return res.send('Connect to mongo server failed');
+  var findCollection = function (err, client) {
+    if (err) {
+      res.statusCode = 404;
+      res.send('Connect to mongo server failed');
+    }
     var collection = client.db(databaseName).collection(collectionName);
     async.parallel({
-      count:function(callback){
-        collection.count(query,function(err,count){
-          callback(err,count)
+      count: function (callback) {
+        collection.count(query, function (err, count) {
+          callback(err, count)
         })
       },
       find: function (callback) {
@@ -52,12 +57,13 @@ exports.find = function (req, res) {
         })
       }
     }, function (err, result) {
-      res.set('Access-Control-Allow-Origin', '*')
+//      res.set('Access-Control-Allow-Origin', '*')
+      if (err)res.statusCode = 404;
       res.send(respond(err, result));
     })
   }
 
-  mongoClient(serverName,findCollection);
+  mongoClient(serverName, findCollection);
 }
 
 exports.add = function (req, res) {

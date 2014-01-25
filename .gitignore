@@ -3,3 +3,9 @@ components/
 bootstrap/
 .idea/
 dist/
+
+#nw ignore
+webkitbuilds/
+node-webkit.app/
+nwsnapshot
+vendor/

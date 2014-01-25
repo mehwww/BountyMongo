@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World</title>
+</head>
+<body>
+Fuck you!!~
+<script>
+    //live reload
+    var Gaze = require('gaze').Gaze;
+    var gaze = new Gaze(['./**/*', '!./node_modules/**/*']);
+
+    gaze.on('all', function (event, filepath) {
+        if (location)
+            location.reload();
+    });
+</script>
+</body>
+</html>

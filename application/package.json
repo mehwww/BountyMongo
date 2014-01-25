@@ -1,0 +1,11 @@
+{
+  "name": "BountyMongo",
+  "version": "0.0.1",
+  "main": "index.html",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-node-webkit-builder": "~0.1.16",
+    "grunt-contrib-watch": "~0.5.3",
+    "gaze": "~0.4.3"
+  }
+}

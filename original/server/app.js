@@ -32,7 +32,8 @@ app.use(express.methodOverride());
 // app.use(express.cookieParser('your secret here'));
 // app.use(express.session());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client/app/')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 console.log(app.get('env'));
 // development only
@@ -40,7 +41,12 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
+//app.get('/', function(req,res){
+//  res.sendfile('client/app/app.html',{
+//    root:'../'
+//  })
+//});
 //
 //app.get('/test', function(req, res) {
 //	var query = eval('(' + req.query.query + ')')

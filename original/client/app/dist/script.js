@@ -1,9 +1,13 @@
+
+//####  ./app/scripts/app.js
 //"use strict"
 
 var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap']);
 
 
 
+
+//####  ./app/scripts/controllers/MainCtrl.js
 bountyMongo.controller('MainCtrl', [
 
   '$scope',
@@ -13,6 +17,8 @@ bountyMongo.controller('MainCtrl', [
       $scope.records = response;
     })
   }])
+
+//####  ./app/scripts/controllers/QueryCtrl.js
 bountyMongo.controller('QueryCtrl', [
 
   '$scope',
@@ -41,6 +47,8 @@ bountyMongo.controller('QueryCtrl', [
 //      });
     }
   }])
+
+//####  ./app/scripts/controllers/SidebarCtrl.js
 bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
@@ -65,6 +73,8 @@ bountyMongo.controller('SidebarCtrl', [
       });
     });
   }])
+
+//####  ./app/scripts/directives/bmPagination.js
 bountyMongo.directive('bmPagination', [
 
   'bucket',
@@ -155,6 +165,8 @@ bountyMongo.directive('bmPagination', [
       }
     };
   }]);
+
+//####  ./app/scripts/directives/bmRecords.js
 bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, collection) {
   return{
     restrict: 'E',
@@ -167,6 +179,8 @@ bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, co
     }
   }
 }]);
+
+//####  ./app/scripts/directives/bmSidebar.js
 bountyMongo.directive('bmSidebar', [
   'database',
   'collection',
@@ -199,9 +213,11 @@ bountyMongo.directive('bmSidebar', [
     }
 
   }])
+
+//####  ./app/scripts/services/bucket.js
 bountyMongo.factory('bucket', ['$parse', function ($parse) {
   //app server url
-  var serverURL = 'http://localhost:3000/';
+  var serverURL = '/';
 
   var paginationConfig = {
     maxsize:9
@@ -216,9 +232,11 @@ bountyMongo.factory('bucket', ['$parse', function ($parse) {
   return {
     serverURL: serverURL,
     serverList:serverList,
-    paginationConfig: paginationConfig,
+    paginationConfig: paginationConfig
   };
 }])
+
+//####  ./app/scripts/services/collection.js
 bountyMongo.factory('collection', [
 
   '$http',
@@ -249,6 +267,8 @@ bountyMongo.factory('collection', [
       return Resource;
     }
   }])
+
+//####  ./app/scripts/services/database.js
 bountyMongo.factory('database', [
 
   '$http',
@@ -272,6 +292,8 @@ bountyMongo.factory('database', [
     }
   }])
 
+
+//####  ./app/scripts/services/records.js
 bountyMongo.factory('records', [
   '$rootScope',
   'server',
@@ -315,6 +337,8 @@ bountyMongo.factory('records', [
 
     return recordsService;
   }])
+
+//####  ./app/scripts/services/server.js
 bountyMongo.factory('server', [
 
   '$http',

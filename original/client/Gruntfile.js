@@ -13,7 +13,7 @@ module.exports = function (grunt) {
         spawn: false
       },
       development: {
-        files: ['./app/assets/less/*.less', './app/scripts/**/*.js','./app/**/*.html'],
+        files: ['./app/assets/less/*.less', './app/scripts/**/*.js', './app/**/*.html'],
         tasks: ['concat:development', 'less:development'],
         options: {
           livereload: true
@@ -29,6 +29,11 @@ module.exports = function (grunt) {
 //            }
     },
     concat: {
+      options: {
+        process: function (src, filepath) {
+          return '\n' + '//####  ' + filepath + '\n' + src;
+        }
+      },
       development: {
         src: './app/scripts/**/*.js',
         dest: './app/dist/script.js'

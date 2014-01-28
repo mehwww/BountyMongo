@@ -16,6 +16,7 @@ module.exports = function (config) {
     files: [
       'app/vendor/components/angular/angular.js',
       'app/vendor/components/angular-mocks/angular-mocks.js',
+      'app/vendor/components/angular-bootstrap/ui-bootstrap.js',
       // 'app/bower_components/angular-resource/angular-resource.js',
       // 'app/bower_components/angular-route/angular-route.js',
       'app/scripts/**/*.js',

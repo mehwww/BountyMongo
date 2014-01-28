@@ -28,5 +28,4 @@ bountyMongo.directive('bmSidebar', [
         }
       }
     }
-
   }])

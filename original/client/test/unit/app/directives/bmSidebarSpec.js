@@ -2,8 +2,7 @@ describe('database directive', function () {
   var $scope, element, lis;
   beforeEach(module('bountyMongo'));
   beforeEach(inject(function ($compile, $rootScope, $templateCache) {
-    $templateCache.put('./partials/sidebarDatabase.html', window.__html__['app/partials/sidebarDatabase.html']);
-    $templateCache.put('./partials/sidebarCollection.html', window.__html__['app/partials/sidebarCollection.html']);
+    $templateCache.put('./partials/bmSidebar.html', window.__html__['app/partials/bmSidebar.html']);
     $scope = $rootScope;
     $scope.databaseList = [
       {
@@ -27,7 +26,7 @@ describe('database directive', function () {
         empty: true
       }
     ];
-    element = $compile('<ul><li sidebar-database ng-repeat="database in databaseList"></li></ul>')($scope);
+    element = $compile('<ul class="sidebar-database-list"><li bm-sidebar ng-repeat="database in databaseList"></li></ul>')($scope);
     $scope.$digest();
     lis = function () {
       return element.find('li');
@@ -48,10 +47,16 @@ describe('database directive', function () {
     $scope.databaseList.push({name:'test5'});
     $scope.$digest();
     expect(element.find('li').length).toBe(5)
+    expect(element.find('li').eq(4).find('a').text()).toBe('test5')
   })
 
-
-
+  it('open collection names after clicked',function(){
+//    var database = element
+    console.log(element.find('a').eq(0))
+    element.find('a').eq(0).click();
+    $scope.$digest();
+    console.log('aaa',lis().eq(2).find('ul'));
+  })
 });
 
 //  it('has ')

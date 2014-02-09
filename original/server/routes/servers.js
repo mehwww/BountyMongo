@@ -3,7 +3,7 @@ var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
-  res.set('Access-Control-Allow-Origin', '*')
+//  res.set('Access-Control-Allow-Origin', '*')
 
   var serverName = req.param('serverName');
 
@@ -20,4 +20,8 @@ exports.find = function (req, res) {
   };
 
   mongoClient(serverName, findServer);
+}
+
+exports.listServers = function(req,res){
+  
 }

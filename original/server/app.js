@@ -19,8 +19,8 @@ var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 
@@ -30,8 +30,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 // app.use(express.cookieParser('your secret here'));
 // app.use(express.session());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, '../client/app/')));
+// app.use(app.router);
+app.use('/app',express.static(path.join(__dirname, '../client/app/')));
 //app.use(express.static(path.join(__dirname, 'public')));
 
 console.log(app.get('env'));
@@ -56,6 +56,7 @@ if ('development' == app.get('env')) {
 //})
 
 
+app.get('/servers',servers.listServers)
 app.get('/servers/:serverName', servers.find)
 //app.get('/servers/:serverName', databases.findAll)
 

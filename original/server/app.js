@@ -13,7 +13,6 @@ var servers = require('./routes/servers')
 var dump = require('dump')
 
 var http = require('http');
-var https = require('https');
 var path = require('path');
 
 var app = express();

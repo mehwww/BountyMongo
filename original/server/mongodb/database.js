@@ -1,5 +1,11 @@
 var mongoClient = require('./client');
 
+exports.collectionNames = function(db,callback){
+  db.collectionNames(function(err,items){
+    callback(err,items)
+  })
+}
+
 exports.listDatabases = function (db,callback) {
   var admin = db.admin();
   admin.listDatabases(function (err, dbs) {
@@ -7,8 +13,8 @@ exports.listDatabases = function (db,callback) {
   })
 }
 
-exports.stats = function(db,databaseName,callback){
-  db.db(databaseName).stats(function(err,stats){
+exports.stats = function(db,callback){
+  db.stats(function(err,stats){
     return callback(err,stats)
   })
 }

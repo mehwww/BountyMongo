@@ -35,7 +35,7 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      database.stats(db, databaseName, callback)
+      database.stats(db.db(databaseName), callback)
     }
   ], function (err, result) {
     if (err) {

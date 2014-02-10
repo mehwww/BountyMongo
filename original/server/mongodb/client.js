@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var Server = require('mongodb').Server;
-var serverList = require('./serverList.json')
+var serverList = require('../serverList.json')
 
 var clientInstance = {};
 

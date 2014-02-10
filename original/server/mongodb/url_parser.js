@@ -5,10 +5,8 @@ module.exports = function (url) {
   var username = '';
   var password = '';
   var serverName = '';
-  var server = {};
 
-  if (url.indexOf("mongodb://") != 0)
-    throw Error("URL must be in the format mongodb://user:pass@host:port/dbname");
+  if (url.indexOf("mongodb://") != 0)return null;
 
   if (url.indexOf("?") != -1) {
     queryStringPart = url.substr(url.indexOf("?") + 1);
@@ -30,7 +28,8 @@ module.exports = function (url) {
     serverName = connectionPart;
   }
 
-  server[serverName] = url;
-
-  return server;
+  return {
+    name: serverName,
+    url: url
+  };
 }

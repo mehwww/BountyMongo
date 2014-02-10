@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var serverList = require('./mongodb/serverList.json')
+//var serverList = require('./mongodb/serverList.json')
 var fs = require('fs');
 var urlParser = require('./mongodb/url_parser')
 
@@ -21,4 +21,4 @@ var urlParser = require('./mongodb/url_parser')
 //fs.writeFile('./mongodb/servers.json',JSON.stringify(servers,null,2),function(err){
 //})
 
-console.log(urlParser('mongodb://192.168.1.100'))
+console.log(__dirname)

@@ -58,7 +58,9 @@ if ('development' == app.get('env')) {
 
 app.get('/servers',servers.list)
 app.get('/servers/:serverName', servers.find)
-//app.get('/servers/:serverName', databases.findAll)
+app.post('/servers',servers.add)
+app.put('/servers/:serverName',servers.update)
+app.delete('/servers/:serverName', servers.delete)
 
 
 app.get('/servers/:serverName/databases/:databaseName', databases.find);

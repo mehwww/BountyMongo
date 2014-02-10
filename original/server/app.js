@@ -63,11 +63,14 @@ app.put('/servers/:serverName',servers.update)
 app.delete('/servers/:serverName', servers.delete)
 
 
+app.get('/servers/:serverName/databases',databases.list)
 app.get('/servers/:serverName/databases/:databaseName', databases.find);
-//app.post('/servers/:serverName/databases/:databaseName', databases.add);
-//app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
+app.post('/servers/:serverName/databases/:databaseName', databases.find);
 //app.put('/servers/:serverName/databases/:databaseName', databases.update);
+app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
 
+
+app.get('/servers/:serverName/databases/:databaseName/collections',collections.list)
 app.get('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
 //app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 //app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)

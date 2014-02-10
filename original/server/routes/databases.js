@@ -1,72 +1,78 @@
 var mongoClient = require('../mongodb/client');
-var respond = require('../respond');
+var database = require('../mongodb/database')
 var async = require('async');
 
-exports.find = function (req, res) {
-//  res.set('Access-Control-Allow-Origin', '*')
+exports.list = function (req, res) {
+  var serverName = req.param('serverName');
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverName, callback)
+    },
+    function (db, callback) {
+      database.listDatabases(db, callback)
+    }
+  ], function (err, result) {
+    if (err) {
+      res.statusCode = 404;
+      res.send({
+        ok: 0,
+        errmsg: err.toString()
+      });
+    }
+    else {
+      res.send(result.databases);
+    }
+  })
+}
 
+
+exports.find = function (req, res) {
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
 
-  var findDatabase = function(err,client){
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverName, callback)
+    },
+    function (db, callback) {
+      database.stats(db, databaseName, callback)
+    }
+  ], function (err, result) {
     if (err) {
       res.statusCode = 404;
-      res.send('Connect to mongo server failed');
+      res.send({
+        ok: 0,
+        errmsg: err.toString()
+      });
     }
-    var db = client.db(databaseName);
-    async.parallel({
-      stats: function (callback) {
-        db.stats(function (err, stats) {
-          callback(err, stats)
-        })
-      },
-      collectionNames: function (callback) {
-        db.collectionNames(function (err, items) {
-          callback(err, items)
-        })
-      },
-      users: function (callback) {
-        db.collection('system.users').find().toArray(function (err, docs) {
-          callback(err, docs)
-        })
-      }
-    }, function (err, result) {
-      if(err)res.statusCode = 404;
-      res.send(respond(err, result));
-    });
-  }
-
-  mongoClient(serverName,findDatabase);
-}
-
-exports.add = function (req, res) {
-  mongoClient(req.param('server_name'), function (client) {
-    if (!client) return res.send('Connect to mongo server failed')
-    var db = client.db(req.param('db_name'));
-    async.parallel({
-      stats: function (callback) {
-        db.stats(function (err, stats) {
-          callback(err, stats)
-        })
-      },
-      collectionNames: function (callback) {
-        db.collectionNames(function (err, items) {
-          callback(err, items);
-        })
-      }
-    }, function (err, result) {
-      res.send(respond(err, result));
-    })
+    else {
+      res.send(result);
+    }
   })
 }
 
 exports.delete = function (req, res) {
-  mongoClient(req.param('server_name'), function (client) {
-    if (!client) return res.send('Connect to mongo server failed')
-    var db = client.db(req.param('db_name'));
-    db.dropDatabase(function (err, result) {
-      res.send(respond(err, result));
-    })
+  var serverName = req.param('serverName');
+  var databaseName = req.param('databaseName');
+
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverName, callback)
+    },
+    function (db, callback) {
+      database.dropDatabase(db, databaseName, callback)
+    }
+  ], function (err, result) {
+    if (err) {
+      res.statusCode = 404;
+      res.send({
+        ok: 0,
+        errmsg: err.toString()
+      });
+    }
+    else {
+      res.send(result);
+    }
   })
 }
 

@@ -2,6 +2,19 @@ var mongoClient = require('../mongodb/client');
 var server = require('../mongodb/server');
 var async = require('async');
 
+exports.list = function (req, res) {
+  try {
+    res.send(server.listServer())
+  }
+  catch (err) {
+    res.statusCode = 404;
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    })
+  }
+}
+
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
   async.waterfall([
@@ -23,19 +36,6 @@ exports.find = function (req, res) {
       res.send(result);
     }
   })
-}
-
-exports.list = function (req, res) {
-  try {
-    res.send(server.listServer())
-  }
-  catch (err) {
-    res.statusCode = 404;
-    res.send({
-      ok: 0,
-      errmsg: err.toString()
-    })
-  }
 }
 
 exports.add = function (req, res) {

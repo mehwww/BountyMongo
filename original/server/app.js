@@ -56,7 +56,7 @@ if ('development' == app.get('env')) {
 //})
 
 
-app.get('/servers',servers.listServers)
+app.get('/servers',servers.list)
 app.get('/servers/:serverName', servers.find)
 //app.get('/servers/:serverName', databases.findAll)
 

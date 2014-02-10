@@ -1,27 +1,28 @@
 var mongoClient = require('../mongodb/client');
+var server = require('../mongodb/server');
 var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
-//  res.set('Access-Control-Allow-Origin', '*')
-
   var serverName = req.param('serverName');
-
-  var findServer = function (err, client) {
+  async.waterfall([
+    function (callback) {
+      mongoClient(serverName, callback)
+    },
+    function (db, callback) {
+      server.serverStatus(db, callback)
+    }
+  ], function (err, result) {
     if (err) {
       res.statusCode = 404;
-      res.send('Connect to mongo server failed');
+      res.send(err);
     }
-    var admin = client.db('test').admin();
-    admin.listDatabases(function (err, dbs) {
-      if (err)res.statusCode = 404;
-      res.send(respond(err, dbs));
-    });
-  };
-
-  mongoClient(serverName, findServer);
+    else {
+      res.send(result);
+    }
+  })
 }
 
-exports.listServers = function(req,res){
-  
+exports.list = function (req, res) {
+  res.send(server.listServer())
 }

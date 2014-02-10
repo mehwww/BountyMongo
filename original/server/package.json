@@ -9,6 +9,7 @@
     "express": "*",
     "mongodb": "*",
     "dump": "1.0.1",
-    "async":"*"
+    "async": "*",
+    "q": "~1.0.0"
   }
 }

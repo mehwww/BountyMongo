@@ -5,7 +5,10 @@
   "localhost": {
     "url": "mongodb://localhost"
   },
-  "root@localhost": {
-    "url": "mongodb://root:19910523@localhost"
+  "test@127.0.0.1": {
+    "url": "mongodb://test:test@127.0.0.1"
+  },
+  "root@127.0.0.1": {
+    "url": "mongodb://root:19910523@127.0.0.1"
   }
 }

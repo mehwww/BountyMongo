@@ -1,36 +1,38 @@
 var MongoClient = require('mongodb').MongoClient;
-var Server = require('mongodb').Server;
-var serverList = require('../serverList.json')
+//var Server = require('mongodb').Server;
+
+var fs = require('fs')
+var util = require('util');
+
 
 var clientInstance = {};
 
-/**
- *
- * @param serverName
- * @param callback
- */
-module.exports = function (serverName, callback) {
-
+exports.getClient = function (serverName, callback) {
   if (clientInstance[serverName]) {
-    callback(null, clientInstance[serverName])
+    return callback(null, clientInstance[serverName])
   }
-
+  var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
   var server = serverList[serverName];
   if (!server) {
-    var err = {
-      "ok": 0,
-      "errmsg": "pls add this server first"
-    }
-    callback(err, null)
+    var err = new Error('pls add this server first');
+    return callback(err, null);
   }
-  var serverUri = serverList[serverName].url
+  var serverUrl = serverList[serverName].url
 
-  MongoClient.connect(serverUri, function (err, db) {
-    if (err)callback(err.client);
+  MongoClient.connect(serverUrl, function (err, db) {
+    if (err)return callback(err, db);
     clientInstance[serverName] = db;
-    callback(null, db);
+    return callback(null, db);
   })
 };
+
+exports.deleteClient = function (serverName) {
+  if (clientInstance[serverName]) {
+    clientInstance[serverName].close();
+    delete clientInstance[serverName];
+  }
+}
+
 
 //module.exports = function (serverName, callback) {
 //  var server = serverName.split(':', 2)

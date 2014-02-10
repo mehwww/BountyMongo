@@ -1,13 +1,12 @@
 var mongoClient = require('../mongodb/client');
 var server = require('../mongodb/server');
-//var respond = require('../respond');
 var async = require('async');
 
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
   async.waterfall([
     function (callback) {
-      mongoClient(serverName, callback)
+      mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
       server.serverStatus(db, callback)
@@ -15,7 +14,10 @@ exports.find = function (req, res) {
   ], function (err, result) {
     if (err) {
       res.statusCode = 404;
-      res.send(err);
+      res.send({
+        ok:0,
+        errmsg:err.toString()
+      });
     }
     else {
       res.send(result);
@@ -24,21 +26,57 @@ exports.find = function (req, res) {
 }
 
 exports.list = function (req, res) {
-  res.send(server.listServer())
+  try {
+    res.send(server.listServer())
+  }
+  catch (err) {
+    res.statusCode = 404;
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    })
+  }
 }
 
 exports.add = function (req, res) {
   var mongodbUrl = req.body.url;
-  res.send(server.addServer(mongodbUrl));
+  try {
+    res.send(server.addServer(mongodbUrl));
+  }
+  catch (err) {
+    res.statusCode = 404;
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    })
+  }
 }
 
-exports.update = function(req,res){
+exports.update = function (req, res) {
   var serverName = req.param('serverName');
   var mongodbUrl = req.body.url;
-  res.send(server.updateServer(serverName,mongodbUrl));
+  try {
+    res.send(server.updateServer(serverName, mongodbUrl));
+  }
+  catch (err) {
+    res.statusCode = 404;
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    })
+  }
 }
 
-exports.delete = function(req,res){
+exports.delete = function (req, res) {
   var serverName = req.param('serverName');
-  res.send(server.deleteServer(serverName));
+  try {
+    res.send(server.deleteServer(serverName));
+  }
+  catch (err) {
+    res.statusCode = 404;
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    })
+  }
 }

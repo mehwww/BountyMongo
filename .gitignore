@@ -3,6 +3,10 @@ components/
 bootstrap/
 .idea/
 dist/
+serverList.json
+serverList.json.bak
+
+
 
 #nw ignore
 webkitbuilds/

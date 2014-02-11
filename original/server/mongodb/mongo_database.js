@@ -1,5 +1,3 @@
-var mongoClient = require('./client');
-
 exports.collectionNames = function(db,callback){
   db.collectionNames(function(err,items){
     callback(err,items)

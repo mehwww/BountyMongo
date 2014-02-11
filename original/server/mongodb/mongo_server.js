@@ -1,4 +1,4 @@
-var mongoClient = require('./client');
+var mongoClient = require('./mongo_client');
 var urlParser = require('./url_parser');
 var path = require('path');
 var fs = require('fs');

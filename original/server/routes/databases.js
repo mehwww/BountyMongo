@@ -1,5 +1,5 @@
-var mongoClient = require('../mongodb/client');
-var database = require('../mongodb/database')
+var mongoClient = require('../mongodb/mongo_client');
+var mongoDatabase = require('../mongodb/mongo_database')
 var async = require('async');
 
 exports.list = function (req, res) {
@@ -9,7 +9,7 @@ exports.list = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      database.listDatabases(db, callback)
+      mongoDatabase.listDatabases(db, callback)
     }
   ], function (err, result) {
     if (err) {
@@ -35,7 +35,7 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      database.stats(db.db(databaseName), callback)
+      mongoDatabase.stats(db.db(databaseName), callback)
     }
   ], function (err, result) {
     if (err) {
@@ -60,7 +60,7 @@ exports.delete = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      database.dropDatabase(db, databaseName, callback)
+      mongoDatabase.dropDatabase(db, databaseName, callback)
     }
   ], function (err, result) {
     if (err) {

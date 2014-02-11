@@ -1,10 +1,10 @@
-var mongoClient = require('../mongodb/client');
-var server = require('../mongodb/server');
+var mongoClient = require('../mongodb/mongo_client');
+var mongoServer = require('../mongodb/mongo_server');
 var async = require('async');
 
 exports.list = function (req, res) {
   try {
-    res.send(server.listServer())
+    res.send(mongoServer.listServer())
   }
   catch (err) {
     res.statusCode = 404;
@@ -22,7 +22,7 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      server.serverStatus(db, callback)
+      mongoServer.serverStatus(db, callback)
     }
   ], function (err, result) {
     if (err) {
@@ -41,7 +41,7 @@ exports.find = function (req, res) {
 exports.add = function (req, res) {
   var mongodbUrl = req.body.url;
   try {
-    res.send(server.addServer(mongodbUrl));
+    res.send(mongoServer.addServer(mongodbUrl));
   }
   catch (err) {
     res.statusCode = 404;
@@ -56,7 +56,7 @@ exports.update = function (req, res) {
   var serverName = req.param('serverName');
   var mongodbUrl = req.body.url;
   try {
-    res.send(server.updateServer(serverName, mongodbUrl));
+    res.send(mongoServer.updateServer(serverName, mongodbUrl));
   }
   catch (err) {
     res.statusCode = 404;
@@ -70,7 +70,7 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
   var serverName = req.param('serverName');
   try {
-    res.send(server.deleteServer(serverName));
+    res.send(mongoServer.deleteServer(serverName));
   }
   catch (err) {
     res.statusCode = 404;

@@ -4,8 +4,7 @@
 var util = require('util')
 var dump = require('dump')
 
-var mongoClient = require('../mongodb/cl' +
-  'ient')
+//var mongoClient = require('../mongodb/client')
 // var adminDb = require('../mongodb/adminDb')
 
 exports.index = function (req, res) {

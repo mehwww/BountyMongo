@@ -1,6 +1,6 @@
-var mongoClient = require('../mongodb/client');
-var database = require('../mongodb/database')
-var collection = require('../mongodb/collection')
+var mongoClient = require('../mongodb/mongo_client');
+var mongoDatabase = require('../mongodb/mongo_database')
+var mongoCollection = require('../mongodb/mongo_collection')
 var async = require('async');
 
 exports.list = function (req, res) {
@@ -12,7 +12,7 @@ exports.list = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      database.collectionNames(db.db(databaseName), callback)
+      mongoDatabase.collectionNames(db.db(databaseName), callback)
     }
   ], function (err, result) {
     if (err) {
@@ -67,7 +67,7 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      collection.find(db.db(databaseName), collectionName, query, options, callback)
+      mongoCollection.find(db.db(databaseName), collectionName, query, options, callback)
     }
   ], function (err, result) {
     if (err) {

@@ -1,7 +1,7 @@
-var mongoClient = require('../mongodb/mongo_client');
-var mongoDatabase = require('../mongodb/mongo_database')
-var mongoCollection = require('../mongodb/mongo_collection')
-var respond = require('../respond')
+var mongoClient = require('../lib/mongodb/mongo_client');
+var mongoDatabase = require('../lib/mongodb/mongo_database')
+var mongoCollection = require('../lib/mongodb/mongo_collection')
+var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
@@ -16,17 +16,8 @@ exports.list = function (req, res) {
       mongoDatabase.collectionNames(db.db(databaseName), callback)
     }
   ], function (err, result) {
-
-    if (err) {
-      res.statusCode = 404;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-    else {
-      res.send(result);
-    }
+    if (err) res.statusCode = 404;
+    res.send(respond(err, result))
   })
 
 }
@@ -39,10 +30,7 @@ exports.find = function (req, res) {
   var queryString = queryStringParser(req);
   if(!queryString){
     res.statusCode = 400;
-    res.send({
-      ok: 0,
-      errmsg: 'Invaild query string'
-    });
+    res.send(respond('Invaild query string', null))
   }
 
   async.waterfall([
@@ -53,16 +41,8 @@ exports.find = function (req, res) {
       mongoCollection.find(db.db(databaseName), collectionName, queryString.query, queryString.options, callback)
     }
   ], function (err, result) {
-    if (err) {
-      res.statusCode = 404;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-    else {
-      res.send(result);
-    }
+    if (err) res.statusCode = 404;
+    res.send(respond(err, result))
   })
 }
 

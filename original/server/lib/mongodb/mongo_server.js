@@ -16,7 +16,10 @@ exports.listServer = function () {
 }
 
 exports.addServer = function (url) {
-  var server = urlParser(url)
+  if(!url){
+    throw new Error('pls post with mongodb url')
+  }
+  var server = urlParser(url);
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString())
   if (serverList[server.name]) {
     throw new Error('Server record already exists')

@@ -80,7 +80,7 @@ app.get('/servers/:serverName/databases/:databaseName/collections',collections.l
 //get the specified collection's documents
 app.get('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
 //add new document
-app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+//app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 //app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 

@@ -1,12 +1,12 @@
-module.exports = function (err, result, res) {
+module.exports = function (err, result) {
   if (err) {
-    res.send({
+    return {
       ok: 0,
       errmsg: err.toString()
-    });
+    };
   }
   else {
-    res.send(result);
+    return result;
   }
 
 //	if (err) {

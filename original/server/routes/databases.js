@@ -1,5 +1,6 @@
-var mongoClient = require('../mongodb/mongo_client');
-var mongoDatabase = require('../mongodb/mongo_database')
+var mongoClient = require('../lib/mongodb/mongo_client');
+var mongoDatabase = require('../lib/mongodb/mongo_database')
+var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
@@ -12,16 +13,8 @@ exports.list = function (req, res) {
       mongoDatabase.listDatabases(db, callback)
     }
   ], function (err, result) {
-    if (err) {
-      res.statusCode = 404;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-    else {
-      res.send(result.databases);
-    }
+    if (err) res.statusCode = 404;
+    res.send(respond(err, result.databases))
   })
 }
 
@@ -38,16 +31,8 @@ exports.find = function (req, res) {
       mongoDatabase.stats(db.db(databaseName), callback)
     }
   ], function (err, result) {
-    if (err) {
-      res.statusCode = 404;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-    else {
-      res.send(result);
-    }
+    if (err) res.statusCode = 404;
+    res.send(respond(err, result));
   })
 }
 
@@ -63,16 +48,8 @@ exports.delete = function (req, res) {
       mongoDatabase.dropDatabase(db, databaseName, callback)
     }
   ], function (err, result) {
-    if (err) {
-      res.statusCode = 404;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-    else {
-      res.send(result);
-    }
+    if (err) res.statusCode = 404;
+    res.send(respond(err, result))
   })
 }
 

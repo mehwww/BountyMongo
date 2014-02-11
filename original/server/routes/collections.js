@@ -1,6 +1,7 @@
 var mongoClient = require('../mongodb/mongo_client');
 var mongoDatabase = require('../mongodb/mongo_database')
 var mongoCollection = require('../mongodb/mongo_collection')
+var respond = require('../respond')
 var async = require('async');
 
 exports.list = function (req, res) {
@@ -15,6 +16,7 @@ exports.list = function (req, res) {
       mongoDatabase.collectionNames(db.db(databaseName), callback)
     }
   ], function (err, result) {
+
     if (err) {
       res.statusCode = 404;
       res.send({
@@ -29,37 +31,18 @@ exports.list = function (req, res) {
 
 }
 
-
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
-  var query;
-  var limit;
-  var skip;
 
-  //query parameters
-  if (req.query.q) {
-    try {
-      query = JSON.parse(req.query.q);
-    }
-    catch (err) {
-      res.statusCode = 400;
-      res.send({
-        ok: 0,
-        errmsg: err.toString()
-      });
-    }
-  }
-
-  //limit parameters
-  limit = req.query.l ? req.query.l : 20;
-  //skip parameters
-  skip = req.query.p ? (req.query.p - 1) * limit : 0;
-
-  var options = {
-    limit: limit,
-    skip: skip
+  var queryString = queryStringParser(req);
+  if(!queryString){
+    res.statusCode = 400;
+    res.send({
+      ok: 0,
+      errmsg: 'Invaild query string'
+    });
   }
 
   async.waterfall([
@@ -67,7 +50,7 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverName, callback)
     },
     function (db, callback) {
-      mongoCollection.find(db.db(databaseName), collectionName, query, options, callback)
+      mongoCollection.find(db.db(databaseName), collectionName, queryString.query, queryString.options, callback)
     }
   ], function (err, result) {
     if (err) {
@@ -81,101 +64,31 @@ exports.find = function (req, res) {
       res.send(result);
     }
   })
-
 }
 
-//exports.find = function (req, res) {
-//  var serverName = req.param('serverName');
-//  var databaseName = req.param('databaseName');
-//  var collectionName = req.param('collectionName');
-//
-//  //query parameters
-//  if (req.query.q) {
-//    try {
-//      var query = JSON.parse(req.query.q);
-//    }
-//    catch (e) {
-//      res.statusCode = 400;
-//      res.send(respond('Invaild query string'))
-//    }
-//  }
-//
-//  //limit parameters
-//  var limit = req.query.l ? req.query.l : 20;
-//  //skip parameters
-//  var skip = req.query.p ? (req.query.p - 1) * limit : 0;
-//
-//  var findCollection = function (err, client) {
-//    if (err) {
-//      res.statusCode = 404;
-//      res.send('Connect to mongo server failed');
-//    }
-//    var collection = client.db(databaseName).collection(collectionName);
-//    async.parallel({
-//      count: function (callback) {
-//        collection.count(query, function (err, count) {
-//          callback(err, count)
-//        })
-//      },
-//      find: function (callback) {
-//        var options = {
-//          limit: limit,
-//          skip: skip
-//        }
-//        collection.find(query, options).toArray(function (err, docs) {
-//          callback(err, docs)
-//        })
-//      },
-//      isCapped: function (callback) {
-//        collection.isCapped(function (err, capped) {
-//          callback(err, capped)
-//        })
-//      },
-//      options: function (callback) {
-//        collection.options(function (err, options) {
-//          callback(err, options)
-//        })
-//      }
-//    }, function (err, result) {
-////      res.set('Access-Control-Allow-Origin', '*')
-//      if (err)res.statusCode = 404;
-//      res.send(respond(err, result));
-//    })
-//  }
-//
-//  mongoClient(serverName, findCollection);
-//}
 
-exports.add = function (req, res) {
-  mongoClient(function (client) {
-    var collection = client.db(req.param('db_name')).collection(req.param('collection_name'));
-    collection.insert(req.body, {
-      forceServerObjectId: true
-    }, function (err, result) {
-      if (err) {
-        res.send(respond.error({
-          name: err.name,
-          err: err.err
-        }))
-      } else {
-        res.send(respond.success(result))
-      }
-    })
-  })
-}
-
-exports.delete = function (req, res) {
-  mongoClient(function (client) {
-    var collection = client.db(req.param('db_name')).collection(req.param('collection_name'));
-    collection.remove(function (err, result) {
-      if (err) {
-        res.send(respond.error({
-          name: err.name,
-          err: err.err
-        }))
-      } else {
-        res.send(respond.success(result))
-      }
-    })
-  })
+var queryStringParser = function(req){
+  var query;
+  var limit;
+  var skip;
+  //query parameters
+  if (req.query.q) {
+    try {
+      query = JSON.parse(req.query.q);
+    }
+    catch (err) {
+      return null
+    }
+  }
+  //limit parameters
+  limit = req.query.l ? req.query.l : 20;
+  //skip parameters
+  skip = req.query.p ? (req.query.p - 1) * limit : 0;
+  return {
+    query:query,
+    options:{
+      limit: limit,
+      skip: skip
+    }
+  }
 }

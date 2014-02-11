@@ -4,8 +4,6 @@
 
 var express = require('express');
 
-var routes = require('./routes');
-
 var databases = require('./routes/databases');
 var collections = require('./routes/collections')
 var servers = require('./routes/servers')
@@ -55,24 +53,34 @@ if ('development' == app.get('env')) {
 //	res.send(dump(query))
 //})
 
-
+//list server records in serverList.json
 app.get('/servers',servers.list)
+//get the specified server status
 app.get('/servers/:serverName', servers.find)
+//add new server record to serverList.json
 app.post('/servers',servers.add)
+//update the specified server record in serverList.json
 app.put('/servers/:serverName',servers.update)
+//delete the specified server record in serverList.json
 app.delete('/servers/:serverName', servers.delete)
 
-
+//list databases in the specified server
 app.get('/servers/:serverName/databases',databases.list)
+//get the specified database status
 app.get('/servers/:serverName/databases/:databaseName', databases.find);
+/*
 app.post('/servers/:serverName/databases/:databaseName', databases.find);
-//app.put('/servers/:serverName/databases/:databaseName', databases.update);
+app.put('/servers/:serverName/databases/:databaseName', databases.update);
+*/
+//drop the specified database
 app.delete('/servers/:serverName/databases/:databaseName', databases.delete);
 
-
+//list collections in the specified database
 app.get('/servers/:serverName/databases/:databaseName/collections',collections.list)
+//get the specified collection's documents
 app.get('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
-//app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+//add new document
+app.post('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 //app.delete('/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 

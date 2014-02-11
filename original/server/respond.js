@@ -1,28 +1,22 @@
-/*
-function error(errInfo) {
-	return {
-		status: "error",
-		err: errInfo
-	}
-}
+module.exports = function (err, result, res) {
+  if (err) {
+    res.send({
+      ok: 0,
+      errmsg: err.toString()
+    });
+  }
+  else {
+    res.send(result);
+  }
 
-function success(successData) {
-	return {
-		status: "ok",
-		data: successData
-	}
-}*/
-
-
-module.exports = function(err, data) {
-	if (err) {
-		return {
-			status: "error",
-			error: err
-		};
-	}
-	return {
-		status: "ok",
-		data: data
-	};
+//	if (err) {
+//		return {
+//			status: "error",
+//			error: err
+//		};
+//	}
+//	return {
+//		status: "ok",
+//		data: data
+//	};
 }

@@ -1,24 +1,21 @@
 var MongoClient = require('mongodb').MongoClient;
+var urlParser = require('./lib/mongodb/url_parser')
 //var serverList = require('./mongodb/serverList.json')
 var fs = require('fs');
-var urlParser = require('./mongodb/url_parser')
+var util = require('util');
+var _ = require('underscore')
 
 //MongoClient.connect('mongodb://root:19910523@localhost', function (err, db) {
-//MongoClient.connect('mongodb://localhost', function (err, db) {
-//  db.close();
-//  console.log(serverList['localhost'].uri)
-////  db.admin().listDatabases(function (err, dbs) {
-////    console.log(err)
-////    console.log(dbs)
-////    db.close();
-////  });
-////  db.db('test').collectionNames(function (err, items) {
-////    console.log(items)
-////    db.close();
-////  })
-//})
-//console.log(servers)
-//fs.writeFile('./mongodb/servers.json',JSON.stringify(servers,null,2),function(err){
+//MongoClient.connect('mongodb://testUser:19910523@localhost/test', function (err, db) {
+//  db.collectionNames(function (err, items) {
+//    if (err)console.log(util.inspect(err));
+//    else console.log(util.inspect(items));
+//    db.close();
+//  })
 //})
 
-console.log(__dirname)
+console.log(urlParser("mongodb://testUser:19923@localhost"))
+
+
+//fs.writeFile('./mongodb/servers.json', JSON.stringify(servers, null, 2), function (err) {
+//})

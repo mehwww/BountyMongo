@@ -211,7 +211,6 @@ bountyMongo.directive('bmSidebar', [
         }
       }
     }
-
   }])
 
 //####  ./app/scripts/services/bucket.js

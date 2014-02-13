@@ -4,7 +4,7 @@ var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
-  var serverName = req.param('serverName');
+  var serverName = decodeURIComponent(req.param('serverName'));
   async.waterfall([
     function (callback) {
       mongoClient.getClient(serverName, callback)
@@ -14,13 +14,13 @@ exports.list = function (req, res) {
     }
   ], function (err, result) {
     if (err) res.statusCode = 404;
-    res.send(respond(err, result.databases))
+    res.send(respond(err, result))
   })
 }
 
 
 exports.find = function (req, res) {
-  var serverName = req.param('serverName');
+  var serverName = decodeURIComponent(req.param('serverName'));
   var databaseName = req.param('databaseName');
 
   async.waterfall([
@@ -37,7 +37,7 @@ exports.find = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  var serverName = req.param('serverName');
+  var serverName = decodeURIComponent(req.param('serverName'));
   var databaseName = req.param('databaseName');
 
   async.waterfall([

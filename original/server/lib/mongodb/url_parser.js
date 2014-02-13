@@ -2,6 +2,7 @@ module.exports = function (url) {
   var connectionPart = '';
   var authPart = '';
   var queryStringPart = '';
+  var dbName = 'admin';
   var username = '';
   var password = '';
   var serverName = '';
@@ -13,6 +14,11 @@ module.exports = function (url) {
     connectionPart = url.substring("mongodb://".length, url.indexOf("?"))
   } else {
     connectionPart = url.substring("mongodb://".length);
+  }
+
+  if(connectionPart.indexOf("/") != -1) {
+    dbName = connectionPart.split("/")[1];
+//    connectionPart = connectionPart.split("/")[0];
   }
 
   if (connectionPart.indexOf("@") != -1) {
@@ -30,6 +36,7 @@ module.exports = function (url) {
 
   return {
     name: serverName,
+    dbName:dbName,
     url: url
   };
 }

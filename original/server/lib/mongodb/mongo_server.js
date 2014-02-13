@@ -11,12 +11,23 @@ exports.serverStatus = function (db, callback) {
   })
 }
 
+exports.stats = function (db, callback) {
+  db.stats(callback)
+//  db.stats(function(err,pingResult){
+//    return callback(err,pingResult)
+//  })
+}
+
 exports.listServer = function () {
-  return JSON.parse(fs.readFileSync('./serverList.json').toString());
+  var list = JSON.parse(fs.readFileSync('./serverList.json').toString());
+  for (var key in list) {
+    delete list[key].url
+  }
+  return list;
 }
 
 exports.addServer = function (url) {
-  if(!url){
+  if (!url) {
     throw new Error('pls post with mongodb url')
   }
   var server = urlParser(url);
@@ -24,7 +35,10 @@ exports.addServer = function (url) {
   if (serverList[server.name]) {
     throw new Error('Server record already exists')
   }
-  serverList[server.name] = {url: server.url};
+  serverList[server.name] = {
+    url: server.url,
+    dbName: server.dbName
+  };
   fs.writeFileSync('./serverList.json', JSON.stringify(serverList, null, 2))
   //no need
   mongoClient.deleteClient(server.name);

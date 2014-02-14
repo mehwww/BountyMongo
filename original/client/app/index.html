@@ -31,7 +31,8 @@
     <div class="col-lg-3" ng-controller="SidebarCtrl">
         <div class="well">
             <label>Server List:</label>
-            <select ng-model="server" ng-options="server.host for server in serverList"></select>
+            <!--<select ng-model="server" ng-options="server.host for server in serverList"></select>-->
+            <select ng-model="server" ng-options="key as key for (key,value) in serverList"></select>
             <ul class="sidebar-database-list">
                 <li bm-sidebar ng-repeat="database in databaseList"></li>
             </ul>

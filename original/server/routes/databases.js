@@ -4,7 +4,7 @@ var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverName = req.param('serverName');
   async.waterfall([
     function (callback) {
       mongoClient.getClient(serverName, callback)
@@ -20,7 +20,7 @@ exports.list = function (req, res) {
 
 
 exports.find = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
 
   async.waterfall([

@@ -78,7 +78,7 @@ exports.list = function (req, res) {
 }
 
 exports.find = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverName = req.param('serverName');
   var dbName = 'admin';
   if (serverName.indexOf("/") != -1) {
     dbName = serverName.split("/")[1];
@@ -113,7 +113,7 @@ exports.add = function (req, res) {
 }
 
 exports.update = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverName = req.param('serverName');
   var mongodbUrl = req.body.url;
   try {
     res.send(respond(null, mongoServer.updateServer(serverName, mongodbUrl)));
@@ -125,7 +125,7 @@ exports.update = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverName = req.param('serverName');
   try {
     res.send(respond(null, mongoServer.deleteServer(serverName)));
   }

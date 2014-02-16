@@ -4,7 +4,7 @@ bountyMongo.factory('server', [
   'bucket',
 
   function ($http, bucket) {
-    return function (server) {
+    return function (serverName) {
       var serverURL = bucket.serverURL;
       var Resource = {};
       Resource.list = function () {
@@ -13,6 +13,12 @@ bountyMongo.factory('server', [
           return response.data;
         });
       };
+      Resource.query = function(){
+        var url = serverURL + 'servers/' + serverName
+        return $http.get(url).then(function (response) {
+          return response.data;
+        });
+      }
       return Resource;
     };
 //    return function (server) {

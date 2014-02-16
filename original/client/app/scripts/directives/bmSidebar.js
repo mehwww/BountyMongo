@@ -14,8 +14,10 @@ bountyMongo.directive('bmSidebar', [
             records.database(scope.database);
             records.collection('');
           }
+          console.log('scope.server',scope.server)
+          console.log('scope.database',scope.database)
           //scope.server is prototypically inheritance from parent
-          database(scope.server, scope.database).query().then(function (response) {
+          collection(scope.server, scope.database.name).list().then(function (response) {
             scope.collectionList = response.collectionNames;
           })
         }

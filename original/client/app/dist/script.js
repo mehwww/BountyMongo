@@ -54,20 +54,37 @@ bountyMongo.controller('SidebarCtrl', [
   '$scope',
   'records',
   'server',
-  'bucket',
+  'database',
 
-  function ($scope, records, server,bucket) {
-    
-    server().list().then(function(response){
-      $scope.serverList = response;
+  function ($scope, records, server, database) {
+
+    server().list().then(function (response) {
+      $scope.serverList = _.map(response, function (value, key) {
+//        return {name: key, dbName: value}
+        return key;
+      });
       $scope.server = $scope.serverList[0];
-      console.log($scope.serverList)
-    })
-    
-    $scope.$watch('server',function(newVal){
-      console.log(newVal)
+//      console.log($scope.serverList)
     })
 
+    $scope.$watch('server', function (newVal) {
+      if (newVal !== undefined) {
+//        console.log(newVal)
+        database(newVal).list().then(function (response) {
+          if (_.isArray(response)) {
+            $scope.databaseList = response;
+          }
+          else{
+            $scope.databaseList = [{
+              name:response.db
+            }]
+          }
+        }, function (response) {
+          console.log('failed request!!!', response)
+          $scope.databaseList = null;
+        });
+      }
+    })
 
 
 //    $scope.$watch('server', function (newVal) {
@@ -207,8 +224,10 @@ bountyMongo.directive('bmSidebar', [
             records.database(scope.database);
             records.collection('');
           }
+          console.log('scope.server',scope.server)
+          console.log('scope.database',scope.database)
           //scope.server is prototypically inheritance from parent
-          database(scope.server, scope.database).query().then(function (response) {
+          collection(scope.server, scope.database.name).list().then(function (response) {
             scope.collectionList = response.collectionNames;
           })
         }
@@ -252,14 +271,21 @@ bountyMongo.factory('collection', [
   'bucket',
 
   function ($http, bucket) {
-    return function (server, database, collection) {
+    return function (serverName, databaseName, collectionName) {
       var queryOptions = arguments[3];
       var serverURL = bucket.serverURL;
 
-      var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
 
       var Resource = {};
+      Resource.list = function(){
+        var url = serverURL + 'servers/' + serverName + '/databases/' + databaseName + '/collections/';
+        return $http.get(url).then(function(response){
+          return response.data;
+        })
+      }
       Resource.query = function () {
+        var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
+
         if (queryOptions) {
           if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
           if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
@@ -284,19 +310,25 @@ bountyMongo.factory('database', [
   'bucket',
 
   function ($http, bucket) {
-    return function (server,database) {
+    return function (serverName,databaseName) {
       var serverURL = bucket.serverURL;
-      var url = serverURL + 'servers/' + server.host + '/databases/' + database.name;
       var Resource = {}
-      Resource.query = function () {
-        return $http.get(url).then(function (response) {
-          //返回该服务器上的所有collections
-          angular.forEach(response.data.data.collectionNames, function (value, key) {
-            value.name = value.name.substr(value.name.indexOf('.') + 1);
-          })
-          return response.data.data;
-        });
+      Resource.list = function(){
+        var url = serverURL + 'servers/' + encodeURIComponent(serverName) + '/databases/';
+        return $http.get(url).then(function(response){
+          return response.data;
+        })
       }
+//      Resource.query = function () {
+//        var url = serverURL + 'servers/' + encodeURIComponent(serverName) + '/databases/' + encodeURIComponent(databaseName);
+//        return $http.get(url).then(function (response) {
+//          //返回该服务器上的所有collections
+//          angular.forEach(response.data.data.collectionNames, function (value, key) {
+//            value.name = value.name.substr(value.name.indexOf('.') + 1);
+//          })
+//          return response.data.data;
+//        });
+//      }
       return Resource;
     }
   }])
@@ -354,7 +386,7 @@ bountyMongo.factory('server', [
   'bucket',
 
   function ($http, bucket) {
-    return function (server) {
+    return function (serverName) {
       var serverURL = bucket.serverURL;
       var Resource = {};
       Resource.list = function () {
@@ -363,6 +395,12 @@ bountyMongo.factory('server', [
           return response.data;
         });
       };
+      Resource.query = function(){
+        var url = serverURL + 'servers/' + serverName
+        return $http.get(url).then(function (response) {
+          return response.data;
+        });
+      }
       return Resource;
     };
 //    return function (server) {

@@ -10,14 +10,20 @@ bountyMongo.factory('collection', [
 
 
       var Resource = {};
-      Resource.list = function(){
-        var url = serverURL + 'servers/' + serverName + '/databases/' + databaseName + '/collections/';
-        return $http.get(url).then(function(response){
+      Resource.list = function () {
+        var url = serverURL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/' + encodeURIComponent(databaseName)
+          + '/collections/';
+        return $http.get(url).then(function (response) {
           return response.data;
         })
       }
       Resource.query = function () {
-        var url = serverURL + 'servers/' + server.host + '/databases/' + database.name + '/collections/' + collection.name + '?';
+        var url = serverURL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/' + encodeURIComponent(databaseName)
+          + '/collections/' + encodeURIComponent(collectionName) + '?';
 
         if (queryOptions) {
           if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
@@ -26,10 +32,7 @@ bountyMongo.factory('collection', [
         }
 
         return $http.get(url).then(function (response) {
-          if (response.data.status === 'error') {
-            return response.data.error
-          }
-          return response.data.data;
+          return response.data
         });
       }
       return Resource;

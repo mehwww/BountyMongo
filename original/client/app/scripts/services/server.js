@@ -8,16 +8,25 @@ bountyMongo.factory('server', [
       var serverURL = bucket.serverURL;
       var Resource = {};
       Resource.list = function () {
-        var url = serverURL + 'servers/';
+        var url = serverURL + '/servers/';
         return $http.get(url).then(function (response) {
           return response.data;
         });
       };
       Resource.query = function(){
-        var url = serverURL + 'servers/' + serverName
+        var url = serverURL
+          + '/servers/' + encodeURIComponent(serverName)
         return $http.get(url).then(function (response) {
           return response.data;
         });
+      }
+      Resource.databases = function(){
+        var url =  serverURL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/'
+        return $http.get(url).then(function(response){
+          return response.data;
+        })
       }
       return Resource;
     };

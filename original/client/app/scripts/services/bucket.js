@@ -1,6 +1,6 @@
 bountyMongo.factory('bucket', ['$parse', function ($parse) {
   //app server url
-  var serverURL = '/api/';
+  var serverURL = '/api';
 
   var paginationConfig = {
     maxsize:9

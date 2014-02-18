@@ -10,22 +10,33 @@ bountyMongo.factory('server', [
       Resource.list = function () {
         var url = serverURL + '/servers/';
         return $http.get(url).then(function (response) {
-          return response.data;
+          return _.map(response.data, function (value, key) {
+            return key;
+          });
         });
       };
-      Resource.query = function(){
+      Resource.query = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
         return $http.get(url).then(function (response) {
           return response.data;
         });
       }
-      Resource.databases = function(){
-        var url =  serverURL
+      Resource.databases = function () {
+        var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/'
-        return $http.get(url).then(function(response){
-          return response.data;
+        return $http.get(url).then(function (response) {
+          var databases = [];
+          if (_.isArray(response.data)) {
+            _.map(response.data, function (value, key) {
+              databases.push(value.name)
+            })
+          }
+          else {
+            databases.push(response.data.db)
+          }
+          return databases;
         })
       }
       return Resource;

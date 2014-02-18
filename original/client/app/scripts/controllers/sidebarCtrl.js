@@ -8,18 +8,14 @@ bountyMongo.controller('SidebarCtrl', [
   function ($scope, $location, server, database) {
 
     server().list().then(function (response) {
-      $scope.serverList = _.map(response, function (value, key) {
-        return key;
-      });
+      $scope.serverList = response
     })
 
     $scope.$watch('server', function (newVal) {
       if (newVal) {
         $location.path('/servers/' + encodeURIComponent(newVal))
         server(newVal).databases().then(function (response) {
-          $scope.databaseList = _.isArray(response)
-            ? response
-            : [].push({name: response.db})
+          $scope.databaseList = response;
         }, function (response) {
           console.log('failed request!!!', response.data)
           $scope.databaseList = null;

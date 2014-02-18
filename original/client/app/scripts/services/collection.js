@@ -8,7 +8,6 @@ bountyMongo.factory('collection', [
       var queryOptions = arguments[3];
       var serverURL = bucket.serverURL;
 
-
       var Resource = {};
       Resource.list = function () {
         var url = serverURL

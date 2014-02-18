@@ -15,7 +15,7 @@ bountyMongo.controller('MainCtrl', [
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
-    console.log($routeParams)
+    console.log('$routeParams',$routeParams)
     if (collectionName) {
       return collection(serverName, databaseName, collectionName).query().then(function (response) {
         $scope.records = response

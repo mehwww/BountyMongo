@@ -30,7 +30,9 @@ bountyMongo.factory('database', [
           + '/databases/' + encodeURIComponent(databaseName)
           + '/collections';
         return $http.get(url).then(function (response) {
-          return response.data;
+          return _.map(response.data,function(value,key){
+            return value.name.substr(value.name.indexOf('.')+1)
+          })
         })
       }
       return Resource;

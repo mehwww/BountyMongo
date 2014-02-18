@@ -49,7 +49,7 @@ bountyMongo.controller('MainCtrl', [
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
-    console.log($routeParams)
+    console.log('$routeParams',$routeParams)
     if (collectionName) {
       return collection(serverName, databaseName, collectionName).query().then(function (response) {
         $scope.records = response
@@ -120,18 +120,14 @@ bountyMongo.controller('SidebarCtrl', [
   function ($scope, $location, server, database) {
 
     server().list().then(function (response) {
-      $scope.serverList = _.map(response, function (value, key) {
-        return key;
-      });
+      $scope.serverList = response
     })
 
     $scope.$watch('server', function (newVal) {
       if (newVal) {
         $location.path('/servers/' + encodeURIComponent(newVal))
         server(newVal).databases().then(function (response) {
-          $scope.databaseList = _.isArray(response)
-            ? response
-            : [].push({name: response.db})
+          $scope.databaseList = response;
         }, function (response) {
           console.log('failed request!!!', response.data)
           $scope.databaseList = null;
@@ -262,35 +258,55 @@ bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, co
 
 //####  ./app/scripts/directives/bmSidebar.js
 bountyMongo.directive('bmSidebar', [
+  '$location',
   'database',
   'collection',
-  'records',
-  function (database, collection, records) {
+  function ($location, database, collection) {
     return {
       restrict: 'A',
       templateUrl: '/partials/bmSidebar.html',
       link: function (scope, element, attrs) {
         scope.toggleDatabase = function () {
+//          console.log('server', scope.server)
+//          console.log('database', scope.database)
           scope.isOpen = !scope.isOpen;
-          if (scope.isOpen) {
-            records.server(scope.server);
-            records.database(scope.database);
-            records.collection('');
-          }
-          console.log('scope.server',scope.server)
-          console.log('scope.database',scope.database)
-          //scope.server is prototypically inheritance from parent
-          collection(scope.server, scope.database.name).list().then(function (response) {
-            scope.collectionList = response.collectionNames;
+          $location.path('/servers/' + encodeURIComponent(scope.server) + '/databases/' + encodeURIComponent(scope.database))
+
+//          scope.redirectUrl = '/servers/' + encodeURIComponent(encodeURIComponent(scope.server))
+//            + '/databases/' + encodeURIComponent(encodeURIComponent(scope.database))
+          database(scope.server, scope.database).collections().then(function (response) {
+            scope.collectionList = response
           })
         }
-        scope.selectCollection = function (coll) {
-          records.server(scope.server);
-          records.database(scope.database);
-          records.collection(coll);
-          records.queryOptions('p',1);
-          records.recordsRefresh();
+
+        scope.selectCollection = function (collection) {
+          console.log(collection)
+          $location.path('/servers/' + encodeURIComponent(scope.server)
+            + '/databases/' + encodeURIComponent(scope.database)
+            + '/collections/' + encodeURIComponent(collection))
+
         }
+//        scope.toggleDatabase = function () {
+//          scope.isOpen = !scope.isOpen;
+//          if (scope.isOpen) {
+//            records.server(scope.server);
+//            records.database(scope.database);
+//            records.collection('');
+//          }
+//          console.log('scope.server',scope.server)
+//          console.log('scope.database',scope.database)
+//          //scope.server is prototypically inheritance from parent
+//          collection(scope.server, scope.database.name).list().then(function (response) {
+//            scope.collectionList = response.collectionNames;
+//          })
+//        }
+//        scope.selectCollection = function (coll) {
+//          records.server(scope.server);
+//          records.database(scope.database);
+//          records.collection(coll);
+//          records.queryOptions('p',1);
+//          records.recordsRefresh();
+//        }
       }
     }
   }])
@@ -327,7 +343,6 @@ bountyMongo.factory('collection', [
     return function (serverName, databaseName, collectionName) {
       var queryOptions = arguments[3];
       var serverURL = bucket.serverURL;
-
 
       var Resource = {};
       Resource.list = function () {
@@ -392,7 +407,9 @@ bountyMongo.factory('database', [
           + '/databases/' + encodeURIComponent(databaseName)
           + '/collections';
         return $http.get(url).then(function (response) {
-          return response.data;
+          return _.map(response.data,function(value,key){
+            return value.name.substr(value.name.indexOf('.')+1)
+          })
         })
       }
       return Resource;
@@ -458,22 +475,33 @@ bountyMongo.factory('server', [
       Resource.list = function () {
         var url = serverURL + '/servers/';
         return $http.get(url).then(function (response) {
-          return response.data;
+          return _.map(response.data, function (value, key) {
+            return key;
+          });
         });
       };
-      Resource.query = function(){
+      Resource.query = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
         return $http.get(url).then(function (response) {
           return response.data;
         });
       }
-      Resource.databases = function(){
-        var url =  serverURL
+      Resource.databases = function () {
+        var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/'
-        return $http.get(url).then(function(response){
-          return response.data;
+        return $http.get(url).then(function (response) {
+          var databases = [];
+          if (_.isArray(response.data)) {
+            _.map(response.data, function (value, key) {
+              databases.push(value.name)
+            })
+          }
+          else {
+            databases.push(response.data.db)
+          }
+          return databases;
         })
       }
       return Resource;

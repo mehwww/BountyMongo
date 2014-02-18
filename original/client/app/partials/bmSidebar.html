@@ -1,6 +1,6 @@
-<a ng-click="toggleDatabase()">{{database.name}}</a>
+<a ng-click="toggleDatabase()" ng-href="{{redirectUrl}}">{{database}}</a>
 <ul ng-if="isOpen" ng-model="collectionList">
     <li ng-repeat="collection in collectionList">
-        <a ng-click="selectCollection(collection)">{{collection.name}}</a>
+        <a ng-click="selectCollection(collection)">{{collection}}</a>
     </li>
 </ul>

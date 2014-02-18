@@ -1,9 +1,12 @@
 bountyMongo.controller('MainCtrl', [
 
   '$scope',
+  '$location',
 
-  function ($scope) {
-    $scope.$on('recordsRefresh',function(event,response){
-      $scope.records = response;
+  function ($scope, $location) {
+    $scope.$on('recordsRefresh', function (event, response) {
+//      $scope.records = $location.path();
+//      $scope.records = response;
     })
+    console.log('url',$location.url())
   }])

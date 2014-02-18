@@ -4,7 +4,7 @@ bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, co
     scope: {
       records: '='
     },
-    templateUrl: './partials/bmRecords.html',
+    templateUrl: '/partials/bmRecords.html',
     link: function (scope, element, attrs) {
 
     }

@@ -5,7 +5,7 @@ bountyMongo.directive('bmSidebar', [
   function (database, collection, records) {
     return {
       restrict: 'A',
-      templateUrl: './partials/bmSidebar.html',
+      templateUrl: '/partials/bmSidebar.html',
       link: function (scope, element, attrs) {
         scope.toggleDatabase = function () {
           scope.isOpen = !scope.isOpen;

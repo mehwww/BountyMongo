@@ -4,18 +4,27 @@
 
 var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap']);
 
+//bountyMongo.config( function ($locationProvider) {
+//  $locationProvider.html5Mode(true);
+//})
 
+bountyMongo.config(['$locationProvider', function ($locationProvider) {
+  $locationProvider.html5Mode(true);
+}])
 
 
 //####  ./app/scripts/controllers/MainCtrl.js
 bountyMongo.controller('MainCtrl', [
 
   '$scope',
+  '$location',
 
-  function ($scope) {
-    $scope.$on('recordsRefresh',function(event,response){
-      $scope.records = response;
+  function ($scope, $location) {
+    $scope.$on('recordsRefresh', function (event, response) {
+//      $scope.records = $location.path();
+//      $scope.records = response;
     })
+    console.log('url',$location.url())
   }])
 
 //####  ./app/scripts/controllers/QueryCtrl.js
@@ -113,7 +122,7 @@ bountyMongo.directive('bmPagination', [
       scope: {
         currentPage: '='
       },
-      templateUrl: './partials/bmPagination.html',
+      templateUrl: '/partials/bmPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
 
@@ -200,7 +209,7 @@ bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, co
     scope: {
       records: '='
     },
-    templateUrl: './partials/bmRecords.html',
+    templateUrl: '/partials/bmRecords.html',
     link: function (scope, element, attrs) {
 
     }
@@ -215,7 +224,7 @@ bountyMongo.directive('bmSidebar', [
   function (database, collection, records) {
     return {
       restrict: 'A',
-      templateUrl: './partials/bmSidebar.html',
+      templateUrl: '/partials/bmSidebar.html',
       link: function (scope, element, attrs) {
         scope.toggleDatabase = function () {
           scope.isOpen = !scope.isOpen;
@@ -245,7 +254,7 @@ bountyMongo.directive('bmSidebar', [
 //####  ./app/scripts/services/bucket.js
 bountyMongo.factory('bucket', ['$parse', function ($parse) {
   //app server url
-  var serverURL = '/';
+  var serverURL = '/api/';
 
   var paginationConfig = {
     maxsize:9

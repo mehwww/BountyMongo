@@ -9,7 +9,7 @@ bountyMongo.directive('bmPagination', [
       scope: {
         currentPage: '='
       },
-      templateUrl: './partials/bmPagination.html',
+      templateUrl: '/partials/bmPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
 

@@ -121,30 +121,22 @@ bountyMongo.controller('SidebarCtrl', [
 
     server().list().then(function (response) {
       $scope.serverList = _.map(response, function (value, key) {
-//        return {name: key, dbName: value}
         return key;
       });
-      $scope.server = $scope.serverList[0];
-//      console.log($scope.serverList)
     })
 
     $scope.$watch('server', function (newVal) {
-      $location.path('/servers/' + encodeURIComponent(newVal))
-
-      server(newVal).databases().then(function (response) {
-        if (_.isArray(response)) {
-          $scope.databaseList = response;
-        }
-        else {
-          $scope.databaseList = [
-            {name: response.db}
-          ]
-        }
-
-      }, function (response) {
-        console.log('failed request!!!', response.data)
-        $scope.databaseList = null;
-      });
+      if (newVal) {
+        $location.path('/servers/' + encodeURIComponent(newVal))
+        server(newVal).databases().then(function (response) {
+          $scope.databaseList = _.isArray(response)
+            ? response
+            : [].push({name: response.db})
+        }, function (response) {
+          console.log('failed request!!!', response.data)
+          $scope.databaseList = null;
+        });
+      }
     })
 
 

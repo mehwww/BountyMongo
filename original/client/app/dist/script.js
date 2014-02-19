@@ -49,7 +49,7 @@ bountyMongo.controller('MainCtrl', [
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
-    console.log('$routeParams',$routeParams)
+//    console.log('$routeParams',$routeParams)
     if (collectionName) {
       return collection(serverName, databaseName, collectionName).query().then(function (response) {
         $scope.records = response
@@ -114,25 +114,71 @@ bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
   '$location',
+  '$route',
   'server',
   'database',
 
-  function ($scope, $location, server, database) {
-
+  function ($scope, $location, $route, server, database) {
     server().list().then(function (response) {
-      $scope.serverList = response
+      $scope.serverList = response;
+      $scope.server = $scope.serverList[0];
     })
 
+    $scope.selectServer = function (server) {
+      $scope.server = server;
+    }
+
+    $scope.selectDatabase = function (database) {
+      database.isActive = !database.isActive
+      $scope.database = database;
+    }
+
+    $scope.selectCollection = function (collection) {
+//      console.log(collection)
+      $scope.collection = collection;
+    }
+
+//    console.log('server',$scope.server)
+//    console.log('database',$scope.database)
+//    console.log('collection',$scope.collection)
+
     $scope.$watch('server', function (newVal) {
-      if (newVal) {
-        $location.path('/servers/' + encodeURIComponent(newVal))
-        server(newVal).databases().then(function (response) {
-          $scope.databaseList = response;
-        }, function (response) {
+      if (!newVal) return
+      $location.path('/servers/' + encodeURIComponent(newVal))
+      server(newVal).databases().then(
+        function (response) {
+          $scope.databaseList = [];
+          _.each(response, function (element) {
+            $scope.databaseList.push({
+              name: element,
+              isActive: false
+            })
+          })
+        },
+        function (response) {
           console.log('failed request!!!', response.data)
-          $scope.databaseList = null;
-        });
-      }
+          $scope.databaseList = [];
+        }
+      );
+
+    })
+
+    $scope.$watch('database', function (newVal) {
+      if (!newVal) return
+      $location.path('/servers/' + encodeURIComponent($scope.server)
+        + '/databases/' + encodeURIComponent(newVal.name))
+      database($scope.server, newVal.name).collections().then(
+        function (response) {
+          newVal.collectionList = response;
+        }
+      )
+    })
+
+    $scope.$watch('collection', function (newVal) {
+      if (!newVal) return
+      $location.path('/servers/' + encodeURIComponent($scope.server)
+        + '/databases/' + encodeURIComponent($scope.database.name)
+        + '/collections/' + encodeURIComponent(newVal))
     })
 
 
@@ -263,28 +309,27 @@ bountyMongo.directive('bmSidebar', [
   'collection',
   function ($location, database, collection) {
     return {
-      restrict: 'A',
+      restrict: 'AE',
+//      replace:true,
+//      template:'<div>asdfasdf</div> ',
       templateUrl: '/partials/bmSidebar.html',
       link: function (scope, element, attrs) {
+//        console.log('bmSidebarDirective')
+//        console.log('server',scope.server)
+//        console.log('database',scope.database)
         scope.toggleDatabase = function () {
-//          console.log('server', scope.server)
-//          console.log('database', scope.database)
           scope.isOpen = !scope.isOpen;
           $location.path('/servers/' + encodeURIComponent(scope.server) + '/databases/' + encodeURIComponent(scope.database))
-
-//          scope.redirectUrl = '/servers/' + encodeURIComponent(encodeURIComponent(scope.server))
-//            + '/databases/' + encodeURIComponent(encodeURIComponent(scope.database))
           database(scope.server, scope.database).collections().then(function (response) {
             scope.collectionList = response
           })
         }
 
         scope.selectCollection = function (collection) {
-          console.log(collection)
+          scope.collection = collection
           $location.path('/servers/' + encodeURIComponent(scope.server)
             + '/databases/' + encodeURIComponent(scope.database)
             + '/collections/' + encodeURIComponent(collection))
-
         }
 //        scope.toggleDatabase = function () {
 //          scope.isOpen = !scope.isOpen;

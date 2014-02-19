@@ -1,74 +1,92 @@
 <!DOCTYPE html>
 <html lang="en" ng-app='bountyMongo'>
 <head>
-    <meta charset="utf-8">
-    <title>BountyMongo</title>
-    <!--dev:livereload-->
-    <script src="//localhost:35729/livereload.js"></script>
-    <script src="/vendor/jquery/dist/jquery.js"></script>
-    <!--<script src="./vendor/components/bootstrap/dist/js/bootstrap.js"></script>-->
-    <script src="/vendor/underscore/underscore.js"></script>
-    <script src="/vendor/angular/angular.js"></script>
-    <script src="/vendor/angular-route/angular-route.js"></script>
-    <script src="/vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <!--<script src="./vendor/components/angular-resource/angular-resource.js"></script>-->
-    <!--<script src="./vendor/components/angular-route/angular-route.js"></script>-->
-    <link rel="stylesheet" href="/dist/style.css">
-    <script src="/dist/script.js"></script>
+  <meta charset="utf-8">
+  <title>BountyMongo</title>
+  <!--dev:livereload-->
+  <script src="//localhost:35729/livereload.js"></script>
+  <script src="/vendor/jquery/dist/jquery.js"></script>
+  <!--<script src="./vendor/components/bootstrap/dist/js/bootstrap.js"></script>-->
+  <script src="/vendor/underscore/underscore.js"></script>
+  <script src="/vendor/angular/angular.js"></script>
+  <script src="/vendor/angular-route/angular-route.js"></script>
+  <script src="/vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <!--<script src="./vendor/components/angular-resource/angular-resource.js"></script>-->
+  <!--<script src="./vendor/components/angular-route/angular-route.js"></script>-->
+  <link rel="stylesheet" href="/dist/style.css">
+  <script src="/dist/script.js"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
-            <div class="navbar-brand">
-                BountyMongo
-            </div>
-        </div>
+  <div class="container">
+    <div class="navbar-header">
+      <div class="navbar-brand">
+        BountyMongo
+      </div>
     </div>
+  </div>
 </div>
 <div class="container">
-    <div class="col-lg-3" ng-controller="SidebarCtrl">
-        <div class="well">
-            <label>Server List:</label>
-            <select ng-model="server" ng-options="server for server in serverList"></select>
-            <!--<select ng-model="server" ng-options="key as key for (key,value) in serverList"></select>-->
-            <ul class="sidebar-database-list">
-                <li bm-sidebar ng-repeat="database in databaseList"></li>
-            </ul>
+  <div class="col-lg-3" ng-controller="SidebarCtrl">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="btn-group server-btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{server}}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li class="server-btn" ng-repeat="server in serverList">
+              <a ng-click="selectServer(server)">{{server}}</a>
+            </li>
+          </ul>
         </div>
+        <ul class="list-group">
+          <a class="list-group-item" ng-click="selectDatabase(database)"
+             ng-repeat-start="database in databaseList">
+            {{database.name}}
+          </a>
+          <a class="list-group-item list-group-item-sub" ng-click="selectCollection(collection)"
+             ng-if="database.isActive" ng-repeat="collection in database.collectionList"
+             ng-repeat-end>
+            {{collection}}
+          </a>
+        </ul>
+      </div>
     </div>
-    <div class="col-lg-9">
-        <!--<div class="well" ng-controller="QueryCtrl">-->
-            <!--<button type="button" class="btn btn-default" ng-click="openModal()">-->
-                <!--Add Document-->
-            <!--</button>-->
-            <!--<button ng-click="query()" class="btn btn-default">Query</button>-->
-            <!--<label>Page Size:</label>-->
-            <!--<select ng-model="pageSize" ng-options="pageSize for pageSize in pageSizeOptions"></select>-->
-        <!--</div>-->
-        <!--<div class="well" ng-controller="MainCtrl">-->
-            <!--<bm-pagination current-page="page"></bm-pagination>-->
-            <!--<bm-records records="records"></bm-records>-->
-        <!--</div>-->
-        <div ng-view></div>
-    </div>
+  </div>
+  <div class="col-lg-9">
+    <!--<div class="well" ng-controller="QueryCtrl">-->
+    <!--<button type="button" class="btn btn-default" ng-click="openModal()">-->
+    <!--Add Document-->
+    <!--</button>-->
+    <!--<button ng-click="query()" class="btn btn-default">Query</button>-->
+    <!--<label>Page Size:</label>-->
+    <!--<select ng-model="pageSize" ng-options="pageSize for pageSize in pageSizeOptions"></select>-->
+    <!--</div>-->
+    <!--<div class="well" ng-controller="MainCtrl">-->
+    <!--<bm-pagination current-page="page"></bm-pagination>-->
+    <!--<bm-records records="records"></bm-records>-->
+    <!--</div>-->
+    <div ng-view></div>
+  </div>
 </div>
-<script type="text/ng-template" id="addDocumentModal.html">
-    <div class="modal-header">
-        <h5>Only Pure JSON Accept</h3>
-    </div>
-    <div class="modal-body">
-        <textarea rows="12"></textarea>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default">
-            Add
-        </button>
-        <button type="button" class="btn btn-warning">
-            Cancel
-        </button>
-    </div>
-</script>
+<!--<script type="text/ng-template" id="addDocumentModal.html">-->
+  <!--<div class="modal-header">-->
+    <!--<h5>Only Pure JSON Accept</h3>-->
+  <!--</div>-->
+  <!--<div class="modal-body">-->
+    <!--<textarea rows="12"></textarea>-->
+  <!--</div>-->
+  <!--<div class="modal-footer">-->
+    <!--<button type="button" class="btn btn-default">-->
+      <!--Add-->
+    <!--</button>-->
+    <!--<button type="button" class="btn btn-warning">-->
+      <!--Cancel-->
+    <!--</button>-->
+  <!--</div>-->
+<!--</script>-->
 </body>
 </html>
 

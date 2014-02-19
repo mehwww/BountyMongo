@@ -4,28 +4,27 @@ bountyMongo.directive('bmSidebar', [
   'collection',
   function ($location, database, collection) {
     return {
-      restrict: 'A',
+      restrict: 'AE',
+//      replace:true,
+//      template:'<div>asdfasdf</div> ',
       templateUrl: '/partials/bmSidebar.html',
       link: function (scope, element, attrs) {
+//        console.log('bmSidebarDirective')
+//        console.log('server',scope.server)
+//        console.log('database',scope.database)
         scope.toggleDatabase = function () {
-//          console.log('server', scope.server)
-//          console.log('database', scope.database)
           scope.isOpen = !scope.isOpen;
           $location.path('/servers/' + encodeURIComponent(scope.server) + '/databases/' + encodeURIComponent(scope.database))
-
-//          scope.redirectUrl = '/servers/' + encodeURIComponent(encodeURIComponent(scope.server))
-//            + '/databases/' + encodeURIComponent(encodeURIComponent(scope.database))
           database(scope.server, scope.database).collections().then(function (response) {
             scope.collectionList = response
           })
         }
 
         scope.selectCollection = function (collection) {
-          console.log(collection)
+          scope.collection = collection
           $location.path('/servers/' + encodeURIComponent(scope.server)
             + '/databases/' + encodeURIComponent(scope.database)
             + '/collections/' + encodeURIComponent(collection))
-
         }
 //        scope.toggleDatabase = function () {
 //          scope.isOpen = !scope.isOpen;

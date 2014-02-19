@@ -5791,10 +5791,12 @@ textarea {
 }
 .server-btn-group {
   margin-bottom: 15px;
-  width: 100%;
 }
-.server-btn-group .btn {
-  width: 100%;
+.server-btn-group > .btn {
+  width: 157px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .list-group-item-sub {
   color: #808080;
@@ -5817,4 +5819,7 @@ a.list-group-item-sub.active:focus {
   color: #fff;
   background-color: #808080;
   border-color: #808080;
+}
+.list-group-item-sub {
+  padding-left: 20px;
 }

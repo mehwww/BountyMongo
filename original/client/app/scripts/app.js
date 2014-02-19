@@ -13,7 +13,7 @@ bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvi
       controller: 'MainCtrl'
     })
     .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
-      templateUrl: '/partials/bmMain.html',
+      templateUrl: '/partials/bmRecords.html',
       controller: 'MainCtrl'
     })
     .otherwise({redirectTo: '/'})

@@ -30,23 +30,28 @@
   <div class="col-lg-3" ng-controller="SidebarCtrl">
     <div class="panel panel-default">
       <div class="panel-body">
-        <div class="btn-group server-btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            {{server}}
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li class="server-btn" ng-repeat="server in serverList">
-              <a ng-click="selectServer(server)">{{server}}</a>
-            </li>
-          </ul>
+        <div class="btn-group">
+          <div class="btn-group server-btn-group">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              {{server}}
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li class="server-btn" ng-repeat="server in serverList">
+                <a ng-click="selectServer(server)">{{server}}</a>
+              </li>
+            </ul>
+          </div>
+          <button type="button" class="btn btn-default">&plus;</button>
+          <button type="button" class="btn btn-default">&minus;</button>
         </div>
+
         <ul class="list-group">
           <a class="list-group-item" ng-click="selectDatabase(database)"
              ng-repeat-start="database in databaseList">
             {{database.name}}
           </a>
-          <a class="list-group-item list-group-item-sub" ng-click="selectCollection(collection)"
+          <a class="list-group-item list-group-item-sub" ng-click="selectCollection(database,collection)"
              ng-if="database.isActive" ng-repeat="collection in database.collectionList"
              ng-repeat-end>
             {{collection}}
@@ -72,20 +77,20 @@
   </div>
 </div>
 <!--<script type="text/ng-template" id="addDocumentModal.html">-->
-  <!--<div class="modal-header">-->
-    <!--<h5>Only Pure JSON Accept</h3>-->
-  <!--</div>-->
-  <!--<div class="modal-body">-->
-    <!--<textarea rows="12"></textarea>-->
-  <!--</div>-->
-  <!--<div class="modal-footer">-->
-    <!--<button type="button" class="btn btn-default">-->
-      <!--Add-->
-    <!--</button>-->
-    <!--<button type="button" class="btn btn-warning">-->
-      <!--Cancel-->
-    <!--</button>-->
-  <!--</div>-->
+<!--<div class="modal-header">-->
+<!--<h5>Only Pure JSON Accept</h3>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--<textarea rows="12"></textarea>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+<!--<button type="button" class="btn btn-default">-->
+<!--Add-->
+<!--</button>-->
+<!--<button type="button" class="btn btn-warning">-->
+<!--Cancel-->
+<!--</button>-->
+<!--</div>-->
 <!--</script>-->
 </body>
 </html>

@@ -21,8 +21,9 @@ bountyMongo.controller('SidebarCtrl', [
       $scope.database = database;
     }
 
-    $scope.selectCollection = function (collection) {
+    $scope.selectCollection = function (database,collection) {
 //      console.log(collection)
+      $scope.database = database;
       $scope.collection = collection;
     }
 

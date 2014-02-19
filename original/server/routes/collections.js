@@ -46,6 +46,10 @@ exports.find = function (req, res) {
   })
 }
 
+exports.count = function(req,res){
+  res.send('asdf')
+}
+
 
 var queryStringParser = function(req){
   var query;

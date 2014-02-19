@@ -15,7 +15,7 @@ bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvi
       controller: 'MainCtrl'
     })
     .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
-      templateUrl: '/partials/bmMain.html',
+      templateUrl: '/partials/bmRecords.html',
       controller: 'MainCtrl'
     })
     .otherwise({redirectTo: '/'})
@@ -133,8 +133,9 @@ bountyMongo.controller('SidebarCtrl', [
       $scope.database = database;
     }
 
-    $scope.selectCollection = function (collection) {
+    $scope.selectCollection = function (database,collection) {
 //      console.log(collection)
+      $scope.database = database;
       $scope.collection = collection;
     }
 
@@ -386,7 +387,7 @@ bountyMongo.factory('collection', [
 
   function ($http, bucket) {
     return function (serverName, databaseName, collectionName) {
-      var queryOptions = arguments[3];
+//      var queryOptions = arguments[3];
       var serverURL = bucket.serverURL;
 
       var Resource = {};
@@ -399,13 +400,14 @@ bountyMongo.factory('collection', [
           return response.data;
         })
       }
-      Resource.query = function () {
+      Resource.query = function (queryOptions) {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/' + encodeURIComponent(databaseName)
-          + '/collections/' + encodeURIComponent(collectionName) + '?';
+          + '/collections/' + encodeURIComponent(collectionName);
 
         if (queryOptions) {
+          url = url + '?';
           if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
           if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
           if (queryOptions.l)url = url + 'l=' + queryOptions.l;

@@ -72,6 +72,7 @@ app.delete('/api/servers/:serverName/databases/:databaseName', databases.delete)
 app.get('/api/servers/:serverName/databases/:databaseName/collections',collections.list)
 //get the specified collection's documents
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
+app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName/count', collections.count)
 //add new document
 //app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 //app.delete('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)

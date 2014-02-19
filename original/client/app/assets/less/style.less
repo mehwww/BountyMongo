@@ -12,7 +12,7 @@ body {
 //  margin-bottom: 0px;
 //}
 
-.nav, .pagination, .carousel, .panel-title, .btn, .server-btn a ,.list-group-item{
+.nav, .pagination, .carousel, .panel-title, .btn, .server-btn a, .list-group-item {
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -27,10 +27,16 @@ textarea {
 
 .server-btn-group {
   margin-bottom: 15px;
-  width: 100%;
-  .btn {
-    width: 100%;
+  & > .btn {
+    width: 157px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
 .list-group-item-variant(sub; #F7F7F9; lighten(#000, 50%));
+
+.list-group-item-sub {
+  padding-left: 20px;
+}

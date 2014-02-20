@@ -46,9 +46,9 @@ bountyMongo.controller('AddServerModalCtrl', [
           $modalInstance.close(response);
         },
         function (response) {
-          $modalInstance.close(response);
+          $modalInstance.dismiss(response);
         }
-      );
+      )
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
@@ -150,12 +150,12 @@ bountyMongo.controller('RemoveServerModalCtrl', [
           $modalInstance.close(response);
         },
         function (response) {
-          $modalInstance.close(response);
+          $modalInstance.dismiss(response);
         }
       );
     };
     $scope.no = function () {
-      $modalInstance.dismiss('no');
+      $modalInstance.dismiss('cancel');
     };
   }
 ])
@@ -202,9 +202,10 @@ bountyMongo.controller('SidebarCtrl', [
         windowClass: 'add-server-modal'
       });
       modalInstance.result.then(function (mongodb) {
-        console.log('mongodb', mongodb)
+        $scope.serverList = response;
+        $scope.server = $scope.serverList[0];
       }, function () {
-        console.log('Modal dismissed at: ' + new Date());
+//        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
@@ -219,16 +220,17 @@ bountyMongo.controller('SidebarCtrl', [
           }
         }
       })
-      modalInstance.result.then(function (remove) {
-        console.log('remove', remove)
+      modalInstance.result.then(function (response) {
+        $scope.serverList = response;
+        $scope.server = $scope.serverList[0];
       }, function () {
-        console.log('Modal dismissed at: ' + new Date());
+//        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
 
     $scope.$watch('server', function (newVal) {
-      if (!newVal) return
+      if (!newVal) $location.path('/')
       $location.path('/servers/' + encodeURIComponent(newVal))
       server(newVal).databases().then(
         function (response) {
@@ -604,24 +606,36 @@ bountyMongo.factory('server', [
       var Resource = {};
       Resource.list = function () {
         var url = serverURL + '/servers/';
-        return $http.get(url).then(function (response) {
-          return _.map(response.data, function (value, key) {
-            return key;
-          });
-        });
+        return $http.get(url).then(
+          function (response) {
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
+          },
+          function(response){
+            return response.data
+          }
+        );
       };
       Resource.query = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
-        return $http.get(url).then(function (response) {
-          return response.data;
-        });
+        return $http.get(url).then(
+          function (response) {
+            return response.data;
+          },
+          function (response) {
+            return response.data
+          }
+        );
       };
       Resource.add = function (mongodbUrl) {
         var url = serverURL + '/servers/'
         return $http.post(url, {url: mongodbUrl}).then(
           function (response) {
-            return response.data
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
           },
           function (response) {
             return response.data
@@ -633,7 +647,9 @@ bountyMongo.factory('server', [
           + '/servers/' + encodeURIComponent(serverName)
         return $http.delete(url).then(
           function (response) {
-            return response.data
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
           },
           function (response) {
             return response.data

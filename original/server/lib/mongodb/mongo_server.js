@@ -1,5 +1,6 @@
 var mongoClient = require('./mongo_client');
 var urlParser = require('./url_parser');
+var BountyError = require('../customError').bountyError;
 var path = require('path');
 var fs = require('fs');
 
@@ -28,13 +29,16 @@ exports.listServer = function () {
 
 exports.addServer = function (url) {
   if (!url) {
-    throw new Error('pls post with mongodb url')
+    throw new BountyError('need mongodb url')
   }
   var server = urlParser(url);
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString())
+  var newServer = {};
+
   if (serverList[server.name]) {
-    throw new Error('Server record already exists')
+    throw new BountyError('record already exists')
   }
+
   serverList[server.name] = {
     url: server.url,
     dbName: server.dbName
@@ -42,20 +46,25 @@ exports.addServer = function (url) {
   fs.writeFileSync('./serverList.json', JSON.stringify(serverList, null, 2))
   //no need
   mongoClient.deleteClient(server.name);
-  return serverList;
+
+  newServer[server.name] = {
+    url: server.url,
+    dbName: server.dbName
+  }
+  return newServer;
 }
 
 exports.updateServer = function (serverName, url) {
   var server = urlParser(url)
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString())
   if (!server) {
-    throw new Error('Invaild mongodb url')
+    throw new BountyError('invaild mongodb url')
   }
   if (!serverList[serverName]) {
-    throw new Error('Server record does not exists')
+    throw new BountyError('record does not exists')
   }
   if (serverName !== server.name) {
-    throw new Error('mongodb url does not match')
+    throw new BountyError('mongodb url does not match')
   }
   serverList[serverName] = {url: server.url};
   fs.writeFileSync('./serverList.json', JSON.stringify(serverList, null, 2))
@@ -66,7 +75,7 @@ exports.updateServer = function (serverName, url) {
 exports.deleteServer = function (serverName) {
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString())
   if (!serverList[serverName]) {
-    throw new Error('Server record does not exists')
+    throw new BountyError('record does not exists')
   }
   delete serverList[serverName];
   fs.writeFileSync('./serverList.json', JSON.stringify(serverList, null, 2))

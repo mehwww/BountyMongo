@@ -9,24 +9,36 @@ bountyMongo.factory('server', [
       var Resource = {};
       Resource.list = function () {
         var url = serverURL + '/servers/';
-        return $http.get(url).then(function (response) {
-          return _.map(response.data, function (value, key) {
-            return key;
-          });
-        });
+        return $http.get(url).then(
+          function (response) {
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
+          },
+          function(response){
+            return response.data
+          }
+        );
       };
       Resource.query = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
-        return $http.get(url).then(function (response) {
-          return response.data;
-        });
+        return $http.get(url).then(
+          function (response) {
+            return response.data;
+          },
+          function (response) {
+            return response.data
+          }
+        );
       };
       Resource.add = function (mongodbUrl) {
         var url = serverURL + '/servers/'
         return $http.post(url, {url: mongodbUrl}).then(
           function (response) {
-            return response.data
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
           },
           function (response) {
             return response.data
@@ -38,7 +50,9 @@ bountyMongo.factory('server', [
           + '/servers/' + encodeURIComponent(serverName)
         return $http.delete(url).then(
           function (response) {
-            return response.data
+            return _.map(response.data, function (value, key) {
+              return key;
+            });
           },
           function (response) {
             return response.data

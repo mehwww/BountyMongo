@@ -1,14 +1,22 @@
 {
-  "localhost": {
-    "url": "mongodb://localhost",
-    "dbName": "admin"
-  },
-  "root@loaclhost": {
-    "url": "mongodb://root:19910523@loaclhost",
+  "192.168.1.100": {
+    "url": "mongodb://192.168.1.100",
     "dbName": "admin"
   },
   "root@localhost": {
     "url": "mongodb://root:19910523@localhost",
+    "dbName": "admin"
+  },
+  "localhost": {
+    "url": "mongodb://localhost",
+    "dbName": "admin"
+  },
+  "testUser@localhost/test": {
+    "url": "mongodb://testUser@localhost/test",
+    "dbName": "test"
+  },
+  "127.0.0.1": {
+    "url": "mongodb://127.0.0.1",
     "dbName": "admin"
   }
 }

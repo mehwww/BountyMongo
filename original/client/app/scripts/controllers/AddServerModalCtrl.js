@@ -12,9 +12,9 @@ bountyMongo.controller('AddServerModalCtrl', [
           $modalInstance.close(response);
         },
         function (response) {
-          $modalInstance.close(response);
+          $modalInstance.dismiss(response);
         }
-      );
+      )
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');

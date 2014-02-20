@@ -1,9 +1,10 @@
 module.exports = function (err, result) {
   if (err) {
-    return {
-      ok: 0,
-      errmsg: err.toString()
-    };
+//    return {
+//      ok: 0,
+//      errmsg: err
+//    };
+    return err;
   }
   else {
     return result;

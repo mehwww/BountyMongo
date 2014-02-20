@@ -35,9 +35,10 @@ bountyMongo.controller('SidebarCtrl', [
         windowClass: 'add-server-modal'
       });
       modalInstance.result.then(function (mongodb) {
-        console.log('mongodb', mongodb)
+        $scope.serverList = response;
+        $scope.server = $scope.serverList[0];
       }, function () {
-        console.log('Modal dismissed at: ' + new Date());
+//        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
@@ -52,16 +53,17 @@ bountyMongo.controller('SidebarCtrl', [
           }
         }
       })
-      modalInstance.result.then(function (remove) {
-        console.log('remove', remove)
+      modalInstance.result.then(function (response) {
+        $scope.serverList = response;
+        $scope.server = $scope.serverList[0];
       }, function () {
-        console.log('Modal dismissed at: ' + new Date());
+//        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
 
     $scope.$watch('server', function (newVal) {
-      if (!newVal) return
+      if (!newVal) $location.path('/')
       $location.path('/servers/' + encodeURIComponent(newVal))
       server(newVal).databases().then(
         function (response) {

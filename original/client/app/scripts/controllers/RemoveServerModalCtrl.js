@@ -13,12 +13,12 @@ bountyMongo.controller('RemoveServerModalCtrl', [
           $modalInstance.close(response);
         },
         function (response) {
-          $modalInstance.close(response);
+          $modalInstance.dismiss(response);
         }
       );
     };
     $scope.no = function () {
-      $modalInstance.dismiss('no');
+      $modalInstance.dismiss('cancel');
     };
   }
 ])

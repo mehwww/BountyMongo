@@ -7,6 +7,7 @@ var _ = require('underscore')
 var util = require('util')
 
 
+
 exports.list = function (req, res) {
 //  try {
 //    var serverList = mongoServer.listServer();
@@ -79,15 +80,19 @@ exports.list = function (req, res) {
 
 exports.find = function (req, res) {
   var serverName = req.param('serverName');
-  var dbName = 'admin';
-  if (serverName.indexOf("/") != -1) {
-    dbName = serverName.split("/")[1];
-  }
-  if (dbName !== 'admin') {
-    res.statusCode = 404;
-    res.send(respond("It's not an admin account", null))
-    return
-  }
+//  var dbName = 'admin';
+//  if (serverName.indexOf("/") != -1) {
+//    dbName = serverName.split("/")[1];
+//  }
+//  if (dbName !== 'admin') {
+//    res.statusCode = 404;
+//    var err = new Error("not an admin account")
+//    err.name = 'MongoError';
+//    err.ok = 0;
+//    err.errmsg = err.message;
+//    res.send(respond(err, null))
+//    return
+//  }
   async.waterfall([
     function (callback) {
       mongoClient.getClient(serverName, callback)
@@ -107,8 +112,9 @@ exports.add = function (req, res) {
     res.send(respond(null, mongoServer.addServer(mongodbUrl)));
   }
   catch (err) {
+    console.log(err)
     if (err) res.statusCode = 404;
-    res.send(respond(err, null))
+    res.send(err)
   }
 }
 

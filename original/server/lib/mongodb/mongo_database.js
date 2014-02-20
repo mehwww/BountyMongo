@@ -6,7 +6,8 @@ exports.collectionNames = function (db, callback) {
 
 //SO STUPID lol
 exports.listDatabases = function (db, callback) {
-  var stats = db.stats(function (err, stats) {
+  db.stats(function (err, stats) {
+    if (err) return callback(err,null)
     if (stats.db !== "admin") {
       return callback(err, stats)
     }

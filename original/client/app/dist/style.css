@@ -5827,7 +5827,7 @@ a.list-group-item-sub.active:focus {
   width: 400px;
 }
 .remove-server-modal .modal-body {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-bottom: 10px;
 }
 .remove-server-modal .modal-footer {

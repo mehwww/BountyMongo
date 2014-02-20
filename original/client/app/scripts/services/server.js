@@ -21,7 +21,32 @@ bountyMongo.factory('server', [
         return $http.get(url).then(function (response) {
           return response.data;
         });
+      };
+      Resource.add = function (mongodbUrl) {
+        var url = serverURL + '/servers/'
+        return $http.post(url, {url: mongodbUrl}).then(
+          function (response) {
+            return response.data
+          },
+          function (response) {
+            return response.data
+          }
+        );
       }
+      Resource.delete = function () {
+        var url = serverURL
+          + '/servers/' + encodeURIComponent(serverName)
+        return $http.delete(url).then(
+          function (response) {
+            return response.data
+          },
+          function (response) {
+            return response.data
+          }
+        );
+      }
+
+
       Resource.databases = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)

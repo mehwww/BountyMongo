@@ -19,7 +19,10 @@ exports.getClient = function (serverName, callback) {
   }
   var serverUrl = serverList[serverName].url
 
-  MongoClient.connect(serverUrl, function (err, db) {
+  MongoClient.connect(serverUrl, {
+//    numberOfRetries: 1,
+    retryMiliSeconds:100
+  }, function (err, db) {
     if (err)return callback(err, db);
     clientInstance[serverName] = db;
     return callback(null, db);

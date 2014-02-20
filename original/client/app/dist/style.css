@@ -5823,3 +5823,24 @@ a.list-group-item-sub.active:focus {
 .list-group-item-sub {
   padding-left: 20px;
 }
+.remove-server-modal > .modal-dialog {
+  width: 400px;
+}
+.remove-server-modal .modal-body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.remove-server-modal .modal-footer {
+  padding-top: 9px;
+  padding-bottom: 10px;
+  margin-top: 0px;
+}
+.add-server-modal .modal-header {
+  padding-top: 9px;
+  padding-bottom: 10px;
+}
+.add-server-modal .modal-footer {
+  padding-top: 9px;
+  padding-bottom: 10px;
+  margin-top: 0px;
+}

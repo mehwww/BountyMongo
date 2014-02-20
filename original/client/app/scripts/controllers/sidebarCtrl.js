@@ -3,10 +3,11 @@ bountyMongo.controller('SidebarCtrl', [
   '$scope',
   '$location',
   '$route',
+  '$modal',
   'server',
   'database',
 
-  function ($scope, $location, $route, server, database) {
+  function ($scope, $location, $route, $modal, server, database) {
     server().list().then(function (response) {
       $scope.serverList = response;
       $scope.server = $scope.serverList[0];
@@ -21,15 +22,43 @@ bountyMongo.controller('SidebarCtrl', [
       $scope.database = database;
     }
 
-    $scope.selectCollection = function (database,collection) {
+    $scope.selectCollection = function (database, collection) {
 //      console.log(collection)
       $scope.database = database;
       $scope.collection = collection;
     }
 
-//    console.log('server',$scope.server)
-//    console.log('database',$scope.database)
-//    console.log('collection',$scope.collection)
+    $scope.addServer = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'addServerModal.html',
+        controller: 'AddServerModalCtrl',
+        windowClass: 'add-server-modal'
+      });
+      modalInstance.result.then(function (mongodb) {
+        console.log('mongodb', mongodb)
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
+    $scope.removeServer = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'removeServerModal.html',
+        controller: 'RemoveServerModalCtrl',
+        windowClass: 'remove-server-modal',
+        resolve: {
+          serverName: function () {
+            return $scope.server
+          }
+        }
+      })
+      modalInstance.result.then(function (remove) {
+        console.log('remove', remove)
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
 
     $scope.$watch('server', function (newVal) {
       if (!newVal) return
@@ -49,7 +78,6 @@ bountyMongo.controller('SidebarCtrl', [
           $scope.databaseList = [];
         }
       );
-
     })
 
     $scope.$watch('database', function (newVal) {

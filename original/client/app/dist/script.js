@@ -31,6 +31,31 @@ bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvi
 //}])
 
 
+//####  ./app/scripts/controllers/AddServerModalCtrl.js
+bountyMongo.controller('AddServerModalCtrl', [
+
+  '$scope',
+  '$modalInstance',
+  'server',
+
+  function ($scope, $modalInstance, server) {
+    $scope.mongodb = {}
+    $scope.add = function () {
+      server().add($scope.mongodb.url).then(
+        function (response) {
+          $modalInstance.close(response);
+        },
+        function (response) {
+          $modalInstance.close(response);
+        }
+      );
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  }
+])
+
 //####  ./app/scripts/controllers/MainCtrl.js
 bountyMongo.controller('MainCtrl', [
 
@@ -109,16 +134,47 @@ bountyMongo.controller('QueryCtrl', [
     }
   }])
 
+//####  ./app/scripts/controllers/RemoveServerModalCtrl.js
+bountyMongo.controller('RemoveServerModalCtrl', [
+
+  '$scope',
+  '$modalInstance',
+  'server',
+  'serverName',
+
+  function ($scope, $modalInstance, server, serverName) {
+    $scope.serverName = serverName;
+    $scope.yes = function () {
+      server(serverName).delete().then(
+        function (response) {
+          $modalInstance.close(response);
+        },
+        function (response) {
+          $modalInstance.close(response);
+        }
+      );
+    };
+    $scope.no = function () {
+      $modalInstance.dismiss('no');
+    };
+  }
+])
+/**
+ * Created by meh on 14-2-20.
+ */
+
+
 //####  ./app/scripts/controllers/SidebarCtrl.js
 bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
   '$location',
   '$route',
+  '$modal',
   'server',
   'database',
 
-  function ($scope, $location, $route, server, database) {
+  function ($scope, $location, $route, $modal, server, database) {
     server().list().then(function (response) {
       $scope.serverList = response;
       $scope.server = $scope.serverList[0];
@@ -133,15 +189,43 @@ bountyMongo.controller('SidebarCtrl', [
       $scope.database = database;
     }
 
-    $scope.selectCollection = function (database,collection) {
+    $scope.selectCollection = function (database, collection) {
 //      console.log(collection)
       $scope.database = database;
       $scope.collection = collection;
     }
 
-//    console.log('server',$scope.server)
-//    console.log('database',$scope.database)
-//    console.log('collection',$scope.collection)
+    $scope.addServer = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'addServerModal.html',
+        controller: 'AddServerModalCtrl',
+        windowClass: 'add-server-modal'
+      });
+      modalInstance.result.then(function (mongodb) {
+        console.log('mongodb', mongodb)
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
+    $scope.removeServer = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'removeServerModal.html',
+        controller: 'RemoveServerModalCtrl',
+        windowClass: 'remove-server-modal',
+        resolve: {
+          serverName: function () {
+            return $scope.server
+          }
+        }
+      })
+      modalInstance.result.then(function (remove) {
+        console.log('remove', remove)
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
 
     $scope.$watch('server', function (newVal) {
       if (!newVal) return
@@ -161,7 +245,6 @@ bountyMongo.controller('SidebarCtrl', [
           $scope.databaseList = [];
         }
       );
-
     })
 
     $scope.$watch('database', function (newVal) {
@@ -533,7 +616,32 @@ bountyMongo.factory('server', [
         return $http.get(url).then(function (response) {
           return response.data;
         });
+      };
+      Resource.add = function (mongodbUrl) {
+        var url = serverURL + '/servers/'
+        return $http.post(url, {url: mongodbUrl}).then(
+          function (response) {
+            return response.data
+          },
+          function (response) {
+            return response.data
+          }
+        );
       }
+      Resource.delete = function () {
+        var url = serverURL
+          + '/servers/' + encodeURIComponent(serverName)
+        return $http.delete(url).then(
+          function (response) {
+            return response.data
+          },
+          function (response) {
+            return response.data
+          }
+        );
+      }
+
+
       Resource.databases = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)

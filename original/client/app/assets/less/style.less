@@ -35,8 +35,42 @@ textarea {
   }
 }
 
-.list-group-item-variant(sub; #F7F7F9; lighten(#000, 50%));
+.list-group-item-variant(sub; @list-sub-bg; @list-sub-text);
 
 .list-group-item-sub {
   padding-left: 20px;
+}
+
+.remove-server-modal {
+  & > .modal-dialog {
+    width: 400px;
+  }
+  .modal-body{
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .modal-footer{
+    padding-top: 9px;
+    padding-bottom: 10px;
+    margin-top: 0px;
+  }
+}
+
+.add-server-modal {
+//  & > .modal-dialog {
+//    width: 400px;
+//  }
+//  .modal-body{
+//    padding-top: 10px;
+//    padding-bottom: 10px;
+//  }
+  .modal-header{
+    padding-top: 9px;
+    padding-bottom: 10px;
+  }
+  .modal-footer{
+    padding-top: 9px;
+    padding-bottom: 10px;
+    margin-top: 0px;
+  }
 }

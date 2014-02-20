@@ -1,3 +1,5 @@
+var BountyError = require('../customError').bountyError;
+
 module.exports = function (url) {
   var connectionPart = '';
   var authPart = '';
@@ -7,7 +9,7 @@ module.exports = function (url) {
   var password = '';
   var serverName = '';
 
-  if (url.indexOf("mongodb://") != 0)return null;
+  if (url.indexOf("mongodb://") != 0)throw new BountyError('invaild mongodb url ');
 
   if (url.indexOf("?") != -1) {
     queryStringPart = url.substr(url.indexOf("?") + 1);

@@ -57,9 +57,9 @@ exports.addServer = function (url) {
 exports.updateServer = function (serverName, url) {
   var server = urlParser(url)
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString())
-  if (!server) {
-    throw new BountyError('invaild mongodb url')
-  }
+//  if (!server) {
+//    throw new BountyError('invaild mongodb url')
+//  }
   if (!serverList[serverName]) {
     throw new BountyError('record does not exists')
   }

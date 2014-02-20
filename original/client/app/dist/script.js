@@ -201,10 +201,15 @@ bountyMongo.controller('SidebarCtrl', [
         controller: 'AddServerModalCtrl',
         windowClass: 'add-server-modal'
       });
-      modalInstance.result.then(function (mongodb) {
-        $scope.serverList = response;
-        $scope.server = $scope.serverList[0];
-      }, function () {
+      modalInstance.result.then(function (response) {
+        server().list().then(function (response) {
+          $scope.serverList = response;
+        })
+        $scope.server = response[0];
+
+        console.log(response)
+      }, function (response) {
+        console.log(response)
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }

@@ -15,7 +15,7 @@ bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvi
       controller: 'MainCtrl'
     })
     .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
-      templateUrl: '/partials/bmRecords.html',
+      templateUrl: '/partials/bountyRecords.html',
       controller: 'MainCtrl'
     })
     .otherwise({redirectTo: '/'})
@@ -625,7 +625,7 @@ bountyMongo.factory('server', [
       Resource.query = function () {
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
-        return $http.get(url).then(
+        return $http.get(url,{timeout:2000}).then(
           function (response) {
             return response.data;
           },
@@ -667,7 +667,7 @@ bountyMongo.factory('server', [
         var url = serverURL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/'
-        return $http.get(url).then(function (response) {
+        return $http.get(url,{timeout:2000}).then(function (response) {
           var databases = [];
           if (_.isArray(response.data)) {
             _.map(response.data, function (value, key) {

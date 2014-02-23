@@ -6,16 +6,24 @@ var util = require('util');
 var _ = require('underscore')
 
 //MongoClient.connect('mongodb://root:19910523@localhost', function (err, db) {
-//MongoClient.connect('mongodb://testUser:19910523@localhost/test', function (err, db) {
-//  db.collectionNames(function (err, items) {
-//    if (err)console.log(util.inspect(err));
-//    else console.log(util.inspect(items));
-//    db.close();
-//  })
-//})
+console.log(new Date())
 
-console.log(urlParser("mongodb://testUser:19923@localhost"))
+MongoClient.connect('mongodb://testUser:19910523@127.0.0.2/test', {
+  server: {
+    socketOptions: {
+//        noDelay:true
+//        timeout:2000
+//      keepAlive:100,
+//      socketTimeoutMS:2000,
+      connectTimeoutMS: 2000
+    }
+  }
+}, function (err, db) {
+  console.log(new Date())
 
-
-//fs.writeFile('./mongodb/servers.json', JSON.stringify(servers, null, 2), function (err) {
-//})
+  db.collectionNames(function (err, items) {
+    if (err)console.log(util.inspect(err));
+    else console.log(util.inspect(items));
+    db.close();
+  })
+})

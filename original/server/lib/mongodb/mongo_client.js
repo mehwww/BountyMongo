@@ -1,6 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
-//var Server = require('mongodb').Server;
+var BountyError = require('../customError').bountyError;
+var urlParser = require('./url_parser');
 
+var net = require('net');
 var fs = require('fs')
 var util = require('util');
 
@@ -11,18 +13,27 @@ exports.getClient = function (serverName, callback) {
   if (clientInstance[serverName]) {
     return callback(null, clientInstance[serverName])
   }
+//  try{
+//    var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
+//    var server = serverList[serverName];
+//    server =
+//  }
+//  catch (err){
+//    callback(err,null);
+//  }
   var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
   var server = serverList[serverName];
-  if (!server) {
-    var err = new Error('pls add this server first');
-    return callback(err, null);
-  }
-  var serverUrl = serverList[serverName].url
-
+  if (!server) return callback(new BountyError('need add first'), null);
+  var serverUrl = server.url
+//  setTimeout(function () {
+//    callback(new BountyError('connect time out'), null)
+//  }, 2000);
   MongoClient.connect(serverUrl, {
     server: {
       socketOptions: {
-        connectTimeoutMS:500
+//        noDelay:true
+//        timeout:2000
+        connectTimeoutMS: 2000
       }
     }
   }, function (err, db) {

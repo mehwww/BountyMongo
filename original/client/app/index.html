@@ -30,8 +30,8 @@
   <div class="col-lg-3" ng-controller="SidebarCtrl">
     <div class="panel panel-default">
       <div class="panel-body">
-        <div class="btn-group">
-          <div class="btn-group server-btn-group">
+        <div class="btn-group server-btn-group">
+          <div class="btn-group server-btn">
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               {{server}}
               <span class="caret"></span>
@@ -42,8 +42,10 @@
               </li>
             </ul>
           </div>
-          <button type="button" class="btn btn-default" ng-click="addServer()">&plus;</button>
-          <button type="button" class="btn btn-default" ng-click="removeServer()">&minus;</button>
+          <div class="btn-group server-btn-operation">
+            <a class="btn btn-default" ng-click="addServer()">&plus;</a>
+            <a class="btn btn-default" ng-click="removeServer()">&minus;</a>
+          </div>
         </div>
 
         <ul class="list-group">

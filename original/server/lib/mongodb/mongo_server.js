@@ -41,7 +41,9 @@ exports.addServer = function (url) {
 
   serverList[server.name] = {
     url: server.url,
-    dbName: server.dbName
+    dbName: server.dbName,
+    host:server.host,
+    port:server.port
   };
   fs.writeFileSync('./serverList.json', JSON.stringify(serverList, null, 2))
   //no need

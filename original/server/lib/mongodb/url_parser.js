@@ -8,6 +8,8 @@ module.exports = function (url) {
   var username = '';
   var password = '';
   var serverName = '';
+  var host = '';
+  var port = '27017'
 
   if (url.indexOf("mongodb://") != 0)throw new BountyError('invaild mongodb url ');
 
@@ -18,9 +20,9 @@ module.exports = function (url) {
     connectionPart = url.substring("mongodb://".length);
   }
 
-  if(connectionPart.indexOf("/") != -1) {
+  if (connectionPart.indexOf("/") != -1) {
     dbName = connectionPart.split("/")[1];
-//    connectionPart = connectionPart.split("/")[0];
+    connectionPart = connectionPart.split("/")[0];
   }
 
   if (connectionPart.indexOf("@") != -1) {
@@ -36,9 +38,20 @@ module.exports = function (url) {
     serverName = connectionPart;
   }
 
+  if (connectionPart.indexOf(":") != -1) {
+    host = connectionPart.split(":")[0];
+    port = connectionPart.split(":")[1];
+  }
+  else {
+    host = connectionPart;
+  }
+
+
   return {
     name: serverName,
-    dbName:dbName,
-    url: url
+    dbName: dbName,
+    url: url,
+    host: host,
+    port: port
   };
 }

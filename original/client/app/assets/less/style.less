@@ -27,12 +27,29 @@ textarea {
 
 .server-btn-group {
   margin-bottom: 15px;
-  & > .btn {
-    width: 157px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  width: 100%;
+  & > .server-btn > {
+    width: 100%;
+    margin-right: -70px;
+    padding-right: 65px;
+    .btn {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
   }
+  & > .server-btn-operation {
+    display: inline-block;
+    float: right;
+//    margin-left: -67px;
+  }
+  //  & > .btn {
+  //    width: 157px;
+  //    overflow: hidden;
+  //    white-space: nowrap;
+  //    text-overflow: ellipsis;
+  //  }
 }
 
 .list-group-item-variant(sub; @list-sub-bg; @list-sub-text);
@@ -45,11 +62,11 @@ textarea {
   & > .modal-dialog {
     width: 400px;
   }
-  .modal-body{
+  .modal-body {
     padding-top: 20px;
     padding-bottom: 10px;
   }
-  .modal-footer{
+  .modal-footer {
     padding-top: 9px;
     padding-bottom: 10px;
     margin-top: 0px;
@@ -57,18 +74,18 @@ textarea {
 }
 
 .add-server-modal {
-//  & > .modal-dialog {
-//    width: 400px;
-//  }
-//  .modal-body{
-//    padding-top: 10px;
-//    padding-bottom: 10px;
-//  }
-  .modal-header{
+  //  & > .modal-dialog {
+  //    width: 400px;
+  //  }
+  //  .modal-body{
+  //    padding-top: 10px;
+  //    padding-bottom: 10px;
+  //  }
+  .modal-header {
     padding-top: 9px;
     padding-bottom: 10px;
   }
-  .modal-footer{
+  .modal-footer {
     padding-top: 9px;
     padding-bottom: 10px;
     margin-top: 0px;

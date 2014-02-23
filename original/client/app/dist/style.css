@@ -5791,12 +5791,22 @@ textarea {
 }
 .server-btn-group {
   margin-bottom: 15px;
+  width: 100%;
 }
-.server-btn-group > .btn {
-  width: 157px;
+.server-btn-group > .server-btn {
+  width: 100%;
+  margin-right: -70px;
+  padding-right: 65px;
+}
+.server-btn-group > .server-btn .btn {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  width: 100%;
+}
+.server-btn-group > .server-btn-operation {
+  display: inline-block;
+  float: right;
 }
 .list-group-item-sub {
   color: #808080;

@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 //app.use(express.bodyParser());
 app.use(express.methodOverride());
-// app.use(express.cookieParser('your secret here'));
+app.use(express.cookieParser());
 // app.use(express.session());
 // app.use(app.router);
 

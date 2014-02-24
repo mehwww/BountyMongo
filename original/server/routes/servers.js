@@ -71,6 +71,7 @@ exports.list = function (req, res) {
 //  }
   try {
     res.send(respond(null, mongoServer.listServer()))
+    console.log('cookies',req.headers)
   }
   catch (err) {
     res.statusCode = 404;
@@ -79,6 +80,7 @@ exports.list = function (req, res) {
 }
 
 exports.find = function (req, res) {
+  console.log('headers',req.headers)
   var serverName = req.param('serverName');
 //  var dbName = 'admin';
 //  if (serverName.indexOf("/") != -1) {

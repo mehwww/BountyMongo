@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 //app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser());
+// app.use(express.cookieParser('your secret here'));
 // app.use(express.session());
 // app.use(app.router);
 
@@ -47,15 +47,15 @@ app.use('/partials',express.static(path.join(__dirname, '../client/app/partials'
 //});
 
 //list server records in serverList.json
-app.get('/api/servers',servers.list)
+//app.get('/api/servers',servers.list)
 //get the specified server status
 app.get('/api/servers/:serverName', servers.find)
 //add new server record to serverList.json
-app.post('/api/servers',servers.add)
+//app.post('/api/servers',servers.add)
 //update the specified server record in serverList.json
-app.put('/api/servers/:serverName',servers.update)
+//app.put('/api/servers/:serverName',servers.update)
 //delete the specified server record in serverList.json
-app.delete('/api/servers/:serverName', servers.delete)
+//app.delete('/api/servers/:serverName', servers.delete)
 
 //list databases in the specified server
 app.get('/api/servers/:serverName/databases',databases.list)

@@ -4,10 +4,12 @@ var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
+//  console.log('headers',req.headers)
+  var serverUrl = req.headers['mongodb-url']
   var serverName = req.param('serverName');
   async.waterfall([
     function (callback) {
-      mongoClient.getClient(serverName, callback)
+      mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
       mongoDatabase.listDatabases(db, callback)

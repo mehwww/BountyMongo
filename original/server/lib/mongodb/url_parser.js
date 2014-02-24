@@ -20,11 +20,6 @@ module.exports = function (url) {
     connectionPart = url.substring("mongodb://".length);
   }
 
-  if (connectionPart.indexOf("/") != -1) {
-    dbName = connectionPart.split("/")[1];
-    connectionPart = connectionPart.split("/")[0];
-  }
-
   if (connectionPart.indexOf("@") != -1) {
     authPart = connectionPart.split("@")[0];
     connectionPart = connectionPart.split("@")[1];
@@ -36,6 +31,11 @@ module.exports = function (url) {
   }
   else {
     serverName = connectionPart;
+  }
+
+  if (connectionPart.indexOf("/") != -1) {
+    dbName = connectionPart.split("/")[1];
+    connectionPart = connectionPart.split("/")[0];
   }
 
   if (connectionPart.indexOf(":") != -1) {
@@ -50,8 +50,10 @@ module.exports = function (url) {
   return {
     name: serverName,
     dbName: dbName,
-    url: url,
+//    url: url,
     host: host,
-    port: port
+    port: port,
+    username:username,
+    password:password
   };
 }

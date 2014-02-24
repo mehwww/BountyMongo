@@ -1,5 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
+var Server = require('mongodb').Server;
 var BountyError = require('../customError').bountyError;
+var MongoError = require('../customError').mongoError;
 var urlParser = require('./url_parser');
 
 var net = require('net');
@@ -9,38 +11,57 @@ var util = require('util');
 
 var clientInstance = {};
 
-exports.getClient = function (serverName, callback) {
-  if (clientInstance[serverName]) {
-    return callback(null, clientInstance[serverName])
+exports.getClient = function (serverUrl, callback) {
+  var server = urlParser(serverUrl);
+  console.log(server)
+
+  if (clientInstance[server.name]) {
+    return callback(null, clientInstance[server.name])
   }
-//  try{
-//    var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
-//    var server = serverList[serverName];
-//    server =
-//  }
-//  catch (err){
-//    callback(err,null);
-//  }
-  var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
-  var server = serverList[serverName];
-  if (!server) return callback(new BountyError('need add first'), null);
-  var serverUrl = server.url
-//  setTimeout(function () {
-//    callback(new BountyError('connect time out'), null)
-//  }, 2000);
-  MongoClient.connect(serverUrl, {
-    server: {
-      socketOptions: {
-//        noDelay:true
-//        timeout:2000
-        connectTimeoutMS: 2000
-      }
+
+  var mongoClient = new MongoClient(new Server(server.host, server.port, {
+    socketOptions: {
+      connectTimeoutMS: 2000
     }
-  }, function (err, db) {
-    if (err)return callback(err, null);
-    clientInstance[serverName] = db;
-    return callback(null, db);
+  }));
+
+  mongoClient.open(function (err, client) {
+    if (err) {
+      return callback(new MongoError(err.err), client)
+    }
+    var db = client.db(server.dbName);
+    if (server.username) {
+      db.authenticate(server.username, server.password, function (err, result) {
+        if (err)return callback(err, result)
+        clientInstance[server.name] = db;
+        return callback(null, db)
+      })
+    }
+    else {
+      return callback(null, db)
+    }
   })
+
+//  var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
+//  var server = serverList[serverName];
+//  if (!server) return callback(new BountyError('need add first'), null);
+//  var serverUrl = server.url
+////  setTimeout(function () {
+////    callback(new BountyError('connect time out'), null)
+////  }, 2000);
+//  MongoClient.connect(serverUrl, {
+//    server: {
+//      socketOptions: {
+////        noDelay:true
+////        timeout:2000
+//        connectTimeoutMS: 2000
+//      }
+//    }
+//  }, function (err, db) {
+//    if (err)return callback(err, null);
+//    clientInstance[serverName] = db;
+//    return callback(null, db);
+//  })
 };
 
 exports.deleteClient = function (serverName) {

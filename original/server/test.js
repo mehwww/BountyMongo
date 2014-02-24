@@ -7,18 +7,18 @@ var util = require('util');
 var _ = require('underscore')
 
 //MongoClient.connect('mongodb://root:19910523@localhost', function (err, db) {
-console.log(new Date())
+console.log(urlParser('mongodb://127.0.0.1'))
 
-var mongoClient = new MongoClient(new Server("127.0.0.2", 27017, {
-  socketOptions: {
-    connectTimeoutMS: 3000
-  }
-}) );
-
-mongoClient.open(function(err, mongoclient) {
-  console.log(err)
-  console.log(new Date())
-})
+//var mongoClient = new MongoClient(new Server("127.0.0.2", 27017, {
+//  socketOptions: {
+//    connectTimeoutMS: 3000
+//  }
+//}) );
+//
+//mongoClient.open(function(err, mongoclient) {
+//  console.log(err)
+//  console.log(new Date())
+//})
 
 //MongoClient.connect('mongodb://testUser:19910523@127.0.0.2/test?connectTimeoutMS=1000', {
 //  server: {

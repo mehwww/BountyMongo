@@ -2,32 +2,36 @@
 //####  ./app/scripts/app.js
 //"use strict"
 
+
 var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap', 'ngRoute', 'LocalStorageModule']);
 
-bountyMongo.config([
-  '$routeProvider',
-  '$locationProvider',
-  '$httpProvider',
-  function ($routeProvider, $locationProvider,$httpProvider) {
-    $routeProvider
-      .when('/servers/:serverName', {
-        templateUrl: '/partials/bmMain.html',
-        controller: 'MainCtrl'
-      })
-      .when('/servers/:serverName/databases/:databaseName', {
-        templateUrl: '/partials/bmMain.html',
-        controller: 'MainCtrl'
-      })
-      .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
-        templateUrl: '/partials/bountyRecords.html',
-        controller: 'MainCtrl'
-      })
-      .otherwise({redirectTo: '/'})
+bountyMongo
+  .config([
+    '$routeProvider',
+    '$locationProvider',
+    '$httpProvider',
+    function ($routeProvider, $locationProvider, $httpProvider) {
+      $routeProvider
+        .when('/servers/:serverName', {
+          templateUrl: '/partials/bmMain.html',
+          controller: 'MainCtrl'
+        })
+        .when('/servers/:serverName/databases/:databaseName', {
+          templateUrl: '/partials/bmMain.html',
+          controller: 'MainCtrl'
+        })
+        .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
+          templateUrl: '/partials/bountyRecords.html',
+          controller: 'MainCtrl'
+        })
+        .otherwise({redirectTo: '/'})
 
-    $locationProvider.html5Mode(true);
+      $locationProvider.html5Mode(true);
 
 //    $httpProvider.defaults.withCredentials = true;
-  }])
+    }])
+
+  .constant('API_URL','/api')
 
 //bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 //  $routeProvider.when('databases/:databaseName',{
@@ -48,14 +52,7 @@ bountyMongo.controller('AddServerModalCtrl', [
   function ($scope, $modalInstance, server) {
     $scope.mongodb = {}
     $scope.add = function () {
-      server().add($scope.mongodb.url).then(
-        function (response) {
-          $modalInstance.close(response);
-        },
-        function (response) {
-          $modalInstance.dismiss(response);
-        }
-      )
+      $modalInstance.close(server().add($scope.mongodb.url));
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
@@ -152,14 +149,15 @@ bountyMongo.controller('RemoveServerModalCtrl', [
   function ($scope, $modalInstance, server, serverName) {
     $scope.serverName = serverName;
     $scope.yes = function () {
-      server(serverName).delete().then(
-        function (response) {
-          $modalInstance.close(response);
-        },
-        function (response) {
-          $modalInstance.dismiss(response);
-        }
-      );
+//      server(serverName).delete().then(
+//        function (response) {
+//          $modalInstance.close(response);
+//        },
+//        function (response) {
+//          $modalInstance.dismiss(response);
+//        }
+//      );
+      $modalInstance.close(server(serverName).delete())
     };
     $scope.no = function () {
       $modalInstance.dismiss('cancel');
@@ -180,28 +178,39 @@ bountyMongo.controller('SidebarCtrl', [
   '$modal',
   'server',
   'database',
+  'localStorageService',
 
-  function ($scope, $location, $route, $modal, server, database) {
-    server().list().then(function (response) {
-      $scope.serverList = response;
-      $scope.server = $scope.serverList[0];
-    })
+  function ($scope, $location, $route, $modal, server, database, localStorageService) {
+    console.log(server().list())
+    $scope.serverList = server().list();
+    $scope.server = $scope.serverList[0];
+//    localStorageService.clearAll();
 
-    $scope.selectServer = function (server) {
-      $scope.server = server;
+    $scope.selectServer = function (serverName) {
+      $scope.server = serverName;
+      server(serverName).databases().then(function(response){
+        console.log(response)
+      })
     }
 
-    $scope.selectDatabase = function (database) {
-      database.isActive = !database.isActive
-      $scope.database = database;
-    }
+//    server().list().then(function (response) {
+//      $scope.serverList = response;
+//      $scope.server = $scope.serverList[0];
+//    })
+//
 
-    $scope.selectCollection = function (database, collection) {
-//      console.log(collection)
-      $scope.database = database;
-      $scope.collection = collection;
-    }
-
+//
+//    $scope.selectDatabase = function (database) {
+//      database.isActive = !database.isActive
+//      $scope.database = database;
+//    }
+//
+//    $scope.selectCollection = function (database, collection) {
+////      console.log(collection)
+//      $scope.database = database;
+//      $scope.collection = collection;
+//    }
+//
     $scope.addServer = function () {
       var modalInstance = $modal.open({
         templateUrl: 'addServerModal.html',
@@ -209,18 +218,14 @@ bountyMongo.controller('SidebarCtrl', [
         windowClass: 'add-server-modal'
       });
       modalInstance.result.then(function (response) {
-        server().list().then(function (response) {
-          $scope.serverList = response;
-        })
-        $scope.server = response[0];
-
+        $scope.serverList = server().list();
+        $scope.server = response.name;
         console.log(response)
       }, function (response) {
-        console.log(response)
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
-
+//
     $scope.removeServer = function () {
       var modalInstance = $modal.open({
         templateUrl: 'removeServerModal.html',
@@ -239,59 +244,47 @@ bountyMongo.controller('SidebarCtrl', [
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
-
-
-    $scope.$watch('server', function (newVal) {
-      if (!newVal) $location.path('/')
-      $location.path('/servers/' + encodeURIComponent(newVal))
-      server(newVal).databases().then(
-        function (response) {
-          $scope.databaseList = [];
-          _.each(response, function (element) {
-            $scope.databaseList.push({
-              name: element,
-              isActive: false
-            })
-          })
-        },
-        function (response) {
-          console.log('failed request!!!', response.data)
-          $scope.databaseList = [];
-        }
-      );
-    })
-
-    $scope.$watch('database', function (newVal) {
-      if (!newVal) return
-      $location.path('/servers/' + encodeURIComponent($scope.server)
-        + '/databases/' + encodeURIComponent(newVal.name))
-      database($scope.server, newVal.name).collections().then(
-        function (response) {
-          newVal.collectionList = response;
-        }
-      )
-    })
-
-    $scope.$watch('collection', function (newVal) {
-      if (!newVal) return
-      $location.path('/servers/' + encodeURIComponent($scope.server)
-        + '/databases/' + encodeURIComponent($scope.database.name)
-        + '/collections/' + encodeURIComponent(newVal))
-    })
-
-
+//
+//
 //    $scope.$watch('server', function (newVal) {
-//      records.server(newVal);
-//      records.database('');
-//      records.collection('');
+//      if (!newVal) $location.path('/')
+//      $location.path('/servers/' + encodeURIComponent(newVal))
+//      server(newVal).databases().then(
+//        function (response) {
+//          $scope.databaseList = [];
+//          _.each(response, function (element) {
+//            $scope.databaseList.push({
+//              name: element,
+//              isActive: false
+//            })
+//          })
+//        },
+//        function (response) {
+//          console.log('failed request!!!', response.data)
+//          $scope.databaseList = [];
+//        }
+//      );
+//    })
+//
+//    $scope.$watch('database', function (newVal) {
+//      if (!newVal) return
+//      $location.path('/servers/' + encodeURIComponent($scope.server)
+//        + '/databases/' + encodeURIComponent(newVal.name))
+//      database($scope.server, newVal.name).collections().then(
+//        function (response) {
+//          newVal.collectionList = response;
+//        }
+//      )
+//    })
+//
+//    $scope.$watch('collection', function (newVal) {
+//      if (!newVal) return
+//      $location.path('/servers/' + encodeURIComponent($scope.server)
+//        + '/databases/' + encodeURIComponent($scope.database.name)
+//        + '/collections/' + encodeURIComponent(newVal))
+//    })
 //
 //
-//      server(newVal).query().then(function (response) {
-//        $scope.databaseList = response.databases;
-//      },function(response){
-//        console.log('failed request!!!',response)
-//      });
-//    });
   }])
 
 //####  ./app/scripts/directives/bmPagination.js
@@ -610,29 +603,45 @@ bountyMongo.factory('records', [
 bountyMongo.factory('server', [
 
   '$http',
-  'bucket',
+  '$q',
+  'localStorageService',
+  'urlParser',
+  'API_URL',
 
-  function ($http, bucket) {
+  function ($http, $q, localStorageService, urlParser, API_URL) {
     return function (serverName) {
-      var serverURL = bucket.serverURL;
+
+      if (typeof serverName !== undefined) {
+        var serverUrl = localStorageService.get('bounty_servers')[serverName]
+      }
+
       var Resource = {};
       Resource.list = function () {
-        var url = serverURL + '/servers/';
-        return $http.get(url).then(
-          function (response) {
-            return _.map(response.data, function (value, key) {
-              return key;
-            });
-          },
-          function(response){
-            return response.data
-          }
-        );
+        var serverList = localStorageService.get('bounty_servers');
+        return _.map(serverList, function (value, key) {
+          return key;
+        });
+
+//        var url = serverURL + '/servers/';
+//        return $http.get(url).then(
+//          function (response) {
+//            return _.map(response.data, function (value, key) {
+//              return key;
+//            });
+//          },
+//          function (response) {
+//            return response.data
+//          }
+//        );
       };
       Resource.query = function () {
-        var url = serverURL
+        var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
-        return $http.get(url,{timeout:2000}).then(
+        return $http.get(url, {
+          headers: {
+            mongodbUrl: 'mongodb://' + serverUrl
+          }
+        }).then(
           function (response) {
             return response.data;
           },
@@ -642,50 +651,68 @@ bountyMongo.factory('server', [
         );
       };
       Resource.add = function (mongodbUrl) {
-        var url = serverURL + '/servers/'
-        return $http.post(url, {url: mongodbUrl}).then(
-          function (response) {
-            return _.map(response.data, function (value, key) {
-              return key;
-            });
-          },
-          function (response) {
-            return response.data
-          }
-        );
+        var serverList = localStorageService.get('bounty_servers');
+        var server = urlParser(mongodbUrl)
+        if (!angular.isObject(serverList) || angular.isArray(serverList)) serverList = {};
+        serverList[server.name] = server.url
+        localStorageService.add('bounty_servers', serverList)
+        return server;
+//        var url = serverURL + '/servers/'
+//        return $http.post(url, {url: mongodbUrl}).then(
+//          function (response) {
+//            return _.map(response.data, function (value, key) {
+//              return key;
+//            });
+//          },
+//          function (response) {
+//            return response.data
+//          }
+//        );
       }
       Resource.delete = function () {
-        var url = serverURL
-          + '/servers/' + encodeURIComponent(serverName)
-        return $http.delete(url).then(
-          function (response) {
-            return _.map(response.data, function (value, key) {
-              return key;
-            });
-          },
-          function (response) {
-            return response.data
-          }
-        );
+        var serverList = localStorageService.get('bounty_servers');
+        delete serverList[serverName];
+        localStorageService.add('bounty_servers', serverList);
+        return _.map(serverList, function (value, key) {
+          return key;
+        });
+
+//        var url = serverURL
+//          + '/servers/' + encodeURIComponent(serverName)
+//        return $http.delete(url).then(
+//          function (response) {
+//            return _.map(response.data, function (value, key) {
+//              return key;
+//            });
+//          },
+//          function (response) {
+//            return response.data
+//          }
+//        );
       }
 
 
       Resource.databases = function () {
-        var url = serverURL
+        var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/'
-        return $http.get(url,{timeout:2000}).then(function (response) {
-          var databases = [];
-          if (_.isArray(response.data)) {
-            _.map(response.data, function (value, key) {
-              databases.push(value.name)
-            })
+        return $http.get(url, {
+          headers: {
+            'Mongodb-Url': 'mongodb://' + serverUrl
           }
-          else {
-            databases.push(response.data.db)
+        }).then(function (response) {
+            var databases = [];
+            if (angular.isArray(response.data)) {
+              _.map(response.data, function (value, key) {
+                databases.push(value.name)
+              })
+            }
+            else {
+              databases.push(response.data.db)
+            }
+            return databases;
           }
-          return databases;
-        })
+        );
       }
       return Resource;
     };
@@ -709,3 +736,44 @@ bountyMongo.factory('server', [
 //      return Resource;
 //    }
   }])
+
+
+//####  ./app/scripts/services/urlParser.js
+bountyMongo.factory('urlParser', [function () {
+  return function (mongodbUrl) {
+    var connectionPart = '';
+    var authPart = '';
+    var queryStringPart = '';
+
+    var username = '';
+    var password = '';
+
+    var serverName = '';
+
+    if (mongodbUrl.indexOf("?") != -1) {
+      connectionPart = mongodbUrl.split("?")[0];
+      queryStringPart = mongodbUrl.split("?")[1];
+    }
+    else {
+      connectionPart = mongodbUrl;
+    }
+
+    if (connectionPart.indexOf("@") != -1) {
+      authPart = connectionPart.split("@")[0];
+      connectionPart = connectionPart.split("@")[1];
+
+      username = authPart.split(":")[0];
+      password = authPart.split(":")[1];
+
+      serverName = username + '@' + connectionPart;
+    }
+    else {
+      serverName = mongodbUrl;
+    }
+
+    return {
+      name: serverName,
+      url: mongodbUrl
+    }
+  }
+}])

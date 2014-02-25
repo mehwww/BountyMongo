@@ -152,34 +152,20 @@ bountyMongo.controller('RecordsCtrl', [
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
-    if (collectionName) {
-      collection(serverName, databaseName, collectionName).count().then(function (response) {
-        console.log('count success', response)
-      }, function (response) {
-        console.log('count fail', response)
-      })
+
+    collection(serverName, databaseName, collectionName).count().then(function (response) {
+      console.log('count success', response)
+    }, function (response) {
+      console.log('count fail', response)
+    })
 
 
-      return collection(serverName, databaseName, collectionName).query().then(function (response) {
-        $scope.records = response
-      }, function (response) {
-        $scope.records = response
-      })
-    }
-    if (databaseName) {
-      return database(serverName, databaseName).query().then(function (response) {
-        $scope.records = response
-      }, function (response) {
-        $scope.records = response
-      })
-    }
-    if (serverName) {
-      return server(serverName).query().then(function (response) {
-        $scope.records = response
-      }, function (response) {
-        $scope.records = response
-      })
-    }
+    return collection(serverName, databaseName, collectionName).query().then(function (response) {
+      $scope.records = response
+    }, function (response) {
+      $scope.records = response
+    })
+
   }])
 
 //####  ./app/scripts/controllers/RemoveServerModalCtrl.js
@@ -306,7 +292,7 @@ bountyMongo.controller('SidebarCtrl', [
 
   }])
 
-//####  ./app/scripts/directives/bmPagination.js
+//####  ./app/scripts/directives/bountyPagination.js
 bountyMongo.directive('bmPagination', [
 
   'bucket',
@@ -397,74 +383,6 @@ bountyMongo.directive('bmPagination', [
       }
     };
   }]);
-
-//####  ./app/scripts/directives/bmRecords.js
-bountyMongo.directive('bmRecords', ['bucket', 'collection', function (bucket, collection) {
-  return{
-    restrict: 'E',
-    scope: {
-      records: '='
-    },
-    templateUrl: '/partials/bmRecords.html',
-    link: function (scope, element, attrs) {
-
-    }
-  }
-}]);
-
-//####  ./app/scripts/directives/bmSidebar.js
-bountyMongo.directive('bmSidebar', [
-  '$location',
-  'database',
-  'collection',
-  function ($location, database, collection) {
-    return {
-      restrict: 'AE',
-//      replace:true,
-//      template:'<div>asdfasdf</div> ',
-      templateUrl: '/partials/bmSidebar.html',
-      link: function (scope, element, attrs) {
-//        console.log('bmSidebarDirective')
-//        console.log('server',scope.server)
-//        console.log('database',scope.database)
-        scope.toggleDatabase = function () {
-          scope.isOpen = !scope.isOpen;
-          $location.path('/servers/' + encodeURIComponent(scope.server) + '/databases/' + encodeURIComponent(scope.database))
-          database(scope.server, scope.database).collections().then(function (response) {
-            scope.collectionList = response
-          })
-        }
-
-        scope.selectCollection = function (collection) {
-          scope.collection = collection
-          $location.path('/servers/' + encodeURIComponent(scope.server)
-            + '/databases/' + encodeURIComponent(scope.database)
-            + '/collections/' + encodeURIComponent(collection))
-        }
-//        scope.toggleDatabase = function () {
-//          scope.isOpen = !scope.isOpen;
-//          if (scope.isOpen) {
-//            records.server(scope.server);
-//            records.database(scope.database);
-//            records.collection('');
-//          }
-//          console.log('scope.server',scope.server)
-//          console.log('scope.database',scope.database)
-//          //scope.server is prototypically inheritance from parent
-//          collection(scope.server, scope.database.name).list().then(function (response) {
-//            scope.collectionList = response.collectionNames;
-//          })
-//        }
-//        scope.selectCollection = function (coll) {
-//          records.server(scope.server);
-//          records.database(scope.database);
-//          records.collection(coll);
-//          records.queryOptions('p',1);
-//          records.recordsRefresh();
-//        }
-      }
-    }
-  }])
 
 //####  ./app/scripts/services/bucket.js
 bountyMongo.factory('bucket', ['$parse', function ($parse) {

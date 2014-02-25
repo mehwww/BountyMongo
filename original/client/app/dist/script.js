@@ -28,18 +28,9 @@ bountyMongo
 
       $locationProvider.html5Mode(true);
 
-//    $httpProvider.defaults.withCredentials = true;
     }])
 
   .constant('API_URL','/api')
-
-//bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-//  $routeProvider.when('databases/:databaseName',{
-//    template: '<div></div>',
-//    controller: 'MainCtrl'
-//  })
-//  $locationProvider.html5Mode(true);
-//}])
 
 
 //####  ./app/scripts/controllers/AddServerModalCtrl.js
@@ -75,14 +66,9 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, $location, $routeParams, server, database, collection) {
-//    $scope.$on('recordsRefresh', function (event, response) {
-////      $scope.records = $location.path();
-////      $scope.records = response;
-//    })
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
-//    console.log('$routeParams',$routeParams)
     if (collectionName) {
       return collection(serverName, databaseName, collectionName).query().then(function (response) {
         $scope.records = response
@@ -104,12 +90,6 @@ bountyMongo.controller('MainCtrl', [
         $scope.records = response
       })
     }
-//    server(serverName).query().then(function (response) {
-//      $scope.records = response
-//    })
-//    collection(serverName, databaseName, collectionName).query().then(function () {
-//      $scope.records = response
-//    })
   }])
 
 //####  ./app/scripts/controllers/QueryCtrl.js
@@ -175,27 +155,24 @@ bountyMongo.controller('SidebarCtrl', [
 
   '$scope',
   '$location',
-  '$route',
+  '$routeParams',
   '$modal',
   'server',
   'database',
-  'localStorageService',
 
-  function ($scope, $location, $route, $modal, server, database, localStorageService) {
-//    console.log(server().list())
-//    $scope.serverList = server().list();
-//    $scope.server = $scope.serverList[0];
-//    localStorageService.clearAll();
+  function ($scope, $location, $routeParams, $modal, server, database) {
+    setTimeout(function () {
+      //TODO:根据url改变sidebar状态
+    }, 100)
 
     server().list().then(function (list) {
-      console.log(list)
       $scope.serverList = list;
     })
 
     $scope.selectServer = function (serverName) {
       $scope.server = serverName;
+      $scope.databaseList = null;
       server(serverName).databases().then(function (response) {
-        console.log(response)
         $scope.databaseList = [];
         angular.forEach(response, function (value, key) {
           this.push({
@@ -206,7 +183,6 @@ bountyMongo.controller('SidebarCtrl', [
       })
 
       $location.path('/servers/' + encodeURIComponent(serverName))
-
     }
 
     $scope.selectDatabase = function (databaseObj) {
@@ -222,22 +198,15 @@ bountyMongo.controller('SidebarCtrl', [
         + '/databases/' + encodeURIComponent(databaseObj.name))
     }
 
-
-//
-//    $scope.selectDatabase = function (database) {
-//      database.isActive = !database.isActive
-//      $scope.database = database;
-//    }
-//
     $scope.selectCollection = function (database, collection) {
-      console.log(database)
       $scope.database = database;
       $scope.collection = collection;
+
       $location.path('/servers/' + encodeURIComponent($scope.server)
         + '/databases/' + encodeURIComponent($scope.database.name)
         + '/collections/' + encodeURIComponent(collection))
     }
-//
+
     $scope.addServer = function () {
       var modalInstance = $modal.open({
         templateUrl: 'addServerModal.html',
@@ -253,7 +222,7 @@ bountyMongo.controller('SidebarCtrl', [
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
-//
+
     $scope.removeServer = function () {
       var modalInstance = $modal.open({
         templateUrl: 'removeServerModal.html',
@@ -274,47 +243,7 @@ bountyMongo.controller('SidebarCtrl', [
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
-//
-//
-//    $scope.$watch('server', function (newVal) {
-//      if (!newVal) $location.path('/')
-//      $location.path('/servers/' + encodeURIComponent(newVal))
-//      server(newVal).databases().then(
-//        function (response) {
-//          $scope.databaseList = [];
-//          _.each(response, function (element) {
-//            $scope.databaseList.push({
-//              name: element,
-//              isActive: false
-//            })
-//          })
-//        },
-//        function (response) {
-//          console.log('failed request!!!', response.data)
-//          $scope.databaseList = [];
-//        }
-//      );
-//    })
-//
-//    $scope.$watch('database', function (newVal) {
-//      if (!newVal) return
-//      $location.path('/servers/' + encodeURIComponent($scope.server)
-//        + '/databases/' + encodeURIComponent(newVal.name))
-//      database($scope.server, newVal.name).collections().then(
-//        function (response) {
-//          newVal.collectionList = response;
-//        }
-//      )
-//    })
-//
-//    $scope.$watch('collection', function (newVal) {
-//      if (!newVal) return
-//      $location.path('/servers/' + encodeURIComponent($scope.server)
-//        + '/databases/' + encodeURIComponent($scope.database.name)
-//        + '/collections/' + encodeURIComponent(newVal))
-//    })
-//
-//
+
   }])
 
 //####  ./app/scripts/directives/bmPagination.js
@@ -560,7 +489,7 @@ bountyMongo.factory('database', [
   'localStorageService',
   'API_URL',
 
-  function ($http, localStorageService,API_URL) {
+  function ($http, localStorageService, API_URL) {
     return function (serverName, databaseName) {
 
       var serverUrl = ''
@@ -582,6 +511,7 @@ bountyMongo.factory('database', [
             return response.data;
           });
       }
+
       Resource.collections = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -593,9 +523,9 @@ bountyMongo.factory('database', [
           }
         }).then(function (response) {
             var collectionList = [];
-            angular.forEach(response.data,function(value,key){
+            angular.forEach(response.data, function (value, key) {
               this.push(value.name.substr(value.name.indexOf('.') + 1))
-            },collectionList)
+            }, collectionList)
             return collectionList;
           })
       }
@@ -667,11 +597,8 @@ bountyMongo.factory('server', [
       }
 
       var Resource = {};
+
       Resource.list = function () {
-//        var serverList = localStorageService.get('bounty_servers');
-//        return _.map(serverList, function (value, key) {
-//          return key;
-//        });
         var deferred = $q.defer();
         var list = [];
         angular.forEach(localStorageService.get('bounty_servers'), function (value, key) {
@@ -680,19 +607,8 @@ bountyMongo.factory('server', [
         deferred.resolve(list);
 
         return deferred.promise;
-
-//        var url = serverURL + '/servers/';
-//        return $http.get(url).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       };
+
       Resource.query = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -709,6 +625,7 @@ bountyMongo.factory('server', [
           }
         );
       };
+
       Resource.add = function (mongodbUrl) {
         var serverList = localStorageService.get('bounty_servers');
         var server = urlParser(mongodbUrl)
@@ -719,18 +636,8 @@ bountyMongo.factory('server', [
         var deferred = $q.defer();
         deferred.resolve(server);
         return deferred.promise;
-//        var url = serverURL + '/servers/'
-//        return $http.post(url, {url: mongodbUrl}).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       }
+
       Resource.delete = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -749,25 +656,7 @@ bountyMongo.factory('server', [
             }, list);
             return list;
           })
-
-//        return _.map(serverList, function (value, key) {
-//          return key;
-//        });
-
-//        var url = serverURL
-//          + '/servers/' + encodeURIComponent(serverName)
-//        return $http.delete(url).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       }
-
 
       Resource.databases = function () {
         var url = API_URL

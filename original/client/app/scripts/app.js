@@ -26,15 +26,6 @@ bountyMongo
 
       $locationProvider.html5Mode(true);
 
-//    $httpProvider.defaults.withCredentials = true;
     }])
 
   .constant('API_URL','/api')
-
-//bountyMongo.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-//  $routeProvider.when('databases/:databaseName',{
-//    template: '<div></div>',
-//    controller: 'MainCtrl'
-//  })
-//  $locationProvider.html5Mode(true);
-//}])

@@ -15,11 +15,8 @@ bountyMongo.factory('server', [
       }
 
       var Resource = {};
+
       Resource.list = function () {
-//        var serverList = localStorageService.get('bounty_servers');
-//        return _.map(serverList, function (value, key) {
-//          return key;
-//        });
         var deferred = $q.defer();
         var list = [];
         angular.forEach(localStorageService.get('bounty_servers'), function (value, key) {
@@ -28,19 +25,8 @@ bountyMongo.factory('server', [
         deferred.resolve(list);
 
         return deferred.promise;
-
-//        var url = serverURL + '/servers/';
-//        return $http.get(url).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       };
+
       Resource.query = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -57,6 +43,7 @@ bountyMongo.factory('server', [
           }
         );
       };
+
       Resource.add = function (mongodbUrl) {
         var serverList = localStorageService.get('bounty_servers');
         var server = urlParser(mongodbUrl)
@@ -67,18 +54,8 @@ bountyMongo.factory('server', [
         var deferred = $q.defer();
         deferred.resolve(server);
         return deferred.promise;
-//        var url = serverURL + '/servers/'
-//        return $http.post(url, {url: mongodbUrl}).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       }
+
       Resource.delete = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -97,25 +74,7 @@ bountyMongo.factory('server', [
             }, list);
             return list;
           })
-
-//        return _.map(serverList, function (value, key) {
-//          return key;
-//        });
-
-//        var url = serverURL
-//          + '/servers/' + encodeURIComponent(serverName)
-//        return $http.delete(url).then(
-//          function (response) {
-//            return _.map(response.data, function (value, key) {
-//              return key;
-//            });
-//          },
-//          function (response) {
-//            return response.data
-//          }
-//        );
       }
-
 
       Resource.databases = function () {
         var url = API_URL

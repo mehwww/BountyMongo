@@ -13,7 +13,6 @@ var clientInstance = {};
 
 exports.getClient = function (serverUrl, callback) {
   var server = urlParser(serverUrl);
-  console.log(server)
 
   if (clientInstance[server.name]) {
     return callback(null, clientInstance[server.name])
@@ -42,27 +41,6 @@ exports.getClient = function (serverUrl, callback) {
       return callback(null, db)
     }
   })
-
-//  var serverList = JSON.parse(fs.readFileSync('./serverList.json').toString());
-//  var server = serverList[serverName];
-//  if (!server) return callback(new BountyError('need add first'), null);
-//  var serverUrl = server.url
-////  setTimeout(function () {
-////    callback(new BountyError('connect time out'), null)
-////  }, 2000);
-//  MongoClient.connect(serverUrl, {
-//    server: {
-//      socketOptions: {
-////        noDelay:true
-////        timeout:2000
-//        connectTimeoutMS: 2000
-//      }
-//    }
-//  }, function (err, db) {
-//    if (err)return callback(err, null);
-//    clientInstance[serverName] = db;
-//    return callback(null, db);
-//  })
 };
 
 exports.deleteClient = function (serverUrl) {

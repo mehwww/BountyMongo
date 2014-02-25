@@ -4,7 +4,7 @@ bountyMongo.factory('database', [
   'localStorageService',
   'API_URL',
 
-  function ($http, localStorageService,API_URL) {
+  function ($http, localStorageService, API_URL) {
     return function (serverName, databaseName) {
 
       var serverUrl = ''
@@ -26,6 +26,7 @@ bountyMongo.factory('database', [
             return response.data;
           });
       }
+
       Resource.collections = function () {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -37,9 +38,9 @@ bountyMongo.factory('database', [
           }
         }).then(function (response) {
             var collectionList = [];
-            angular.forEach(response.data,function(value,key){
+            angular.forEach(response.data, function (value, key) {
               this.push(value.name.substr(value.name.indexOf('.') + 1))
-            },collectionList)
+            }, collectionList)
             return collectionList;
           })
       }

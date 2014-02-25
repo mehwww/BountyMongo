@@ -38,6 +38,7 @@ exports.getClient = function (serverUrl, callback) {
       })
     }
     else {
+      clientInstance[server.name] = db;
       return callback(null, db)
     }
   })
@@ -64,10 +65,12 @@ exports.getClient = function (serverUrl, callback) {
 //  })
 };
 
-exports.deleteClient = function (serverName) {
-  if (clientInstance[serverName]) {
-    clientInstance[serverName].close();
-    delete clientInstance[serverName];
+exports.deleteClient = function (serverUrl) {
+  var server = urlParser(serverUrl);
+
+  if (clientInstance[server.name]) {
+    clientInstance[server.name].close();
+    delete clientInstance[server.name];
   }
 }
 

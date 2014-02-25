@@ -9,23 +9,46 @@ bountyMongo.controller('SidebarCtrl', [
   'localStorageService',
 
   function ($scope, $location, $route, $modal, server, database, localStorageService) {
-    console.log(server().list())
-    $scope.serverList = server().list();
-    $scope.server = $scope.serverList[0];
+//    console.log(server().list())
+//    $scope.serverList = server().list();
+//    $scope.server = $scope.serverList[0];
 //    localStorageService.clearAll();
+
+    server().list().then(function (list) {
+      console.log(list)
+      $scope.serverList = list;
+    })
 
     $scope.selectServer = function (serverName) {
       $scope.server = serverName;
-      server(serverName).databases().then(function(response){
+      server(serverName).databases().then(function (response) {
         console.log(response)
+        $scope.databaseList = [];
+        angular.forEach(response, function (value, key) {
+          this.push({
+            name: value,
+            isActive: false
+          })
+        }, $scope.databaseList)
       })
+
+      $location.path('/servers/' + encodeURIComponent(serverName))
+
     }
 
-//    server().list().then(function (response) {
-//      $scope.serverList = response;
-//      $scope.server = $scope.serverList[0];
-//    })
-//
+    $scope.selectDatabase = function (databaseObj) {
+      database($scope.server, databaseObj.name).collections().then(
+        function (response) {
+          databaseObj.collectionList = response
+        }
+      )
+      databaseObj.isActive = !databaseObj.isActive
+      $scope.database = databaseObj;
+
+      $location.path('/servers/' + encodeURIComponent($scope.server)
+        + '/databases/' + encodeURIComponent(databaseObj.name))
+    }
+
 
 //
 //    $scope.selectDatabase = function (database) {
@@ -33,11 +56,14 @@ bountyMongo.controller('SidebarCtrl', [
 //      $scope.database = database;
 //    }
 //
-//    $scope.selectCollection = function (database, collection) {
-////      console.log(collection)
-//      $scope.database = database;
-//      $scope.collection = collection;
-//    }
+    $scope.selectCollection = function (database, collection) {
+      console.log(database)
+      $scope.database = database;
+      $scope.collection = collection;
+      $location.path('/servers/' + encodeURIComponent($scope.server)
+        + '/databases/' + encodeURIComponent($scope.database.name)
+        + '/collections/' + encodeURIComponent(collection))
+    }
 //
     $scope.addServer = function () {
       var modalInstance = $modal.open({
@@ -46,9 +72,10 @@ bountyMongo.controller('SidebarCtrl', [
         windowClass: 'add-server-modal'
       });
       modalInstance.result.then(function (response) {
-        $scope.serverList = server().list();
-        $scope.server = response.name;
-        console.log(response)
+        server().list().then(function (list) {
+          $scope.serverList = list;
+          $scope.selectServer(response.name)
+        });
       }, function (response) {
 //        console.log('Modal dismissed at: ' + new Date());
       });
@@ -66,8 +93,10 @@ bountyMongo.controller('SidebarCtrl', [
         }
       })
       modalInstance.result.then(function (response) {
-        $scope.serverList = response;
-        $scope.server = $scope.serverList[0];
+        server().list().then(function (list) {
+          $scope.serverList = list;
+          $scope.selectServer(null)
+        });
       }, function () {
 //        console.log('Modal dismissed at: ' + new Date());
       });

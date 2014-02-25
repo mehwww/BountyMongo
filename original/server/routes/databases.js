@@ -6,7 +6,7 @@ var async = require('async');
 exports.list = function (req, res) {
 //  console.log('headers',req.headers)
   var serverUrl = req.headers['mongodb-url']
-  var serverName = req.param('serverName');
+//  var serverName = req.param('serverName');
   async.waterfall([
     function (callback) {
       mongoClient.getClient(serverUrl, callback)
@@ -22,12 +22,13 @@ exports.list = function (req, res) {
 
 
 exports.find = function (req, res) {
-  var serverName = req.param('serverName');
+  var serverUrl = req.headers['mongodb-url']
+//  var serverName = req.param('serverName');
   var databaseName = req.param('databaseName');
 
   async.waterfall([
     function (callback) {
-      mongoClient.getClient(serverName, callback)
+      mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
       mongoDatabase.stats(db.db(databaseName), callback)
@@ -39,12 +40,13 @@ exports.find = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  var serverName = decodeURIComponent(req.param('serverName'));
+  var serverUrl = req.headers['mongodb-url']
+//  var serverName = decodeURIComponent(req.param('serverName'));
   var databaseName = req.param('databaseName');
 
   async.waterfall([
     function (callback) {
-      mongoClient.getClient(serverName, callback)
+      mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
       mongoDatabase.dropDatabase(db, databaseName, callback)

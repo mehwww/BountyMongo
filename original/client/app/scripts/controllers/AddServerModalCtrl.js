@@ -7,7 +7,11 @@ bountyMongo.controller('AddServerModalCtrl', [
   function ($scope, $modalInstance, server) {
     $scope.mongodb = {}
     $scope.add = function () {
-      $modalInstance.close(server().add($scope.mongodb.url));
+      server().add($scope.mongodb.url).then(
+        function (response) {
+          $modalInstance.close(response);
+        }
+      )
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');

@@ -8,15 +8,12 @@ bountyMongo.controller('RemoveServerModalCtrl', [
   function ($scope, $modalInstance, server, serverName) {
     $scope.serverName = serverName;
     $scope.yes = function () {
-//      server(serverName).delete().then(
-//        function (response) {
-//          $modalInstance.close(response);
-//        },
-//        function (response) {
-//          $modalInstance.dismiss(response);
-//        }
-//      );
-      $modalInstance.close(server(serverName).delete())
+      server(serverName).delete().then(
+        function (response) {
+          $modalInstance.close(response);
+        }
+      );
+//      $modalInstance.close(server(serverName).delete())
     };
     $scope.no = function () {
       $modalInstance.dismiss('cancel');

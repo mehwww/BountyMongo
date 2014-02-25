@@ -59,8 +59,12 @@ exports.find = function (req, res) {
 //  }
 //}
 //
-//exports.delete = function (req, res) {
-//  var serverName = req.param('serverName');
+exports.delete = function (req, res) {
+  var serverUrl = req.headers['mongodb-url']
+  mongoClient.deleteClient(serverUrl)
+  res.send({
+    ok:1
+  })
 //  try {
 //    res.send(respond(null, mongoServer.deleteServer(serverName)));
 //  }
@@ -68,4 +72,4 @@ exports.find = function (req, res) {
 //    if (err) res.statusCode = 404;
 //    res.send(respond(err, null))
 //  }
-//}
+}

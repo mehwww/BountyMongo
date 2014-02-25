@@ -1,25 +1,33 @@
 bountyMongo.factory('collection', [
 
   '$http',
-  'bucket',
+  'localStorageService',
+  'API_URL',
 
-  function ($http, bucket) {
+  function ($http, localStorageService, API_URL) {
     return function (serverName, databaseName, collectionName) {
-//      var queryOptions = arguments[3];
-      var serverURL = bucket.serverURL;
+      var serverUrl = ''
+      if (typeof serverName !== undefined) {
+        serverUrl = localStorageService.get('bounty_servers')[serverName]
+      }
 
       var Resource = {};
       Resource.list = function () {
-        var url = serverURL
+        var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/' + encodeURIComponent(databaseName)
           + '/collections/';
-        return $http.get(url).then(function (response) {
-          return response.data;
-        })
+        return $http.get(url, {
+          headers: {
+            'Mongodb-Url': 'mongodb://' + serverUrl
+          }
+        }).then(function (response) {
+            return response.data;
+          })
       }
+
       Resource.query = function (queryOptions) {
-        var url = serverURL
+        var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
           + '/databases/' + encodeURIComponent(databaseName)
           + '/collections/' + encodeURIComponent(collectionName);
@@ -31,9 +39,13 @@ bountyMongo.factory('collection', [
           if (queryOptions.l)url = url + 'l=' + queryOptions.l;
         }
 
-        return $http.get(url).then(function (response) {
-          return response.data
-        });
+        return $http.get(url, {
+          headers: {
+            'Mongodb-Url': 'mongodb://' + serverUrl
+          }
+        }).then(function (response) {
+            return response.data
+          });
       }
       return Resource;
     }

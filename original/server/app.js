@@ -55,7 +55,7 @@ app.get('/api/servers/:serverName', servers.find)
 //update the specified server record in serverList.json
 //app.put('/api/servers/:serverName',servers.update)
 //delete the specified server record in serverList.json
-//app.delete('/api/servers/:serverName', servers.delete)
+app.delete('/api/servers/:serverName', servers.delete)
 
 //list databases in the specified server
 app.get('/api/servers/:serverName/databases',databases.list)

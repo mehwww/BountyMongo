@@ -5,12 +5,13 @@ var respond = require('../lib/respond')
 var async = require('async');
 
 exports.list = function (req, res) {
-  var serverName = req.param('serverName');
+//  var serverName = req.param('serverName');
+  var serverUrl = req.headers['mongodb-url']
   var databaseName = req.param('databaseName');
 
   async.waterfall([
     function (callback) {
-      mongoClient.getClient(serverName, callback)
+      mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
       mongoDatabase.collectionNames(db.db(databaseName), callback)
@@ -23,7 +24,8 @@ exports.list = function (req, res) {
 }
 
 exports.find = function (req, res) {
-  var serverName = req.param('serverName');
+//  var serverName = req.param('serverName');
+  var serverUrl = req.headers['mongodb-url']
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
@@ -35,7 +37,7 @@ exports.find = function (req, res) {
 
   async.waterfall([
     function (callback) {
-      mongoClient.getClient(serverName, callback)
+      mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
       mongoCollection.find(db.db(databaseName), collectionName, queryString.query, queryString.options, callback)

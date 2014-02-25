@@ -30,6 +30,7 @@ exports.find = function (req, res) {
       mongoServer.serverStatus(db, callback)
     }
   ], function (err, result) {
+//    console.log(err)
     if (err) res.statusCode = 404;
     res.send(respond(err, result))
   })

@@ -26,17 +26,21 @@ exports.getClient = function (serverUrl, callback) {
 
   mongoClient.open(function (err, client) {
     if (err) {
-      return callback(new MongoError(err.err), client)
+      console.log(err)
+//      return callback(err, client)
+      return callback(new MongoError('connect failed'), client)
     }
     var db = client.db(server.dbName);
     if (server.username) {
       db.authenticate(server.username, server.password, function (err, result) {
         if (err)return callback(err, result)
+        console.log('new client instance: ',server.name)
         clientInstance[server.name] = db;
         return callback(null, db)
       })
     }
     else {
+      console.log('new client instance: ',server.name)
       clientInstance[server.name] = db;
       return callback(null, db)
     }

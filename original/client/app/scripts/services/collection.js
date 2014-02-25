@@ -47,6 +47,33 @@ bountyMongo.factory('collection', [
             return response.data
           });
       }
+
+      Resource.count = function (queryOptions) {
+        var url = API_URL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/' + encodeURIComponent(databaseName)
+          + '/collections/' + encodeURIComponent(collectionName)
+          + '/count/';
+
+        if (queryOptions) {
+          url = url + '?';
+          if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
+          if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
+          if (queryOptions.l)url = url + 'l=' + queryOptions.l;
+        }
+
+        return $http.get(url, {
+          headers: {
+            'Mongodb-Url': 'mongodb://' + serverUrl
+          }
+        }).then(function (response) {
+            return response.data
+          }, function (response) {
+            return response.data
+          });
+      }
+
+
       return Resource;
     }
   }])

@@ -30,7 +30,7 @@ exports.find = function (req, res) {
   var collectionName = req.param('collectionName');
 
   var queryString = queryStringParser(req);
-  if(!queryString){
+  if (!queryString) {
     res.statusCode = 400;
     res.send(respond('Invaild query string', null))
   }
@@ -40,7 +40,12 @@ exports.find = function (req, res) {
       mongoClient.getClient(serverUrl, callback)
     },
     function (db, callback) {
-      mongoCollection.find(db.db(databaseName), collectionName, queryString.query, queryString.options, callback)
+      db.db(databaseName).collection(collectionName, function (err, collection) {
+        callback(err, collection)
+      });
+    },
+    function (collection, callback) {
+      mongoCollection.find(collection, queryString.query, queryString.options, callback)
     }
   ], function (err, result) {
     if (err) res.statusCode = 404;
@@ -48,12 +53,38 @@ exports.find = function (req, res) {
   })
 }
 
-exports.count = function(req,res){
-  res.send('asdf')
+exports.count = function (req, res) {
+  var serverUrl = req.headers['mongodb-url'];
+  var databaseName = req.param('databaseName');
+  var collectionName = req.param('collectionName');
+
+  var queryString = queryStringParser(req);
+  if (!queryString) {
+    res.statusCode = 400;
+    res.send(respond('Invaild query string', null))
+  }
+
+
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverUrl, callback)
+    },
+    function (db, callback) {
+      db.db(databaseName).collection(collectionName, function (err, collection) {
+        callback(err, collection)
+      });
+    },
+    function (collection, callback) {
+      mongoCollection.count(collection, queryString.query, queryString.options, callback)
+    }
+  ], function (err, result) {
+    if (err) res.statusCode = 404;
+    res.send(respond(err, {count: result}))
+  })
 }
 
 
-var queryStringParser = function(req){
+var queryStringParser = function (req) {
   var query;
   var limit;
   var skip;
@@ -71,8 +102,8 @@ var queryStringParser = function(req){
   //skip parameters
   skip = req.query.p ? (req.query.p - 1) * limit : 0;
   return {
-    query:query,
-    options:{
+    query: query,
+    options: {
       limit: limit,
       skip: skip
     }

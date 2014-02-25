@@ -2,15 +2,13 @@
 //@import "bootstrap/bootstrap.less";
 @import "variables.less";
 
-body {
-  //  padding-top: 50px;
-  //  background-color:@gray-lighter;
+.pagination {
+  margin-top: 0px;
+  margin-bottom: 0px;
+//  >li>a{
+//    min-width: 16px;
+//  }
 }
-
-//.pagination {
-//  margin-top: 0px;
-//  margin-bottom: 0px;
-//}
 
 .nav, .pagination, .carousel, .panel-title, .btn, .server-btn a, .list-group-item {
   cursor: pointer;
@@ -28,7 +26,7 @@ textarea {
 .server-btn-group {
   margin-bottom: 15px;
   width: 100%;
-  & > .server-btn > {
+  > .server-btn > {
     width: 100%;
     margin-right: -70px;
     padding-right: 65px;
@@ -39,17 +37,10 @@ textarea {
       width: 100%;
     }
   }
-  & > .server-btn-operation {
+  > .server-btn-operation {
     display: inline-block;
     float: right;
-//    margin-left: -67px;
   }
-  //  & > .btn {
-  //    width: 157px;
-  //    overflow: hidden;
-  //    white-space: nowrap;
-  //    text-overflow: ellipsis;
-  //  }
 }
 
 .list-group-item-variant(sub; @list-sub-bg; @list-sub-text);
@@ -74,13 +65,6 @@ textarea {
 }
 
 .add-server-modal {
-  //  & > .modal-dialog {
-  //    width: 400px;
-  //  }
-  //  .modal-body{
-  //    padding-top: 10px;
-  //    padding-bottom: 10px;
-  //  }
   .modal-header {
     padding-top: 9px;
     padding-bottom: 10px;

@@ -5772,6 +5772,10 @@ button.close {
     display: none !important;
   }
 }
+.pagination {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 .nav,
 .pagination,
 .carousel,

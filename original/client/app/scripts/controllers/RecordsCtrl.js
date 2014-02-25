@@ -16,16 +16,33 @@ bountyMongo.controller('RecordsCtrl', [
     var collectionName = $routeParams.collectionName;
 
     collection(serverName, databaseName, collectionName).count().then(function (response) {
-      console.log('count success', response)
+      $scope.count = response.count;
     }, function (response) {
-      console.log('count fail', response)
+//      console.log('count fail', response)
     })
 
+//    $scope.page =1;
+//    $scope.count = 2000;
+    $scope.pageSize = 20
 
-    return collection(serverName, databaseName, collectionName).query().then(function (response) {
+    $scope.$watch('page', function (newValue, oldValue) {
+//      console.log('page', newValue)
+      collection(serverName, databaseName, collectionName)
+        .query({
+          p: newValue
+        })
+        .then(function (response) {
+          $scope.records = response
+        }, function (response) {
+          console.log('Get Records Fail', response)
+        })
+    });
+
+
+    collection(serverName, databaseName, collectionName).query().then(function (response) {
       $scope.records = response
     }, function (response) {
-      $scope.records = response
+      console.log('Get Records Fail', response)
     })
 
   }])

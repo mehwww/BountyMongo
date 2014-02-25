@@ -154,16 +154,33 @@ bountyMongo.controller('RecordsCtrl', [
     var collectionName = $routeParams.collectionName;
 
     collection(serverName, databaseName, collectionName).count().then(function (response) {
-      console.log('count success', response)
+      $scope.count = response.count;
     }, function (response) {
-      console.log('count fail', response)
+//      console.log('count fail', response)
     })
 
+//    $scope.page =1;
+//    $scope.count = 2000;
+    $scope.pageSize = 20
 
-    return collection(serverName, databaseName, collectionName).query().then(function (response) {
+    $scope.$watch('page', function (newValue, oldValue) {
+//      console.log('page', newValue)
+      collection(serverName, databaseName, collectionName)
+        .query({
+          p: newValue
+        })
+        .then(function (response) {
+          $scope.records = response
+        }, function (response) {
+          console.log('Get Records Fail', response)
+        })
+    });
+
+
+    collection(serverName, databaseName, collectionName).query().then(function (response) {
       $scope.records = response
     }, function (response) {
-      $scope.records = response
+      console.log('Get Records Fail', response)
     })
 
   }])
@@ -293,7 +310,7 @@ bountyMongo.controller('SidebarCtrl', [
   }])
 
 //####  ./app/scripts/directives/bountyPagination.js
-bountyMongo.directive('bmPagination', [
+bountyMongo.directive('bountyPagination', [
 
   'bucket',
   'records',
@@ -302,9 +319,11 @@ bountyMongo.directive('bmPagination', [
     return {
       restrict: 'E',
       scope: {
-        currentPage: '='
+        currentPage: '=',
+        totalItems:'=',
+        itemsPerPage:'='
       },
-      templateUrl: '/partials/bmPagination.html',
+      templateUrl: '/partials/bountyPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
 
@@ -327,14 +346,23 @@ bountyMongo.directive('bmPagination', [
         }
 
         var getPages = function (currentPage, totalPages) {
+          //1,8
           if (!totalPages || totalPages === 1)return;
           var pages = [];
-          var maxsize = bucket.paginationConfig.maxsize;
-          var half = Math.ceil(maxsize / 2)
-          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1;
-          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;//21
-          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min;
-          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max;
+          //pagination config : maxsize
+          var maxsize = 9;
+          var half = Math.ceil(maxsize / 2) //5
+          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1; //1
+          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;//8
+          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min; //2
+          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max; //8
+
+          if (end >= totalPages - 2) {
+            end = totalPages;
+          }
+          if (start <= 3) {
+            start = 1;
+          }
 
           for (var i = start; i <= end; i++) {
             var page = makePage(i, i, isActive(i), false);
@@ -363,8 +391,6 @@ bountyMongo.directive('bmPagination', [
           if (!isActive(page) && page > 0 && page <= scope.totalPages) {
             scope.currentPage = page;
             scope.pages = getPages(scope.currentPage, scope.totalPages);
-            records.queryOptions('p', page);
-            records.recordsRefresh();
           }
         }
 
@@ -372,14 +398,26 @@ bountyMongo.directive('bmPagination', [
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
 
-        scope.$on('recordsRefresh', function (event, response) {
-          var totalItems = response.count;
-          var itemsPerPage = records.queryOptions('l');
-          scope.currentPage = records.queryOptions('p');
-          scope.totalPages = calculateTotalPages(totalItems, itemsPerPage);
+        scope.$watch('totalItems', function (newValue) {
+          scope.currentPage = 1;
+          scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
-          console.log(scope.pages)
+//          console.log(scope.pages)
         });
+        
+//        console.log('pages',scope.totalPages)
+//        console.log('currentPage',scope.currentPage)
+//        console.log('totalItems',scope.totalItems)
+//        console.log('itemsPerPage',scope.itemsPerPage)
+
+//        scope.$on('recordsRefresh', function (event, response) {
+//          var totalItems = response.count;
+//          var itemsPerPage = records.queryOptions('l');
+//          scope.currentPage = records.queryOptions('p');
+//          scope.totalPages = calculateTotalPages(totalItems, itemsPerPage);
+//          scope.pages = getPages(scope.currentPage, scope.totalPages);
+//          console.log(scope.pages)
+//        });
       }
     };
   }]);

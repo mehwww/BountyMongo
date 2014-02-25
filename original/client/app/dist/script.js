@@ -13,16 +13,16 @@ bountyMongo
     function ($routeProvider, $locationProvider, $httpProvider) {
       $routeProvider
         .when('/servers/:serverName', {
-          templateUrl: '/partials/bmMain.html',
+          templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'
         })
         .when('/servers/:serverName/databases/:databaseName', {
-          templateUrl: '/partials/bmMain.html',
+          templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'
         })
         .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
           templateUrl: '/partials/bountyRecords.html',
-          controller: 'MainCtrl'
+          controller: 'RecordsCtrl'
         })
         .otherwise({redirectTo: '/'})
 
@@ -67,7 +67,7 @@ bountyMongo.controller('MainCtrl', [
 
   function ($scope, $location, $routeParams, server, database, collection) {
     
-    console.log($routeParams)
+//    console.log($routeParams)
     
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
@@ -110,25 +110,75 @@ bountyMongo.controller('QueryCtrl', [
   'records',
 
   function ($scope,$modal, records) {
-    $scope.pageSizeOptions = [5, 10, 20, 50, 100, 200];
-    $scope.pageSize = $scope.pageSizeOptions[2];
 
-    $scope.$watch('pageSize', function (newVal) {
-      records.queryOptions('l', newVal);
-      records.queryOptions('p', 1)
-      records.recordsRefresh();
-    })
 
-    $scope.openModal = function(){
-      var modalInstance = $modal.open({
-        templateUrl: 'addDocumentModal.html'
-      });
+
+//    $scope.pageSizeOptions = [5, 10, 20, 50, 100, 200];
+//    $scope.pageSize = $scope.pageSizeOptions[2];
+//
+//    $scope.$watch('pageSize', function (newVal) {
+//      records.queryOptions('l', newVal);
+//      records.queryOptions('p', 1)
+//      records.recordsRefresh();
+//    })
+//
+//    $scope.openModal = function(){
+//      var modalInstance = $modal.open({
+//        templateUrl: 'addDocumentModal.html'
+//      });
 
 //      modalInstance.result.then(function (selectedItem) {
 //        $scope.selected = selectedItem;
 //      }, function () {
 //        $log.info('Modal dismissed at: ' + new Date());
 //      });
+//    }
+  }])
+
+//####  ./app/scripts/controllers/RecordsCtrl.js
+bountyMongo.controller('RecordsCtrl', [
+
+  '$scope',
+  '$location',
+  '$routeParams',
+  'server',
+  'database',
+  'collection',
+
+  function ($scope, $location, $routeParams, server, database, collection) {
+
+//    console.log($routeParams)
+
+    var serverName = $routeParams.serverName;
+    var databaseName = $routeParams.databaseName;
+    var collectionName = $routeParams.collectionName;
+    if (collectionName) {
+      collection(serverName, databaseName, collectionName).count().then(function (response) {
+        console.log('count success', response)
+      }, function (response) {
+        console.log('count fail', response)
+      })
+
+
+      return collection(serverName, databaseName, collectionName).query().then(function (response) {
+        $scope.records = response
+      }, function (response) {
+        $scope.records = response
+      })
+    }
+    if (databaseName) {
+      return database(serverName, databaseName).query().then(function (response) {
+        $scope.records = response
+      }, function (response) {
+        $scope.records = response
+      })
+    }
+    if (serverName) {
+      return server(serverName).query().then(function (response) {
+        $scope.records = response
+      }, function (response) {
+        $scope.records = response
+      })
     }
   }])
 

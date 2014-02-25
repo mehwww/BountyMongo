@@ -1,4 +1,4 @@
-bountyMongo.controller('MainCtrl', [
+bountyMongo.controller('RecordsCtrl', [
 
   '$scope',
   '$location',
@@ -8,9 +8,9 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, $location, $routeParams, server, database, collection) {
-    
+
 //    console.log($routeParams)
-    
+
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;

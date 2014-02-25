@@ -11,16 +11,16 @@ bountyMongo
     function ($routeProvider, $locationProvider, $httpProvider) {
       $routeProvider
         .when('/servers/:serverName', {
-          templateUrl: '/partials/bmMain.html',
+          templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'
         })
         .when('/servers/:serverName/databases/:databaseName', {
-          templateUrl: '/partials/bmMain.html',
+          templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'
         })
         .when('/servers/:serverName/databases/:databaseName/collections/:collectionName', {
           templateUrl: '/partials/bountyRecords.html',
-          controller: 'MainCtrl'
+          controller: 'RecordsCtrl'
         })
         .otherwise({redirectTo: '/'})
 

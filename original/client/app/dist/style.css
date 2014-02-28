@@ -5772,6 +5772,52 @@ button.close {
     display: none !important;
   }
 }
+.remove-server-modal > .modal-dialog {
+  width: 400px;
+}
+.remove-server-modal .modal-body {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+.remove-server-modal .modal-footer {
+  padding-top: 9px;
+  padding-bottom: 10px;
+  margin-top: 0px;
+}
+.add-server-modal .modal-header {
+  padding-top: 9px;
+  padding-bottom: 10px;
+}
+.add-server-modal .modal-footer {
+  padding-top: 9px;
+  padding-bottom: 10px;
+  margin-top: 0px;
+}
+.list-group-item-sub {
+  color: #808080;
+  background-color: #f7f7f9;
+}
+a.list-group-item-sub {
+  color: #808080;
+}
+a.list-group-item-sub .list-group-item-heading {
+  color: inherit;
+}
+a.list-group-item-sub:hover,
+a.list-group-item-sub:focus {
+  color: #808080;
+  background-color: #e8e8ee;
+}
+a.list-group-item-sub.active,
+a.list-group-item-sub.active:hover,
+a.list-group-item-sub.active:focus {
+  color: #fff;
+  background-color: #808080;
+  border-color: #808080;
+}
+.list-group-item-sub {
+  padding-left: 20px;
+}
 .pagination {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -5813,49 +5859,6 @@ textarea {
   display: inline-block;
   float: right;
 }
-.list-group-item-sub {
-  color: #808080;
-  background-color: #f7f7f9;
-}
-a.list-group-item-sub {
-  color: #808080;
-}
-a.list-group-item-sub .list-group-item-heading {
-  color: inherit;
-}
-a.list-group-item-sub:hover,
-a.list-group-item-sub:focus {
-  color: #808080;
-  background-color: #e8e8ee;
-}
-a.list-group-item-sub.active,
-a.list-group-item-sub.active:hover,
-a.list-group-item-sub.active:focus {
-  color: #fff;
-  background-color: #808080;
-  border-color: #808080;
-}
-.list-group-item-sub {
-  padding-left: 20px;
-}
-.remove-server-modal > .modal-dialog {
-  width: 400px;
-}
-.remove-server-modal .modal-body {
-  padding-top: 20px;
-  padding-bottom: 10px;
-}
-.remove-server-modal .modal-footer {
-  padding-top: 9px;
-  padding-bottom: 10px;
-  margin-top: 0px;
-}
-.add-server-modal .modal-header {
-  padding-top: 9px;
-  padding-bottom: 10px;
-}
-.add-server-modal .modal-footer {
-  padding-top: 9px;
-  padding-bottom: 10px;
-  margin-top: 0px;
+.document {
+  display: block;
 }

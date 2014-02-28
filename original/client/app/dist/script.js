@@ -362,6 +362,21 @@ bountyMongo.controller('SidebarCtrl', [
 
   }])
 
+//####  ./app/scripts/directives/bountyDocument.js
+bountyMongo.directive('bountyDocument', [function () {
+  return {
+    restrict: 'E',
+    scope: {
+      document: '='
+    },
+    templateUrl: '/partials/bountyDocument.html',
+    replace: true,
+    link: function (scope, element, attr) {
+
+    }
+  }
+}])
+
 //####  ./app/scripts/directives/bountyPagination.js
 bountyMongo.directive('bountyPagination', [
 

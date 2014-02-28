@@ -7,8 +7,11 @@ bountyMongo.factory('server', [
   'API_URL',
 
   function ($http, $q, localStorageService, urlParser, API_URL) {
-    return function (serverName) {
+    if(!localStorageService.get('bounty_servers')){
+      localStorageService.add('bounty_servers',[])
+    }
 
+    return function (serverName) {
       var serverUrl = ''
       if (typeof serverName !== undefined) {
         serverUrl = localStorageService.get('bounty_servers')[serverName]

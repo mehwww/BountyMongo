@@ -12,6 +12,9 @@ bountyMongo
     '$httpProvider',
     function ($routeProvider, $locationProvider, $httpProvider) {
       $routeProvider
+        .when('/',{
+          templateUrl:'blank.html'
+        })
         .when('/servers/:serverName', {
           templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'
@@ -66,7 +69,7 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, $location, $routeParams, server, database, collection) {
-    
+
 //    console.log($routeParams)
     
     var serverName = $routeParams.serverName;
@@ -159,7 +162,7 @@ bountyMongo.controller('RecordsCtrl', [
 //      console.log('count fail', response)
     })
 
-//    $scope.page =1;
+    $scope.page = 1;
 //    $scope.count = 2000;
     $scope.pageSize = 20
 
@@ -167,7 +170,8 @@ bountyMongo.controller('RecordsCtrl', [
 //      console.log('page', newValue)
       collection(serverName, databaseName, collectionName)
         .query({
-          p: newValue
+          p: newValue,
+          l: $scope.pageSize
         })
         .then(function (response) {
           $scope.records = response
@@ -177,11 +181,11 @@ bountyMongo.controller('RecordsCtrl', [
     });
 
 
-    collection(serverName, databaseName, collectionName).query().then(function (response) {
-      $scope.records = response
-    }, function (response) {
-      console.log('Get Records Fail', response)
-    })
+//    collection(serverName, databaseName, collectionName).query().then(function (response) {
+//      $scope.records = response
+//    }, function (response) {
+//      console.log('Get Records Fail', response)
+//    })
 
   }])
 
@@ -224,9 +228,58 @@ bountyMongo.controller('SidebarCtrl', [
   'database',
 
   function ($scope, $location, $routeParams, $modal, server, database) {
-    setTimeout(function () {
-      //TODO:根据url改变sidebar状态
-    }, 100)
+
+    var self = this;
+    self.isInitialized = true;
+
+    $scope.$on('$routeChangeSuccess', function (event, routeData) {
+      if (!self.isInitialized)return
+      self.isInitialized = false;
+      //stupid
+      var serverName = routeData.params.serverName;
+      var databaseName = routeData.params.databaseName;
+//      var collectionName = routeData.params.collectionName;
+
+      if (databaseName) {
+        if ($scope.serverList.indexOf(serverName) === -1) return $location.path('/');
+        $scope.server = serverName;
+        $scope.databaseList = null;
+        return server(serverName).databases().then(function (response) {
+//          console.log((databaseName))
+//          if (response.indexOf(databaseName) === -1) return $location.path('/');
+          database(serverName, databaseName)
+            .collections()
+            .then(function (collectionList) {
+              $scope.databaseList = [];
+              angular.forEach(response, function (value, key) {
+                this.push({
+                  name: value,
+                  isActive: value == databaseName,
+                  collectionList: value == databaseName
+                    ? collectionList
+                    : null
+                })
+              }, $scope.databaseList)
+            })
+        })
+      }
+
+
+      if (serverName) {
+        if ($scope.serverList.indexOf(serverName) === -1) return $location.path('/');
+        $scope.server = serverName;
+        $scope.databaseList = null;
+        return server(serverName).databases().then(function (response) {
+          $scope.databaseList = [];
+          angular.forEach(response, function (value, key) {
+            this.push({
+              name: value,
+              isActive: false
+            })
+          }, $scope.databaseList)
+        })
+      }
+    })
 
     server().list().then(function (list) {
       $scope.serverList = list;
@@ -312,10 +365,7 @@ bountyMongo.controller('SidebarCtrl', [
 //####  ./app/scripts/directives/bountyPagination.js
 bountyMongo.directive('bountyPagination', [
 
-  'bucket',
-  'records',
-
-  function (bucket, records) {
+  function () {
     return {
       restrict: 'E',
       scope: {
@@ -346,16 +396,15 @@ bountyMongo.directive('bountyPagination', [
         }
 
         var getPages = function (currentPage, totalPages) {
-          //1,8
           if (!totalPages || totalPages === 1)return;
           var pages = [];
           //pagination config : maxsize
           var maxsize = 9;
-          var half = Math.ceil(maxsize / 2) //5
-          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1; //1
-          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;//8
-          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min; //2
-          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max; //8
+          var half = Math.ceil(maxsize / 2)
+          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1;
+          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;
+          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min;
+          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max;
 
           if (end >= totalPages - 2) {
             end = totalPages;
@@ -402,22 +451,7 @@ bountyMongo.directive('bountyPagination', [
           scope.currentPage = 1;
           scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
-//          console.log(scope.pages)
         });
-        
-//        console.log('pages',scope.totalPages)
-//        console.log('currentPage',scope.currentPage)
-//        console.log('totalItems',scope.totalItems)
-//        console.log('itemsPerPage',scope.itemsPerPage)
-
-//        scope.$on('recordsRefresh', function (event, response) {
-//          var totalItems = response.count;
-//          var itemsPerPage = records.queryOptions('l');
-//          scope.currentPage = records.queryOptions('p');
-//          scope.totalPages = calculateTotalPages(totalItems, itemsPerPage);
-//          scope.pages = getPages(scope.currentPage, scope.totalPages);
-//          console.log(scope.pages)
-//        });
       }
     };
   }]);
@@ -632,8 +666,11 @@ bountyMongo.factory('server', [
   'API_URL',
 
   function ($http, $q, localStorageService, urlParser, API_URL) {
-    return function (serverName) {
+    if(!localStorageService.get('bounty_servers')){
+      localStorageService.add('bounty_servers',[])
+    }
 
+    return function (serverName) {
       var serverUrl = ''
       if (typeof serverName !== undefined) {
         serverUrl = localStorageService.get('bounty_servers')[serverName]

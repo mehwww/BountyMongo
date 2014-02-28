@@ -5775,14 +5775,15 @@ button.close {
 .pagination {
   margin-top: 0px;
   margin-bottom: 0px;
+  float: right;
 }
 .nav,
 .pagination,
 .carousel,
 .panel-title,
 .btn,
-.server-btn a,
-.list-group-item {
+.list-group-item,
+.dropdown-menu {
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;

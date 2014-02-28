@@ -8,9 +8,58 @@ bountyMongo.controller('SidebarCtrl', [
   'database',
 
   function ($scope, $location, $routeParams, $modal, server, database) {
-    setTimeout(function () {
-      //TODO:根据url改变sidebar状态
-    }, 100)
+
+    var self = this;
+    self.isInitialized = true;
+
+    $scope.$on('$routeChangeSuccess', function (event, routeData) {
+      if (!self.isInitialized)return
+      self.isInitialized = false;
+      //stupid
+      var serverName = routeData.params.serverName;
+      var databaseName = routeData.params.databaseName;
+//      var collectionName = routeData.params.collectionName;
+
+      if (databaseName) {
+        if ($scope.serverList.indexOf(serverName) === -1) return $location.path('/');
+        $scope.server = serverName;
+        $scope.databaseList = null;
+        return server(serverName).databases().then(function (response) {
+//          console.log((databaseName))
+//          if (response.indexOf(databaseName) === -1) return $location.path('/');
+          database(serverName, databaseName)
+            .collections()
+            .then(function (collectionList) {
+              $scope.databaseList = [];
+              angular.forEach(response, function (value, key) {
+                this.push({
+                  name: value,
+                  isActive: value == databaseName,
+                  collectionList: value == databaseName
+                    ? collectionList
+                    : null
+                })
+              }, $scope.databaseList)
+            })
+        })
+      }
+
+
+      if (serverName) {
+        if ($scope.serverList.indexOf(serverName) === -1) return $location.path('/');
+        $scope.server = serverName;
+        $scope.databaseList = null;
+        return server(serverName).databases().then(function (response) {
+          $scope.databaseList = [];
+          angular.forEach(response, function (value, key) {
+            this.push({
+              name: value,
+              isActive: false
+            })
+          }, $scope.databaseList)
+        })
+      }
+    })
 
     server().list().then(function (list) {
       $scope.serverList = list;

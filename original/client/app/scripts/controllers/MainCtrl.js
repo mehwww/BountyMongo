@@ -8,7 +8,7 @@ bountyMongo.controller('MainCtrl', [
   'collection',
 
   function ($scope, $location, $routeParams, server, database, collection) {
-    
+
 //    console.log($routeParams)
     
     var serverName = $routeParams.serverName;

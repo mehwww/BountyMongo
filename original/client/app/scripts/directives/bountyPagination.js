@@ -1,9 +1,6 @@
 bountyMongo.directive('bountyPagination', [
 
-  'bucket',
-  'records',
-
-  function (bucket, records) {
+  function () {
     return {
       restrict: 'E',
       scope: {
@@ -34,16 +31,15 @@ bountyMongo.directive('bountyPagination', [
         }
 
         var getPages = function (currentPage, totalPages) {
-          //1,8
           if (!totalPages || totalPages === 1)return;
           var pages = [];
           //pagination config : maxsize
           var maxsize = 9;
-          var half = Math.ceil(maxsize / 2) //5
-          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1; //1
-          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;//8
-          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min; //2
-          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max; //8
+          var half = Math.ceil(maxsize / 2)
+          var min = (currentPage > half) ? Math.max(currentPage - (half - 3), 1) : 1;
+          var max = (totalPages - currentPage > half) ? Math.min(currentPage + (half - 3), totalPages) : totalPages;
+          var start = (max === totalPages) ? Math.max(totalPages - (maxsize - 3), 1) : min;
+          var end = (min === 1) ? Math.min(start + (maxsize - 3), totalPages) : max;
 
           if (end >= totalPages - 2) {
             end = totalPages;
@@ -90,22 +86,7 @@ bountyMongo.directive('bountyPagination', [
           scope.currentPage = 1;
           scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
-//          console.log(scope.pages)
         });
-        
-//        console.log('pages',scope.totalPages)
-//        console.log('currentPage',scope.currentPage)
-//        console.log('totalItems',scope.totalItems)
-//        console.log('itemsPerPage',scope.itemsPerPage)
-
-//        scope.$on('recordsRefresh', function (event, response) {
-//          var totalItems = response.count;
-//          var itemsPerPage = records.queryOptions('l');
-//          scope.currentPage = records.queryOptions('p');
-//          scope.totalPages = calculateTotalPages(totalItems, itemsPerPage);
-//          scope.pages = getPages(scope.currentPage, scope.totalPages);
-//          console.log(scope.pages)
-//        });
       }
     };
   }]);

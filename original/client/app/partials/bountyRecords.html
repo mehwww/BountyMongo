@@ -1,23 +1,22 @@
 <div class="panel panel-default">
   <div class="panel-body">
-    <!--<button type="button" class="btn btn-default">-->
-      <!--Add Document-->
-    <!--</button>-->
+    <button type="button" class="btn btn-default">
+      Add Document
+    </button>
     <bounty-pagination current-page="page"
                        total-items="count"
-                       items-per-page="pageSize"></bounty-pagination>
-
+                       items-per-page="pageSize">
+    </bounty-pagination>
   </div>
-  <div class="panel-footer">
-
-  </div>
-
-</div>
-
-<div class="panel panel-default">
   <div class="panel-body">
     <article ng-repeat="document in records">
       <pre>{{document|json}}</pre>
     </article>
+  </div>
+  <div class="panel-body">
+    <bounty-pagination current-page="page"
+                       total-items="count"
+                       items-per-page="pageSize">
+    </bounty-pagination>
   </div>
 </div>

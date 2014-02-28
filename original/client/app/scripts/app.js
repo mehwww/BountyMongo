@@ -10,6 +10,9 @@ bountyMongo
     '$httpProvider',
     function ($routeProvider, $locationProvider, $httpProvider) {
       $routeProvider
+        .when('/',{
+          templateUrl:'blank.html'
+        })
         .when('/servers/:serverName', {
           templateUrl: '/partials/bountyMain.html',
           controller: 'MainCtrl'

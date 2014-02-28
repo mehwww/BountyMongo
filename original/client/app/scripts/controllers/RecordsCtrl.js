@@ -21,7 +21,7 @@ bountyMongo.controller('RecordsCtrl', [
 //      console.log('count fail', response)
     })
 
-//    $scope.page =1;
+    $scope.page = 1;
 //    $scope.count = 2000;
     $scope.pageSize = 20
 
@@ -29,7 +29,8 @@ bountyMongo.controller('RecordsCtrl', [
 //      console.log('page', newValue)
       collection(serverName, databaseName, collectionName)
         .query({
-          p: newValue
+          p: newValue,
+          l: $scope.pageSize
         })
         .then(function (response) {
           $scope.records = response
@@ -39,10 +40,10 @@ bountyMongo.controller('RecordsCtrl', [
     });
 
 
-    collection(serverName, databaseName, collectionName).query().then(function (response) {
-      $scope.records = response
-    }, function (response) {
-      console.log('Get Records Fail', response)
-    })
+//    collection(serverName, databaseName, collectionName).query().then(function (response) {
+//      $scope.records = response
+//    }, function (response) {
+//      console.log('Get Records Fail', response)
+//    })
 
   }])

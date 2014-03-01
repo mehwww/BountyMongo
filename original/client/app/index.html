@@ -49,7 +49,6 @@
             <a class="btn btn-default" ng-click="removeServer()">&minus;</a>
           </div>
         </div>
-
         <ul class="list-group">
           <a class="list-group-item" ng-click="selectDatabase(database)"
              ng-repeat-start="database in databaseList">
@@ -60,6 +59,16 @@
              ng-repeat-end>
             {{collection}}
           </a>
+          <a class="list-group-item add-database"></a>
+          <span class="list-group-item" ng-switch on="AddDatabase.isActive" >
+            <div class="input-group" ng-switch-when="true">
+              <input type="text" class="form-control">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">&#10003;</button>
+                <button class="btn btn-default" type="button" ng-click="AddDatabase.isActive=false">&times;</button>
+              </span>
+            </div>
+          </span>
         </ul>
       </div>
     </div>
@@ -109,6 +118,15 @@
     <div class="panel-body">
       <h3>No Records</h3>
     </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="addDocumentModal.html">
+  <div class="modal-header">
+    <h5>Only pure json accept</h5>
+  </div>
+  <div class="modal-body">
+    <textarea class="form-control" rows="5"></textarea>
   </div>
 </script>
 

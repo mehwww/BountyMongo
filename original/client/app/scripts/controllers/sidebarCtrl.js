@@ -140,4 +140,6 @@ bountyMongo.controller('SidebarCtrl', [
       });
     }
 
+    $scope.isAddDatabaseActive = false
+
   }])

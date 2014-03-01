@@ -36,6 +36,21 @@ bountyMongo
   .constant('API_URL','/api')
 
 
+//####  ./app/scripts/controllers/AddDocumentModalCtrl.js
+bountyMongo.controller('AddDocumentModalCtrl', [
+
+  '$scope',
+  '$modalInstance',
+
+  function ($scope, $modalInstance) {
+
+  }
+])
+/**
+ * Created by meh on 14-2-20.
+ */
+
+
 //####  ./app/scripts/controllers/AddServerModalCtrl.js
 bountyMongo.controller('AddServerModalCtrl', [
 
@@ -144,14 +159,12 @@ bountyMongo.controller('RecordsCtrl', [
   '$scope',
   '$location',
   '$routeParams',
+  '$modal',
   'server',
   'database',
   'collection',
 
-  function ($scope, $location, $routeParams, server, database, collection) {
-
-//    console.log($routeParams)
-
+  function ($scope, $location, $routeParams,$modal, server, database, collection) {
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
@@ -159,15 +172,13 @@ bountyMongo.controller('RecordsCtrl', [
     collection(serverName, databaseName, collectionName).count().then(function (response) {
       $scope.count = response.count;
     }, function (response) {
-//      console.log('count fail', response)
+      console.log('count fail', response)
     })
 
     $scope.page = 1;
-//    $scope.count = 2000;
     $scope.pageSize = 20
 
-    $scope.$watch('page', function (newValue, oldValue) {
-//      console.log('page', newValue)
+    $scope.$watch('page', function (newValue) {
       collection(serverName, databaseName, collectionName)
         .query({
           p: newValue,
@@ -180,12 +191,22 @@ bountyMongo.controller('RecordsCtrl', [
         })
     });
 
+    $scope.addDocument = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'addDocumentModal.html',
+        controller: 'AddDocumentModalCtrl',
+        windowClass: 'add-document-modal',
+      })
+      modalInstance.result.then(function (response) {
+       console.log(response)
+      }, function () {
+//        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
 
-//    collection(serverName, databaseName, collectionName).query().then(function (response) {
-//      $scope.records = response
-//    }, function (response) {
-//      console.log('Get Records Fail', response)
-//    })
+    $scope.toggleOperation = function(){
+      $scope.isMore = !$scope.isMore
+    }
 
   }])
 
@@ -372,7 +393,7 @@ bountyMongo.directive('bountyDocument', [function () {
     templateUrl: '/partials/bountyDocument.html',
     replace: true,
     link: function (scope, element, attr) {
-
+//      scope.document =
     }
   }
 }])

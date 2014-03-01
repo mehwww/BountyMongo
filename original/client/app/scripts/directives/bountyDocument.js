@@ -7,7 +7,7 @@ bountyMongo.directive('bountyDocument', [function () {
     templateUrl: '/partials/bountyDocument.html',
     replace: true,
     link: function (scope, element, attr) {
-
+//      scope.document =
     }
   }
 }])

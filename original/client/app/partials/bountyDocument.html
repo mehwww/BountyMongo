@@ -1,6 +1,15 @@
-<well class="well document">
-<pre>
+<div class="document-wrapper">
+  <div class="document-title">
+    <h3>{{document._id}}</h3>
+  </div>
+  <div class="document-action">
+    <div class="btn-group">
+      <a class="btn btn-default">Edit</a>
+      <a class="btn btn-default">Delete</a>
+    </div>
+  </div>
+<pre class="document">
 {{document|json}}
 </pre>
-</well>
+</div>
 

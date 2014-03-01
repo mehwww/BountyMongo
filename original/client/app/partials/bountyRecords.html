@@ -1,13 +1,24 @@
 <div class="panel panel-default">
-  <div class="panel-body">
-    <button type="button" class="btn btn-default">
-      Add Document
-    </button>
-    <bounty-pagination current-page="page"
-                       total-items="count"
-                       items-per-page="pageSize">
-    </bounty-pagination>
+  <div class="panel-body operation">
+    <div class="operation-basic">
+      <a class="btn btn-default" ng-click="addDocument()">
+        Add Document
+      </a>
+      <bounty-pagination current-page="page"
+                         total-items="count"
+                         items-per-page="pageSize">
+      </bounty-pagination>
+    </div>
+    <div ng-if="isMore" class="operation-more">
+      <a class="btn btn-default">
+        Drop Collection
+      </a>
+    </div>
+    <a class="btn btn-default btn-block more" ng-click="toggleOperation()">
+      <span class="caret"></span>
+    </a>
   </div>
+
   <div class="panel-body">
     <article ng-repeat="document in records">
       <!--<pre>{{document|json}}</pre>-->

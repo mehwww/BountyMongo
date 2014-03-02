@@ -21,6 +21,7 @@ exports.getClient = function (serverUrl, callback) {
   var mongoClient = new MongoClient(new Server(server.host, server.port, {
     socketOptions: {
       connectTimeoutMS: 2000
+//      socketTimeoutMS:2000
     }
   }));
 

@@ -59,16 +59,18 @@
              ng-repeat-end>
             {{collection}}
           </a>
-          <a class="list-group-item add-database"></a>
-          <span class="list-group-item" ng-switch on="AddDatabase.isActive" >
-            <div class="input-group" ng-switch-when="true">
-              <input type="text" class="form-control">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button">&#10003;</button>
-                <button class="btn btn-default" type="button" ng-click="AddDatabase.isActive=false">&times;</button>
-              </span>
-            </div>
-          </span>
+          <a class="list-group-item add-database" ng-click="addDatabase()">
+            &plus;
+          </a>
+          <!--<span class="list-group-item" ng-switch on="AddDatabase.isActive" >-->
+          <!--<div class="input-group" ng-switch-when="true">-->
+          <!--<input type="text" class="form-control">-->
+          <!--<span class="input-group-btn">-->
+          <!--<button class="btn btn-default" type="button">&#10003;</button>-->
+          <!--<button class="btn btn-default" type="button" ng-click="AddDatabase.isActive=false">&times;</button>-->
+          <!--</span>-->
+          <!--</div>-->
+          <!--</span>-->
         </ul>
       </div>
     </div>
@@ -127,6 +129,18 @@
   </div>
   <div class="modal-body">
     <textarea class="form-control" rows="5"></textarea>
+  </div>
+</script>
+
+<script type="text/ng-template" id="addDatabaseModal.html">
+  <div class="modal-body">
+    <div class="input-group">
+      <input ng-model="database.name" type="text" class="form-control">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="add()">&#10003</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">&times;</button>
+      </span>
+    </div>
   </div>
 </script>
 

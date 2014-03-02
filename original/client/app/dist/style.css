@@ -5819,6 +5819,14 @@ a.list-group-item-sub.active:focus {
 .list-group-item-sub {
   padding-left: 20px;
 }
+.list-group-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.add-database {
+  text-align: center;
+}
 .pagination {
   margin-top: 0px;
   margin-bottom: 0px;

@@ -36,6 +36,32 @@ bountyMongo
   .constant('API_URL','/api')
 
 
+//####  ./app/scripts/controllers/AddDatabaseModalCtrl.js
+bountyMongo.controller('AddDatabaseModalCtrl', [
+
+  '$scope',
+  '$modalInstance',
+  '$location',
+  'serverName',
+  'databaseList',
+
+  function ($scope, $modalInstance, $location, serverName, databaseList) {
+    console.log(databaseList)
+    $scope.database = {}
+    $scope.add = function () {
+      if (databaseList.indexOf($scope.database.name) != -1) {
+        return alert('Database Already Exist')
+      }
+      $location.path('/servers/' + encodeURIComponent(serverName)
+        + '/databases/' + encodeURIComponent($scope.database.name))
+      $modalInstance.close($scope.database.name);
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+  }])
+
 //####  ./app/scripts/controllers/AddDocumentModalCtrl.js
 bountyMongo.controller('AddDocumentModalCtrl', [
 
@@ -379,6 +405,34 @@ bountyMongo.controller('SidebarCtrl', [
       }, function () {
 //        console.log('Modal dismissed at: ' + new Date());
       });
+    }
+
+    $scope.addDatabase = function(){
+      var modalInstance = $modal.open({
+        templateUrl:'addDatabaseModal.html',
+        controller:'AddDatabaseModalCtrl',
+        windowClass:'add-database-modal',
+        resolve: {
+          serverName: function () {
+            return $scope.server
+          },
+          databaseList:function(){
+            var databaseList=[];
+            angular.forEach($scope.databaseList,function(value,key){
+              this.push(value.name)
+            },databaseList)
+            return databaseList
+          }
+        }
+      })
+
+      modalInstance.result.then(function(database){
+        $scope.databaseList.push({
+          name:database,
+          isActive:false
+        })
+      })
+
     }
 
   }])

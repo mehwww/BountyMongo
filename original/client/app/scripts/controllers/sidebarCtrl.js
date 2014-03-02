@@ -140,6 +140,32 @@ bountyMongo.controller('SidebarCtrl', [
       });
     }
 
-    $scope.isAddDatabaseActive = false
+    $scope.addDatabase = function(){
+      var modalInstance = $modal.open({
+        templateUrl:'addDatabaseModal.html',
+        controller:'AddDatabaseModalCtrl',
+        windowClass:'add-database-modal',
+        resolve: {
+          serverName: function () {
+            return $scope.server
+          },
+          databaseList:function(){
+            var databaseList=[];
+            angular.forEach($scope.databaseList,function(value,key){
+              this.push(value.name)
+            },databaseList)
+            return databaseList
+          }
+        }
+      })
+
+      modalInstance.result.then(function(database){
+        $scope.databaseList.push({
+          name:database,
+          isActive:false
+        })
+      })
+
+    }
 
   }])

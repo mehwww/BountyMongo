@@ -9,3 +9,9 @@ exports.count = function (collection, query, options, callback) {
     callback(err, count)
   })
 }
+
+exports.insert = function (collection, doc, callback) {
+  collection.insert(doc, function (err, result) {
+    callback(err, result)
+  })
+}

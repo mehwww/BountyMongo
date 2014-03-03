@@ -8,7 +8,9 @@
   <script src="/vendor/jquery/dist/jquery.js"></script>
   <!--<script src="./vendor/components/bootstrap/dist/js/bootstrap.js"></script>-->
   <script src="/vendor/underscore/underscore.js"></script>
+  <script src="/vendor/ace-builds/src-min-noconflict/ace.js"></script>
   <script src="/vendor/angular/angular.js"></script>
+  <script src="/vendor/angular-ui-ace/ui-ace.js"></script>
   <script src="/vendor/angular-route/angular-route.js"></script>
   <script src="/vendor/angular-cookies/angular-cookies.js"></script>
   <script src="/vendor/angular-local-storage/angular-local-storage.js"></script>
@@ -125,10 +127,19 @@
 
 <script type="text/ng-template" id="addDocumentModal.html">
   <div class="modal-header">
-    <h5>Only pure json accept</h5>
+    <h5>Only <a tooltip="No single quotes. No raw key.">pure</a> json accept</h5>
   </div>
   <div class="modal-body">
-    <textarea class="form-control" rows="5"></textarea>
+    <!--<textarea class="form-control" rows="5"></textarea>-->
+    <div ui-ace="aceOption" ng-model="document"></div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="add()">
+      Add
+    </button>
+    <button type="button" class="btn btn-default" ng-click="cancel()">
+      Cancel
+    </button>
   </div>
 </script>
 

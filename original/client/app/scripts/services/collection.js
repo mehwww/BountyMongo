@@ -48,6 +48,25 @@ bountyMongo.factory('collection', [
           });
       }
 
+      Resource.add = function (document) {
+        var url = API_URL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/' + encodeURIComponent(databaseName)
+          + '/collections/' + encodeURIComponent(collectionName)
+        return $http.post(url,
+          {
+            document: document
+          },
+          {
+            headers: {
+              'Mongodb-Url': 'mongodb://' + serverUrl
+            }
+          }).then(function (response) {
+            return response.data;
+          })
+
+      }
+
       Resource.count = function (queryOptions) {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)

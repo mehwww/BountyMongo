@@ -13,7 +13,7 @@
   //  }
 }
 
-.nav, .pagination, .carousel, .panel-title, .btn, .list-group-item, .dropdown-menu {
+a, .nav, .pagination, .carousel, .panel-title, .btn, .list-group-item, .dropdown-menu {
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -53,10 +53,10 @@ textarea {
   margin-bottom: 20px;
   display: block;
   position: relative;
-  > .document-title{
+  > .document-title {
     padding-left: 15px;
     margin-top: 5px;
-    >h3{
+    > h3 {
       margin: 0px;
       height: 26px;
     }
@@ -78,16 +78,20 @@ textarea {
   }
 }
 
-.operation{
-  >.operation-basic{
+.operation {
+  > .operation-basic {
     margin-bottom: 10px;
   }
-  >.operation-more{
+  > .operation-more {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  >.more span{
+  > .more span {
     rotation-point: center center;
     rotation: 180deg;
   }
+}
+
+.ace_editor {
+  height: 200px;
 }

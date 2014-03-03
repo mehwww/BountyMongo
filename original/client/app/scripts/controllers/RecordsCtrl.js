@@ -2,13 +2,14 @@ bountyMongo.controller('RecordsCtrl', [
 
   '$scope',
   '$location',
+  '$route',
   '$routeParams',
   '$modal',
   'server',
   'database',
   'collection',
 
-  function ($scope, $location, $routeParams,$modal, server, database, collection) {
+  function ($scope, $location, $route, $routeParams, $modal, server, database, collection) {
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
@@ -39,16 +40,17 @@ bountyMongo.controller('RecordsCtrl', [
       var modalInstance = $modal.open({
         templateUrl: 'addDocumentModal.html',
         controller: 'AddDocumentModalCtrl',
-        windowClass: 'add-document-modal',
+        windowClass: 'add-document-modal'
       })
       modalInstance.result.then(function (response) {
-       console.log(response)
+        $route.reload()
+        console.log(response)
       }, function () {
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
-    $scope.toggleOperation = function(){
+    $scope.toggleOperation = function () {
       $scope.isMore = !$scope.isMore
     }
 

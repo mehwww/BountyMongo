@@ -1,7 +1,7 @@
 //"use strict"
 
 
-var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap', 'ngRoute', 'LocalStorageModule']);
+var bountyMongo = angular.module('bountyMongo', ['ui.ace','ui.bootstrap', 'ngRoute', 'LocalStorageModule']);
 
 bountyMongo
   .config([

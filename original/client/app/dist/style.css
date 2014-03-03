@@ -5794,6 +5794,12 @@ button.close {
   padding-bottom: 10px;
   margin-top: 0px;
 }
+.add-document-modal .modal-body > h3 {
+  margin: 0;
+}
+.add-document-modal .modal-footer {
+  margin-top: 0px;
+}
 .list-group-item-sub {
   color: #808080;
   background-color: #f7f7f7;
@@ -5832,6 +5838,7 @@ a.list-group-item-sub.active:focus {
   margin-bottom: 0px;
   float: right;
 }
+a,
 .nav,
 .pagination,
 .carousel,
@@ -5909,4 +5916,7 @@ textarea {
 .operation > .more span {
   rotation-point: center center;
   rotation: 180deg;
+}
+.ace_editor {
+  height: 200px;
 }

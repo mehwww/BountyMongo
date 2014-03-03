@@ -21,14 +21,12 @@ exports.getClient = function (serverUrl, callback) {
   var mongoClient = new MongoClient(new Server(server.host, server.port, {
     socketOptions: {
       connectTimeoutMS: 2000
-//      socketTimeoutMS:2000
     }
   }));
 
   mongoClient.open(function (err, client) {
     if (err) {
       console.log(err)
-//      return callback(err, client)
       return callback(new MongoError('connect failed'), client)
     }
     var db = client.db(server.dbName);
@@ -56,56 +54,3 @@ exports.deleteClient = function (serverUrl) {
     delete clientInstance[server.name];
   }
 }
-
-
-//module.exports = function (serverName, callback) {
-//  var server = serverName.split(':', 2)
-//  var host = server[0];
-//  var port = server[1];
-//
-//  if (clientInstance[host + ':' + port]) {
-//    callback(null, clientInstance[host + ':' + port]);
-//    return
-//  }
-//  var mongoServer = new Server(host, port ? port : 27017, {
-//    auto_reconnect: true
-//  });
-//  var mongoClient = new MongoClient(mongoServer);
-//  mongoClient.open(function (err, client) {
-//    if (err) callback(err, null);
-//    clientInstance[host + ':' + port] = client;
-//    callback(null, client);
-//  })
-//};
-//
-// module.exports = function(callback) {
-// 	if (clientInstance) {
-// 		callback(clientInstance);
-// 		return;
-// 	};
-// 	var mongoServer = new Server('localhost', 27017, {
-// 		auto_reconnect: true
-// 	})
-// 	var mongoClient = new MongoClient(mongoServer);
-// 	mongoClient.open(function(err, client) {
-// 		if (err) throw err;
-// 		clientInstance = client;
-// 		callback(client);
-// 	})
-// }
-
-
-// MongoClient.connect('mongodb://localhost:27017/admin', function(err, db) {
-// 	if (err) throw err;
-
-// 	db.command({
-// 		hostInfo: 1
-// 	}, function(err, result) {
-// 		if (err) throw err;
-// 		console.log(util.inspect(result, {
-// 			depth: null,
-// 			colors: true
-// 		}))
-// 		db.close();
-// 	});
-// })

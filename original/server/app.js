@@ -38,13 +38,6 @@ if ('development' == app.get('env')) {
 app.use('/vendor',express.static(path.join(__dirname, '../client/app/vendor')))
 app.use('/dist',express.static(path.join(__dirname, '../client/app/dist')))
 app.use('/partials',express.static(path.join(__dirname, '../client/app/partials')))
-//app.get('/app',function(req,res){
-//  res.sendfile(path.join(__dirname, '../client/app/index.html'))
-//});
-//
-//app.get('/app/*',function(req,res){
-//  res.sendfile(path.join(__dirname, '../client/app/index.html'))
-//});
 
 //list server records in serverList.json
 //app.get('/api/servers',servers.list)
@@ -72,6 +65,7 @@ app.delete('/api/servers/:serverName/databases/:databaseName', databases.delete)
 app.get('/api/servers/:serverName/databases/:databaseName/collections',collections.list)
 //get the specified collection's documents
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
+app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName/count', collections.count)
 //add new document
 //app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)

@@ -3,7 +3,7 @@
 //"use strict"
 
 
-var bountyMongo = angular.module('bountyMongo', ['ui.bootstrap', 'ngRoute', 'LocalStorageModule']);
+var bountyMongo = angular.module('bountyMongo', ['ui.ace','ui.bootstrap', 'ngRoute', 'LocalStorageModule']);
 
 bountyMongo
   .config([
@@ -66,15 +66,55 @@ bountyMongo.controller('AddDatabaseModalCtrl', [
 bountyMongo.controller('AddDocumentModalCtrl', [
 
   '$scope',
+  '$routeParams',
   '$modalInstance',
+  'collection',
 
-  function ($scope, $modalInstance) {
+  function ($scope, $routeParams, $modalInstance, collection) {
+    var serverName = $routeParams.serverName;
+    var databaseName = $routeParams.databaseName;
+    var collectionName = $routeParams.collectionName;
+
+    $scope.aceLoad = function (_editor) {
+      var _session = _editor.getSession();
+      _session.setTabSize(2);
+      _session.on("change", function (e) {
+        $scope.document = _session.getValue()
+      });
+    }
+
+    $scope.aceOption = {
+      useWrapMode: false,
+      mode: 'json',
+      onLoad: $scope.aceLoad
+    }
+
+    $scope.$watch('document', function (newVal) {
+      console.log(newVal)
+    })
+
+    $scope.add = function () {
+      var document = {};
+      try {
+        document = JSON.parse($scope.document)
+        console.log(document);
+        collection(serverName, databaseName, collectionName).add(document).then(function (response) {
+          $modalInstance.close(response)
+        }, function (response) {
+          console.log(response.data)
+        })
+      }
+      catch (e) {
+        console.log('Invaild JSON')
+      }
+    }
+
+    $scope.cancel = function(){
+      $modalInstance.dismiss();
+    }
 
   }
 ])
-/**
- * Created by meh on 14-2-20.
- */
 
 
 //####  ./app/scripts/controllers/AddServerModalCtrl.js
@@ -184,13 +224,14 @@ bountyMongo.controller('RecordsCtrl', [
 
   '$scope',
   '$location',
+  '$route',
   '$routeParams',
   '$modal',
   'server',
   'database',
   'collection',
 
-  function ($scope, $location, $routeParams,$modal, server, database, collection) {
+  function ($scope, $location, $route, $routeParams, $modal, server, database, collection) {
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
@@ -221,16 +262,17 @@ bountyMongo.controller('RecordsCtrl', [
       var modalInstance = $modal.open({
         templateUrl: 'addDocumentModal.html',
         controller: 'AddDocumentModalCtrl',
-        windowClass: 'add-document-modal',
+        windowClass: 'add-document-modal'
       })
       modalInstance.result.then(function (response) {
-       console.log(response)
+        $route.reload()
+        console.log(response)
       }, function () {
 //        console.log('Modal dismissed at: ' + new Date());
       });
     }
 
-    $scope.toggleOperation = function(){
+    $scope.toggleOperation = function () {
       $scope.isMore = !$scope.isMore
     }
 
@@ -619,6 +661,25 @@ bountyMongo.factory('collection', [
           });
       }
 
+      Resource.add = function (document) {
+        var url = API_URL
+          + '/servers/' + encodeURIComponent(serverName)
+          + '/databases/' + encodeURIComponent(databaseName)
+          + '/collections/' + encodeURIComponent(collectionName)
+        return $http.post(url,
+          {
+            document: document
+          },
+          {
+            headers: {
+              'Mongodb-Url': 'mongodb://' + serverUrl
+            }
+          }).then(function (response) {
+            return response.data;
+          })
+
+      }
+
       Resource.count = function (queryOptions) {
         var url = API_URL
           + '/servers/' + encodeURIComponent(serverName)
@@ -700,51 +761,6 @@ bountyMongo.factory('database', [
     }
   }])
 
-
-//####  ./app/scripts/services/records.js
-bountyMongo.factory('records', [
-  '$rootScope',
-  'server',
-  'database',
-  'collection',
-  function ($rootScope, server, database, collection) {
-    var recordsService = {};
-
-    var server;
-    var database;
-    var coll;
-
-    var queryOptions = {};
-
-    recordsService.server = function (value) {
-      if (value === undefined) return server;
-      server = value;
-    }
-    recordsService.database = function (value) {
-      if (value === undefined) return database;
-      database = value;
-    }
-    recordsService.collection = function (value) {
-      if (value === undefined) return coll;
-      coll = value;
-    }
-    recordsService.queryOptions = function (key, value) {
-      if (key === undefined) return queryOptions;
-      if (value === undefined) return queryOptions[key];
-      queryOptions[key] = value;
-    }
-
-    recordsService.recordsRefresh = function () {
-      if (!server)return console.log('need set server');
-      if (!database)return console.log('need set database');
-      if (!coll)return console.log('need set collection');
-      collection(server, database, coll, queryOptions).query().then(function (response) {
-        $rootScope.$broadcast('recordsRefresh', response)
-      })
-    }
-
-    return recordsService;
-  }])
 
 //####  ./app/scripts/services/server.js
 bountyMongo.factory('server', [

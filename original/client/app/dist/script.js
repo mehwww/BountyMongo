@@ -236,26 +236,39 @@ bountyMongo.controller('RecordsCtrl', [
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
 
-    collection(serverName, databaseName, collectionName).count().then(function (response) {
-      $scope.count = response.count;
-    }, function (response) {
-      console.log('count fail', response)
-    })
-
-    $scope.page = 1;
-    $scope.pageSize = 20
-
-    $scope.$watch('page', function (newValue) {
+    var loadRecords = function (options) {
+      options = options || {};
       collection(serverName, databaseName, collectionName)
         .query({
-          p: newValue,
-          l: $scope.pageSize
+          p: options.page || $scope.page,
+          l: options.pageSize || $scope.pageSize
         })
         .then(function (response) {
           $scope.records = response
         }, function (response) {
           console.log('Get Records Fail', response)
         })
+
+      collection(serverName, databaseName, collectionName).count().then(function (response) {
+        $scope.count = response.count;
+      }, function (response) {
+        console.log('count fail', response)
+      })
+
+    }
+
+    $scope.page = 1;
+    $scope.pageSize = 20
+
+
+    loadRecords()
+
+    $scope.$on('selectPage', function (event, page) {
+//      console.log($scope.page)
+      loadRecords({page: page})
+//      setTimeout(function () {
+//        console.log($scope.page)
+//      }, 100)
     });
 
     $scope.addDocument = function () {
@@ -274,6 +287,11 @@ bountyMongo.controller('RecordsCtrl', [
 
     $scope.toggleOperation = function () {
       $scope.isMore = !$scope.isMore
+    }
+
+    $scope.query = function () {
+      $scope.page = 5
+      loadRecords()
     }
 
 
@@ -574,7 +592,7 @@ bountyMongo.directive('bountyPagination', [
         scope.selectPage = function (page) {
           if (!isActive(page) && page > 0 && page <= scope.totalPages) {
             scope.currentPage = page;
-            scope.pages = getPages(scope.currentPage, scope.totalPages);
+            scope.$emit('selectPage',page);
           }
         }
 

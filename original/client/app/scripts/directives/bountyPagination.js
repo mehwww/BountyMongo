@@ -74,7 +74,7 @@ bountyMongo.directive('bountyPagination', [
         scope.selectPage = function (page) {
           if (!isActive(page) && page > 0 && page <= scope.totalPages) {
             scope.currentPage = page;
-            scope.pages = getPages(scope.currentPage, scope.totalPages);
+            scope.$emit('selectPage',page);
           }
         }
 

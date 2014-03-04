@@ -9,10 +9,12 @@ var queryStringParser = function (req) {
   var query;
   var limit;
   var skip;
+  var sort;
   //query parameters
   if (req.query.q) {
     try {
       query = JSON.parse(req.query.q);
+      sort = JSON.parse(req.query.s);
     }
     catch (err) {
       return null
@@ -26,13 +28,11 @@ var queryStringParser = function (req) {
     query: query,
     options: {
       limit: limit,
-      skip: skip
+      skip: skip,
+      sort: sort
     }
   }
 }
-
-
-
 
 
 exports.list = function (req, res) {
@@ -115,7 +115,7 @@ exports.count = function (req, res) {
 }
 
 
-exports.add = function(req,res){
+exports.add = function (req, res) {
   var serverUrl = req.headers['mongodb-url'];
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');

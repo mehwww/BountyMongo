@@ -1,0 +1,15 @@
+<div class="sort-panel">
+
+  <div class="btn-group sort-group" ng-repeat="item in sort">
+    <div class="btn btn-default disabled sort-group-name">{{item.name}}</div>
+    <div class="btn btn-default sort-group-order" ng-click="changeOrder($index)">{{item.order|sort}}</div>
+    <div class="btn btn-default sort-group-remove" ng-click="removeSortItem($index)">&times;</div>
+  </div>
+
+  <div class="input-group">
+    <input type="text" class="form-control" ng-model="newSortItemName">
+  <span class="input-group-btn">
+    <button class="btn btn-default" type="button" ng-click="addSortItem()">Add</button>
+  </span>
+  </div>
+</div>

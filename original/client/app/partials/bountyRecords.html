@@ -10,9 +10,32 @@
       </bounty-pagination>
     </div>
     <div ng-if="isMore" class="operation-more">
-      <a class="btn btn-default">
-        Drop Collection
-      </a>
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn btn-default">
+            Drop Collection
+          </a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+
+        </div>
+        <div class="col-md-4">
+          <h5>sort</h5>
+          <bounty-sort-items sort="sort"></bounty-sort-items>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn btn-default btn-block more">
+            query
+          </a>
+        </div>
+      </div>
+
     </div>
     <a class="btn btn-default btn-block more" ng-click="toggleOperation()">
       <span class="caret"></span>

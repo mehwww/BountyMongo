@@ -54,4 +54,5 @@ bountyMongo.controller('RecordsCtrl', [
       $scope.isMore = !$scope.isMore
     }
 
+
   }])

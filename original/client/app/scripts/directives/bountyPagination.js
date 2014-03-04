@@ -79,8 +79,6 @@ bountyMongo.directive('bountyPagination', [
         }
 
         scope.$watch('currentPage', function (newValue,oldValue) {
-//          console.log('new',newValue)
-//          console.log('old',oldValue)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
 

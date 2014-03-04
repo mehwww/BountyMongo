@@ -9,8 +9,13 @@ bountyMongo.controller('SidebarCtrl', [
 
   function ($scope, $location, $routeParams, $modal, server, database) {
 
+    server().list().then(function (list) {
+      $scope.serverList = list;
+    })
+
     var self = this;
     self.isInitialized = true;
+
 
     $scope.$on('$routeChangeSuccess', function (event, routeData) {
       if (!self.isInitialized)return
@@ -61,9 +66,6 @@ bountyMongo.controller('SidebarCtrl', [
       }
     })
 
-    server().list().then(function (list) {
-      $scope.serverList = list;
-    })
 
     $scope.selectServer = function (serverName) {
       $scope.server = serverName;
@@ -140,29 +142,29 @@ bountyMongo.controller('SidebarCtrl', [
       });
     }
 
-    $scope.addDatabase = function(){
+    $scope.addDatabase = function () {
       var modalInstance = $modal.open({
-        templateUrl:'addDatabaseModal.html',
-        controller:'AddDatabaseModalCtrl',
-        windowClass:'add-database-modal',
+        templateUrl: 'addDatabaseModal.html',
+        controller: 'AddDatabaseModalCtrl',
+        windowClass: 'add-database-modal',
         resolve: {
           serverName: function () {
             return $scope.server
           },
-          databaseList:function(){
-            var databaseList=[];
-            angular.forEach($scope.databaseList,function(value,key){
+          databaseList: function () {
+            var databaseList = [];
+            angular.forEach($scope.databaseList, function (value, key) {
               this.push(value.name)
-            },databaseList)
+            }, databaseList)
             return databaseList
           }
         }
       })
 
-      modalInstance.result.then(function(database){
+      modalInstance.result.then(function (database) {
         $scope.databaseList.push({
-          name:database,
-          isActive:false
+          name: database,
+          isActive: false
         })
       })
 

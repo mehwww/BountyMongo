@@ -14,11 +14,14 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/vendor/components/angular/angular.js',
-      'app/vendor/components/angular-mocks/angular-mocks.js',
-      'app/vendor/components/angular-bootstrap/ui-bootstrap.js',
-      // 'app/bower_components/angular-resource/angular-resource.js',
-      // 'app/bower_components/angular-route/angular-route.js',
+      'app/vendor/jquery/dist/jquery.js',
+      'app/vendor/angular/angular.js',
+      'app/vendor/angular-mocks/angular-mocks.js',
+      'app/vendor/angular-bootstrap/ui-bootstrap.js',
+      'app/vendor/angular-route/angular-route.js',
+      'app/vendor/ace-builds/src-min-noconflict/ace.js',
+      'app/vendor/angular-local-storage/angular-local-storage.js',
+      'app/vendor/angular-ui-ace/ui-ace.js',
       'app/scripts/**/*.js',
       'app/partials/**/*.html',
       'test/unit/app/**/*.js'

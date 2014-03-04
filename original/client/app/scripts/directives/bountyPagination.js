@@ -78,11 +78,19 @@ bountyMongo.directive('bountyPagination', [
           }
         }
 
-        scope.$watch('currentPage', function () {
+        scope.$watch('currentPage', function (newValue,oldValue) {
+//          console.log('new',newValue)
+//          console.log('old',oldValue)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
 
         scope.$watch('totalItems', function (newValue) {
+          scope.currentPage = 1;
+          scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
+          scope.pages = getPages(scope.currentPage, scope.totalPages);
+        });
+
+        scope.$watch('itemsPerPage', function (newValue) {
           scope.currentPage = 1;
           scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);

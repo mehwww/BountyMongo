@@ -9,7 +9,7 @@
                          items-per-page="pageSize">
       </bounty-pagination>
     </div>
-    <div ng-if="isMore" class="operation-more">
+    <div ng-show="isMore" class="operation-more">
       <div class="row">
         <div class="col-md-12">
           <a class="btn btn-default">
@@ -23,8 +23,7 @@
 
         </div>
         <div class="col-md-4">
-          <h5>sort</h5>
-          <bounty-sort-items sort="sort"></bounty-sort-items>
+          <bounty-sort-items sort="sortArray"></bounty-sort-items>
         </div>
       </div>
 

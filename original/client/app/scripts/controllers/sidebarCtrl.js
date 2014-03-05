@@ -13,13 +13,11 @@ bountyMongo.controller('SidebarCtrl', [
       $scope.serverList = list;
     })
 
-    var self = this;
-    self.isInitialized = true;
-
+    var isInitialized = true;
 
     $scope.$on('$routeChangeSuccess', function (event, routeData) {
-      if (!self.isInitialized)return
-      self.isInitialized = false;
+      if (!isInitialized)return
+      isInitialized = false;
       //stupid
       var serverName = routeData.params.serverName;
       var databaseName = routeData.params.databaseName;
@@ -90,19 +88,21 @@ bountyMongo.controller('SidebarCtrl', [
         }
       )
       databaseObj.isActive = !databaseObj.isActive
-      $scope.database = databaseObj;
+      $scope.database = databaseObj.name;
+
+      console.log($scope.database)
 
       $location.path('/servers/' + encodeURIComponent($scope.server)
         + '/databases/' + encodeURIComponent(databaseObj.name))
     }
 
-    $scope.selectCollection = function (database, collection) {
-      $scope.database = database;
-      $scope.collection = collection;
+    $scope.selectCollection = function (databaseName, collectionName) {
+      $scope.database = databaseName;
+      $scope.collection = collectionName;
 
       $location.path('/servers/' + encodeURIComponent($scope.server)
-        + '/databases/' + encodeURIComponent($scope.database.name)
-        + '/collections/' + encodeURIComponent(collection))
+        + '/databases/' + encodeURIComponent($scope.database)
+        + '/collections/' + encodeURIComponent($scope.collection))
     }
 
     $scope.addServer = function () {

@@ -35,11 +35,12 @@ bountyMongo.directive('bountySortItems', [
             })
             sortNames.push(scope.newSortItemName);
           }
+          scope.newSortItemName='';
         }
 
-        scope.$watch('sort', function (newValue, oldValue) {
-          console.log(newValue)
-        },true);
+//        scope.$watch('sort', function (newValue, oldValue) {
+//          console.log(newValue)
+//        },true);
 
       }
     }

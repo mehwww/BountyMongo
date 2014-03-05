@@ -5,25 +5,25 @@ var BountyError = require('../lib/customError').bountyError;
 var respond = require('../lib/respond')
 var async = require('async');
 
-var queryStringParser = function (req) {
+var queryStringParser = function (queryString) {
+  queryString = queryString || {}
   var query;
   var limit;
   var skip;
   var sort;
   //query parameters
-  if (req.query.q) {
-    try {
-      query = JSON.parse(req.query.q);
-      sort = JSON.parse(req.query.s);
-    }
-    catch (err) {
-      return null
-    }
-  }
+  query = queryString.q
+    ? JSON.parse(queryString.q)
+    : {}
+  //sort parameters
+  sort = queryString.s
+    ? JSON.parse(queryString.s)
+    : {}
   //limit parameters
-  limit = req.query.l ? req.query.l : 20;
+  limit = queryString.l ? queryString.l : 20;
   //skip parameters
-  skip = req.query.p ? (req.query.p - 1) * limit : 0;
+  skip = queryString.p ? (queryString.p - 1) * limit : 0;
+
   return {
     query: query,
     options: {
@@ -59,9 +59,12 @@ exports.find = function (req, res) {
   var serverUrl = req.headers['mongodb-url']
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
+  var queryString;
 
-  var queryString = queryStringParser(req);
-  if (!queryString) {
+  try{
+    queryString = queryStringParser(req.query);
+  }
+  catch (e){
     res.statusCode = 400;
     res.send(respond(new BountyError('Invaild query string'), null))
   }

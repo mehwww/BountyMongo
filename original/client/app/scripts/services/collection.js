@@ -36,7 +36,8 @@ bountyMongo.factory('collection', [
           url = url + '?';
           if (queryOptions.q)url = url + 'q=' + JSON.stringify(queryOptions.q) + '&';
           if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
-          if (queryOptions.l)url = url + 'l=' + queryOptions.l;
+          if (queryOptions.l)url = url + 'l=' + queryOptions.l + '&';
+          if (queryOptions.s)url = url + 's=' + queryOptions.s + '&';
         }
 
         return $http.get(url, {

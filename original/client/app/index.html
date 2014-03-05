@@ -56,7 +56,7 @@
              ng-repeat-start="database in databaseList">
             {{database.name}}
           </a>
-          <a class="list-group-item list-group-item-sub" ng-click="selectCollection(database,collection)"
+          <a class="list-group-item list-group-item-sub" ng-click="selectCollection(database.name,collection)"
              ng-if="database.isActive" ng-repeat="collection in database.collectionList"
              ng-repeat-end>
             {{collection}}

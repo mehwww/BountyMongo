@@ -19,7 +19,8 @@ bountyMongo.controller('RecordsCtrl', [
       collection(serverName, databaseName, collectionName)
         .query({
           p: options.page || $scope.page,
-          l: options.pageSize || $scope.pageSize
+          l: options.pageSize || $scope.pageSize,
+          s: JSON.stringify(options.sort || $scope.sort)
         })
         .then(function (response) {
           $scope.records = response
@@ -32,21 +33,18 @@ bountyMongo.controller('RecordsCtrl', [
       }, function (response) {
         console.log('count fail', response)
       })
-
     }
 
     $scope.page = 1;
-    $scope.pageSize = 20
+    $scope.pageSize = 20;
+    $scope.sort = {};
 
 
     loadRecords()
 
     $scope.$on('selectPage', function (event, page) {
-//      console.log($scope.page)
+      event.stopPropagation()
       loadRecords({page: page})
-//      setTimeout(function () {
-//        console.log($scope.page)
-//      }, 100)
     });
 
     $scope.addDocument = function () {
@@ -67,8 +65,16 @@ bountyMongo.controller('RecordsCtrl', [
       $scope.isMore = !$scope.isMore
     }
 
+    $scope.$watch('sortArray', function (newValue, oldValue) {
+      console.log(newValue)
+    },true);
+
     $scope.query = function () {
-      $scope.page = 5
+      angular.forEach($scope.sortArray, function (sortItem) {
+        this[sortItem.name] = sortItem.order
+      }, $scope.sort)
+      $scope.page = 1
+      console.log(JSON.stringify($scope.sort))
       loadRecords()
     }
 

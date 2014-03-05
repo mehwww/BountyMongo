@@ -6,8 +6,9 @@ bountyMongo.controller('SidebarCtrl', [
   '$modal',
   'server',
   'database',
+  'urlFactory',
 
-  function ($scope, $location, $routeParams, $modal, server, database) {
+  function ($scope, $location, $routeParams, $modal, server, database, urlFactory) {
 
     server().list().then(function (list) {
       $scope.serverList = list;
@@ -78,7 +79,7 @@ bountyMongo.controller('SidebarCtrl', [
         }, $scope.databaseList)
       })
 
-      $location.path('/servers/' + encodeURIComponent(serverName))
+      $location.path(urlFactory([$scope.server],false))
     }
 
     $scope.selectDatabase = function (databaseObj) {
@@ -90,19 +91,14 @@ bountyMongo.controller('SidebarCtrl', [
       databaseObj.isActive = !databaseObj.isActive
       $scope.database = databaseObj.name;
 
-      console.log($scope.database)
-
-      $location.path('/servers/' + encodeURIComponent($scope.server)
-        + '/databases/' + encodeURIComponent(databaseObj.name))
+      $location.path(urlFactory([$scope.server, $scope.database],false))
     }
 
     $scope.selectCollection = function (databaseName, collectionName) {
       $scope.database = databaseName;
       $scope.collection = collectionName;
 
-      $location.path('/servers/' + encodeURIComponent($scope.server)
-        + '/databases/' + encodeURIComponent($scope.database)
-        + '/collections/' + encodeURIComponent($scope.collection))
+      $location.path(urlFactory([$scope.server, $scope.database, $scope.collection],false))
     }
 
     $scope.addServer = function () {

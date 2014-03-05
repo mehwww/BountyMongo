@@ -2,9 +2,9 @@ bountyMongo.factory('database', [
 
   '$http',
   'localStorageService',
-  'API_URL',
+  'urlFactory',
 
-  function ($http, localStorageService, API_URL) {
+  function ($http, localStorageService, urlFactory) {
     return function (serverName, databaseName) {
 
       var serverUrl = ''
@@ -15,9 +15,7 @@ bountyMongo.factory('database', [
       var Resource = {}
 
       Resource.query = function () {
-        var url = API_URL
-          + '/servers/' + encodeURIComponent(serverName)
-          + '/databases/' + encodeURIComponent(databaseName);
+        var url = urlFactory([serverName, databaseName])
         return $http.get(url, {
           headers: {
             'Mongodb-Url': 'mongodb://' + serverUrl
@@ -28,10 +26,7 @@ bountyMongo.factory('database', [
       }
 
       Resource.collections = function () {
-        var url = API_URL
-          + '/servers/' + encodeURIComponent(serverName)
-          + '/databases/' + encodeURIComponent(databaseName)
-          + '/collections';
+        var url = urlFactory([serverName, databaseName]) + '/collections';
         return $http.get(url, {
           headers: {
             'Mongodb-Url': 'mongodb://' + serverUrl

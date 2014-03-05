@@ -3,12 +3,12 @@ bountyMongo.factory('server', [
   '$http',
   '$q',
   'localStorageService',
-  'urlParser',
-  'API_URL',
+  'mongodbUrlParser',
+  'urlFactory',
 
-  function ($http, $q, localStorageService, urlParser, API_URL) {
-    if(!localStorageService.get('bounty_servers')){
-      localStorageService.add('bounty_servers',[])
+  function ($http, $q, localStorageService, mongodbUrlParser, urlFactory) {
+    if (!localStorageService.get('bounty_servers')) {
+      localStorageService.add('bounty_servers', [])
     }
 
     return function (serverName) {
@@ -31,8 +31,7 @@ bountyMongo.factory('server', [
       };
 
       Resource.query = function () {
-        var url = API_URL
-          + '/servers/' + encodeURIComponent(serverName)
+        var url = urlFactory([serverName])
         return $http.get(url, {
           headers: {
             'Mongodb-Url': 'mongodb://' + serverUrl
@@ -49,7 +48,7 @@ bountyMongo.factory('server', [
 
       Resource.add = function (mongodbUrl) {
         var serverList = localStorageService.get('bounty_servers');
-        var server = urlParser(mongodbUrl)
+        var server = mongodbUrlParser(mongodbUrl)
         if (!angular.isObject(serverList) || angular.isArray(serverList)) serverList = {};
         serverList[server.name] = server.url
         localStorageService.add('bounty_servers', serverList)
@@ -60,8 +59,7 @@ bountyMongo.factory('server', [
       }
 
       Resource.delete = function () {
-        var url = API_URL
-          + '/servers/' + encodeURIComponent(serverName)
+        var url = urlFactory([serverName])
         var serverList = localStorageService.get('bounty_servers');
         delete serverList[serverName];
         localStorageService.add('bounty_servers', serverList);
@@ -80,9 +78,7 @@ bountyMongo.factory('server', [
       }
 
       Resource.databases = function () {
-        var url = API_URL
-          + '/servers/' + encodeURIComponent(serverName)
-          + '/databases/'
+        var url = urlFactory([serverName]) + '/databases/'
         return $http.get(url, {
           headers: {
             'Mongodb-Url': 'mongodb://' + serverUrl

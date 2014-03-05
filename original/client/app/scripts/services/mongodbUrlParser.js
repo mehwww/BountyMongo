@@ -1,4 +1,4 @@
-bountyMongo.factory('urlParser', [function () {
+bountyMongo.factory('mongodbUrlParser', [function () {
   return function (mongodbUrl) {
     var connectionPart = '';
     var authPart = '';

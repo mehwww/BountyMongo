@@ -15,7 +15,7 @@ bountyMongo.controller('RecordsCtrl', [
     var collectionName = $routeParams.collectionName;
 
     var loadRecords = function (options) {
-      options = options || {};
+      var options = options || {};
       collection(serverName, databaseName, collectionName)
         .query({
           p: options.page || $scope.page,

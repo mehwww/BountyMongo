@@ -65,18 +65,12 @@ bountyMongo.controller('RecordsCtrl', [
       $scope.isMore = !$scope.isMore
     }
 
-    $scope.$watch('sortArray', function (newValue, oldValue) {
-      console.log(newValue)
-    },true);
-
     $scope.query = function () {
       angular.forEach($scope.sortArray, function (sortItem) {
         this[sortItem.name] = sortItem.order
       }, $scope.sort)
       $scope.page = 1
-      console.log(JSON.stringify($scope.sort))
       loadRecords()
     }
-
 
   }])

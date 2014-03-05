@@ -20,6 +20,3 @@ bountyMongo.controller('RemoveServerModalCtrl', [
     };
   }
 ])
-/**
- * Created by meh on 14-2-20.
- */

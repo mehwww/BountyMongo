@@ -38,10 +38,6 @@ bountyMongo.directive('bountySortItems', [
           scope.newSortItemName='';
         }
 
-//        scope.$watch('sort', function (newValue, oldValue) {
-//          console.log(newValue)
-//        },true);
-
       }
     }
   }

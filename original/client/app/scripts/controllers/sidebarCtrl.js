@@ -17,9 +17,10 @@ bountyMongo.controller('SidebarCtrl', [
     var isInitialized = true;
 
     $scope.$on('$routeChangeSuccess', function (event, routeData) {
+      //stupid
       if (!isInitialized)return
       isInitialized = false;
-      //stupid
+
       var serverName = routeData.params.serverName;
       var databaseName = routeData.params.databaseName;
 //      var collectionName = routeData.params.collectionName;

@@ -6,15 +6,15 @@ bountyMongo.factory('server', [
   'mongodbUrlParser',
   'urlFactory',
 
-  function ($http, $q, localStorageService, mongodbUrlParser, urlFactory) {
-    if (!localStorageService.get('bounty_servers')) {
-      localStorageService.add('bounty_servers', [])
+  function ($http, $q, localStorage, urlParser, urlFactory) {
+    if (!localStorage.get('bounty_servers')) {
+      localStorage.add('bounty_servers', [])
     }
 
     return function (serverName) {
       var serverUrl = ''
       if (typeof serverName !== undefined) {
-        serverUrl = localStorageService.get('bounty_servers')[serverName]
+        serverUrl = localStorage.get('bounty_servers')[serverName]
       }
 
       var Resource = {};
@@ -22,7 +22,7 @@ bountyMongo.factory('server', [
       Resource.list = function () {
         var deferred = $q.defer();
         var list = [];
-        angular.forEach(localStorageService.get('bounty_servers'), function (value, key) {
+        angular.forEach(localStorage.get('bounty_servers'), function (value, key) {
           this.push(key);
         }, list);
         deferred.resolve(list);
@@ -32,26 +32,20 @@ bountyMongo.factory('server', [
 
       Resource.query = function () {
         var url = urlFactory([serverName])
-        return $http.get(url, {
-          headers: {
-            'Mongodb-Url': 'mongodb://' + serverUrl
-          }
-        }).then(
-          function (response) {
-            return response.data;
-          },
-          function (response) {
-            return response.data
-          }
-        );
+        var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
+        return $http.get(url, config).then(function (response) {
+          return response.data;
+        }, function (response) {
+          return response.data
+        })
       };
 
       Resource.add = function (mongodbUrl) {
-        var serverList = localStorageService.get('bounty_servers');
-        var server = mongodbUrlParser(mongodbUrl)
+        var serverList = localStorage.get('bounty_servers');
+        var server = urlParser(mongodbUrl)
         if (!angular.isObject(serverList) || angular.isArray(serverList)) serverList = {};
         serverList[server.name] = server.url
-        localStorageService.add('bounty_servers', serverList)
+        localStorage.add('bounty_servers', serverList)
 
         var deferred = $q.defer();
         deferred.resolve(server);
@@ -60,42 +54,35 @@ bountyMongo.factory('server', [
 
       Resource.delete = function () {
         var url = urlFactory([serverName])
-        var serverList = localStorageService.get('bounty_servers');
+        var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
+        var serverList = localStorage.get('bounty_servers');
         delete serverList[serverName];
-        localStorageService.add('bounty_servers', serverList);
+        localStorage.add('bounty_servers', serverList);
 
-        return $http.delete(url, {
-          headers: {
-            'Mongodb-Url': 'mongodb://' + serverUrl
-          }
-        }).then(function (response) {
-            var list = [];
-            angular.forEach(serverList, function (value, key) {
-              this.push(key);
-            }, list);
-            return list;
-          })
+        return $http.delete(url, config).then(function (response) {
+          var list = [];
+          angular.forEach(serverList, function (value, key) {
+            this.push(key);
+          }, list);
+          return list;
+        })
       }
 
       Resource.databases = function () {
         var url = urlFactory([serverName]) + '/databases/'
-        return $http.get(url, {
-          headers: {
-            'Mongodb-Url': 'mongodb://' + serverUrl
+        var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
+        return $http.get(url, config).then(function (response) {
+          var databases = [];
+          if (angular.isArray(response.data)) {
+            angular.forEach(response.data, function (value, key) {
+              this.push(value.name)
+            }, databases)
           }
-        }).then(function (response) {
-            var databases = [];
-            if (angular.isArray(response.data)) {
-              angular.forEach(response.data, function (value, key) {
-                this.push(value.name)
-              }, databases)
-            }
-            else {
-              databases.push(response.data.db)
-            }
-            return databases;
+          else {
+            databases.push(response.data.db)
           }
-        );
+          return databases;
+        })
       }
       return Resource;
     };

@@ -30,5 +30,3 @@ bountyMongo
       $locationProvider.html5Mode(true);
 
     }])
-
-  .constant('API_URL','/api')

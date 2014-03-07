@@ -10,7 +10,7 @@ bountyMongo.controller('AddDocumentModalCtrl', [
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
 
-    $scope.aceLoad = function (_editor) {
+    var aceLoad = function (_editor) {
       var _session = _editor.getSession();
       _session.setTabSize(2);
       _session.on("change", function (e) {
@@ -21,7 +21,7 @@ bountyMongo.controller('AddDocumentModalCtrl', [
     $scope.aceOption = {
       useWrapMode: false,
       mode: 'json',
-      onLoad: $scope.aceLoad
+      onLoad: aceLoad
     }
 
     $scope.$watch('document', function (newVal) {

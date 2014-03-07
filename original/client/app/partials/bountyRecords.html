@@ -1,6 +1,6 @@
 <div class="panel panel-default">
-  <div class="panel-body operation">
-    <div class="operation-basic">
+  <div class="panel-body action-panel">
+    <div class="action-primary">
       <a class="btn btn-default" ng-click="addDocument()">
         Add Document
       </a>
@@ -9,34 +9,44 @@
                          items-per-page="pageSize">
       </bounty-pagination>
     </div>
-    <div ng-show="isMore" class="operation-more">
-      <div class="row">
-        <div class="col-md-12">
-          <a class="btn btn-default">
-            Drop Collection
-          </a>
-        </div>
-      </div>
-
+    <div ng-show="isMore" class="action-advance">
       <div class="row">
         <div class="col-md-8">
+          <div class="action-block action-operation">
+            <a class="btn btn-default">
+              Drop Collection
+            </a>
+          </div>
+          <bounty-query query="queryString"></bounty-query>
 
         </div>
         <div class="col-md-4">
           <bounty-sort-items sort="sortArray"></bounty-sort-items>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <a class="btn btn-default btn-lg" ng-click="query()">
-            query
+          <a class="btn btn-default btn-block" ng-click="find()">
+            find
           </a>
         </div>
       </div>
 
+      <!--<div class="row">-->
+        <!--<div class="col-md-8">-->
+
+        <!--</div>-->
+        <!--<div class="col-md-4">-->
+          <!--<bounty-sort-items sort="sortArray"></bounty-sort-items>-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <!--<div class="row">-->
+        <!--<div class="col-md-12">-->
+          <!--<a class="btn btn-default btn-lg" ng-click="query()">-->
+            <!--query-->
+          <!--</a>-->
+        <!--</div>-->
+      <!--</div>-->
+
     </div>
-    <a class="btn btn-default btn-block more" ng-click="toggleOperation()">
+    <a class="btn btn-default btn-block action-toggle" ng-click="toggleOperation()">
       <span class="caret"></span>
     </a>
   </div>

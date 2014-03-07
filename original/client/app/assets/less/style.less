@@ -3,6 +3,7 @@
 @import "variables.less";
 @import "modal.less";
 @import "list.less";
+@import "action.less";
 
 .pagination {
   margin-top: 0px;
@@ -73,45 +74,4 @@ textarea {
     background-color: #fff;
     border: 1px #ddd solid;
   }
-}
-
-.operation {
-  > .operation-basic {
-    margin-bottom: 10px;
-  }
-  > .operation-more {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  > .more span {
-    rotation-point: center center;
-    rotation: 180deg;
-  }
-}
-
-.sort-panel{
-  padding-bottom: 15px;
-  h5{
-    text-align: center;
-  }
-  .sort-group{
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: separate;
-    margin-bottom: 5px;
-    .sort-group-name{
-      width: 30%;
-    }
-    .sort-group-order{
-      width: 50%;
-    }
-    .sort-group-remove{
-      width: 20%;
-    }
-  }
-}
-
-.ace_editor {
-  height: 200px;
 }

@@ -9,9 +9,6 @@ var events = require('events');
 var util = require('util');
 var eventEmitter = new events.EventEmitter();
 
-
-console.log(util.inspect(new MongoError('asdf'), { depth: null }))
-
 var clientInstance = {};
 
 var clearInstanceClock = function () {

@@ -20,7 +20,8 @@ bountyMongo.controller('RecordsCtrl', [
         .query({
           p: options.page || $scope.page,
           l: options.pageSize || $scope.pageSize,
-          s: JSON.stringify(options.sort || $scope.sort)
+          s: JSON.stringify(options.sort || $scope.sort),
+          q: JSON.stringify(options.query || $scope.query)
         })
         .then(function (response) {
           $scope.records = response
@@ -38,9 +39,9 @@ bountyMongo.controller('RecordsCtrl', [
     $scope.page = 1;
     $scope.pageSize = 20;
     $scope.sort = {};
+    $scope.query = {};
 
-
-    loadRecords()
+    loadRecords();
 
     $scope.$on('selectPage', function (event, page) {
       event.stopPropagation()
@@ -65,10 +66,21 @@ bountyMongo.controller('RecordsCtrl', [
       $scope.isMore = !$scope.isMore
     }
 
-    $scope.query = function () {
+    $scope.find = function () {
+      $scope.sort = {};
+      $scope.query = {}
       angular.forEach($scope.sortArray, function (sortItem) {
         this[sortItem.name] = sortItem.order
       }, $scope.sort)
+
+      if($scope.queryString.length !== 0){
+        try {
+          $scope.query = angular.fromJson($scope.queryString)
+        }
+        catch (e) {
+          console.log('Invaild query JSON')
+        }
+      }
       $scope.page = 1
       loadRecords()
     }

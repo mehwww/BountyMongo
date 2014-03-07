@@ -24,12 +24,18 @@ var queryStringParser = function (queryString) {
   //skip parameters
   skip = queryString.p ? (queryString.p - 1) * limit : 0;
 
+//console.log(sort)
+
   return {
     query: query,
     options: {
       limit: limit,
       skip: skip,
       sort: sort
+//      fields:{
+////        a:1,
+//        'b.x':1
+//      }
     }
   }
 }
@@ -61,10 +67,10 @@ exports.find = function (req, res) {
   var collectionName = req.param('collectionName');
   var queryString;
 
-  try{
+  try {
     queryString = queryStringParser(req.query);
   }
-  catch (e){
+  catch (e) {
     res.statusCode = 400;
     res.send(respond(new BountyError('Invaild query string'), null))
   }

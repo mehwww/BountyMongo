@@ -13,11 +13,6 @@ bountyMongo.directive('bountySortItems', [
         var sortNames = []
         var newSortItem;
 
-        sort.push({
-          name: '_id',
-          order: 1
-        })
-
         scope.changeOrder = function (index) {
           sort[index].order = 0 - sort[index].order
         }
@@ -25,6 +20,8 @@ bountyMongo.directive('bountySortItems', [
         scope.removeSortItem = function (index) {
           sortNames.splice(sortNames.indexOf(sort[index].name),1)
           sort.splice(index, 1);
+//          console.log(index)
+//          console.log(sort)
         };
 
         scope.addSortItem = function () {

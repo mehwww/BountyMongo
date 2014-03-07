@@ -1,6 +1,4 @@
-<div class="sort-panel">
-  <h5>sort</h5>
-
+<div class="action-sort action-block">
   <div class="btn-group sort-group" ng-repeat="item in sort">
     <div class="btn btn-default disabled sort-group-name">{{item.name}}</div>
     <div class="btn btn-default sort-group-order" ng-click="changeOrder($index)">{{item.order|sort}}</div>

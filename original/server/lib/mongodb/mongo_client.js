@@ -5,19 +5,19 @@ var BountyError = require('../customError').bountyError;
 var MongoError = require('../customError').mongoError;
 var urlParser = require('./url_parser');
 
-var net = require('net');
-var fs = require('fs')
-var util = require('util');
 var events = require('events');
+var util = require('util');
 var eventEmitter = new events.EventEmitter();
 
+
+console.log(util.inspect(new MongoError('asdf'), { depth: null }))
 
 var clientInstance = {};
 
 var clearInstanceClock = function () {
   for (var instance in clientInstance) {
     clientInstance[instance].close(function (err, result) {
-      console.log('close', instance, err)
+      console.log('close', instance, result)
     })
   }
   clientInstance = {};
@@ -38,7 +38,7 @@ exports.getClient = function (serverUrl, callback) {
     }
     else {
       return eventEmitter.once('getInstance', function (instance) {
-        clientInstance[server.name] = instance;
+//        clientInstance[server.name] = instance;
         return callback(null, clientInstance[server.name])
       })
     }

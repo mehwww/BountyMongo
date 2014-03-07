@@ -1,0 +1,12 @@
+<div class="btn-group item-group" ng-repeat="item in items" ng-transclude>
+  <!--<div class="btn btn-default disabled item-group-name">{{item.name}}</div>-->
+  <!--<div class="btn btn-default item-group-value" ng-click="switchValue($index)">{{item.value}}</div>-->
+  <!--<div class="btn btn-default item-group-remove" ng-click="removeItem($index)">&times;</div>-->
+</div>
+
+<div class="input-group">
+  <input type="text" class="form-control" ng-model="newItemName">
+  <span class="input-group-btn">
+    <button class="btn btn-default" type="button" ng-click="addItem()">Add</button>
+  </span>
+</div>

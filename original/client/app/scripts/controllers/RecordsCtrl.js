@@ -10,18 +10,20 @@ bountyMongo.controller('RecordsCtrl', [
   'collection',
 
   function ($scope, $location, $route, $routeParams, $modal, server, database, collection) {
+    var self = this;
     var serverName = $routeParams.serverName;
     var databaseName = $routeParams.databaseName;
     var collectionName = $routeParams.collectionName;
 
-    var loadRecords = function (options) {
+    self.loadRecords = function (options) {
       var options = options || {};
       collection(serverName, databaseName, collectionName)
         .query({
           p: options.page || $scope.page,
           l: options.pageSize || $scope.pageSize,
+          q: JSON.stringify(options.query || $scope.query),
           s: JSON.stringify(options.sort || $scope.sort),
-          q: JSON.stringify(options.query || $scope.query)
+          f: JSON.stringify(options.fields || $scope.fields)
         })
         .then(function (response) {
           $scope.records = response
@@ -36,16 +38,26 @@ bountyMongo.controller('RecordsCtrl', [
       })
     }
 
+    self.toObj = function(array,obj){
+      angular.forEach(array, function (item) {
+        this[item.name] = item.value
+      }, obj)
+    }
+
     $scope.page = 1;
     $scope.pageSize = 20;
-    $scope.sort = {};
     $scope.query = {};
+    $scope.sort = {};
+    $scope.fields = {};
 
-    loadRecords();
+    $scope.sortArray = [];
+    $scope.fieldsArray = [];
+
+    self.loadRecords();
 
     $scope.$on('selectPage', function (event, page) {
       event.stopPropagation()
-      loadRecords({page: page})
+      self.loadRecords({page: page})
     });
 
     $scope.addDocument = function () {
@@ -66,13 +78,15 @@ bountyMongo.controller('RecordsCtrl', [
       $scope.isMore = !$scope.isMore
     }
 
+
     $scope.find = function () {
       $scope.sort = {};
-      $scope.query = {}
-      angular.forEach($scope.sortArray, function (sortItem) {
-        this[sortItem.name] = sortItem.order
-      }, $scope.sort)
+      self.toObj($scope.sortArray,$scope.sort)
 
+      $scope.fields = {};
+      self.toObj($scope.fieldsArray,$scope.fields)
+
+      $scope.query = {}
       if($scope.queryString.length !== 0){
         try {
           $scope.query = angular.fromJson($scope.queryString)
@@ -82,7 +96,7 @@ bountyMongo.controller('RecordsCtrl', [
         }
       }
       $scope.page = 1
-      loadRecords()
+      self.loadRecords()
     }
 
   }])

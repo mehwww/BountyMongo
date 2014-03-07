@@ -21,7 +21,17 @@
 
         </div>
         <div class="col-md-4">
-          <bounty-sort-items sort="sortArray"></bounty-sort-items>
+          <!--<bounty-sort-items sort="sortArray"></bounty-sort-items>-->
+          <div class="action-sort action-block" bounty-items ng-controller="SortCtrl">
+            <div class="btn btn-default disabled item-group-name">{{item.name}}</div>
+            <div class="btn btn-default item-group-value" ng-click="switchValue($index)">{{item.value|sort}}</div>
+            <div class="btn btn-default item-group-remove" ng-click="removeItem($index)">&times;</div>
+          </div>
+          <div class="action-field action-block" bounty-items ng-controller="FieldsCtrl">
+            <div class="btn btn-default disabled item-group-name">{{item.name}}</div>
+            <div class="btn btn-default item-group-value" ng-click="switchValue($index)">{{item.value|fields}}</div>
+            <div class="btn btn-default item-group-remove" ng-click="removeItem($index)">&times;</div>
+          </div>
           <a class="btn btn-default btn-block" ng-click="find()">
             find
           </a>
@@ -29,20 +39,20 @@
       </div>
 
       <!--<div class="row">-->
-        <!--<div class="col-md-8">-->
+      <!--<div class="col-md-8">-->
 
-        <!--</div>-->
-        <!--<div class="col-md-4">-->
-          <!--<bounty-sort-items sort="sortArray"></bounty-sort-items>-->
-        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="col-md-4">-->
+      <!--<bounty-sort-items sort="sortArray"></bounty-sort-items>-->
+      <!--</div>-->
       <!--</div>-->
 
       <!--<div class="row">-->
-        <!--<div class="col-md-12">-->
-          <!--<a class="btn btn-default btn-lg" ng-click="query()">-->
-            <!--query-->
-          <!--</a>-->
-        <!--</div>-->
+      <!--<div class="col-md-12">-->
+      <!--<a class="btn btn-default btn-lg" ng-click="query()">-->
+      <!--query-->
+      <!--</a>-->
+      <!--</div>-->
       <!--</div>-->
 
     </div>

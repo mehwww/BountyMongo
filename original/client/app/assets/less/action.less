@@ -38,6 +38,34 @@
   }
 }
 
+.item-group {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  margin-bottom: 5px;
+  .btn{
+    padding:2px 12px;
+  }
+  .item-group-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 40%;
+  }
+  .item-group-value {
+    width: 40%;
+  }
+  .item-group-remove {
+    width: 20%;
+  }
+}
+
+.action-field{
+  &:before {
+    content: 'Field';
+  }
+}
 .action-operation{
   &:before {
     content: 'Operation';

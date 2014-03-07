@@ -11,6 +11,7 @@ var queryStringParser = function (queryString) {
   var limit;
   var skip;
   var sort;
+  var fields;
   //query parameters
   query = queryString.q
     ? JSON.parse(queryString.q)
@@ -19,23 +20,22 @@ var queryStringParser = function (queryString) {
   sort = queryString.s
     ? JSON.parse(queryString.s)
     : {}
+  //field parameters
+  fields = queryString.f
+    ? JSON.parse(queryString.f)
+    : {}
   //limit parameters
   limit = queryString.l ? queryString.l : 20;
   //skip parameters
   skip = queryString.p ? (queryString.p - 1) * limit : 0;
-
-//console.log(sort)
 
   return {
     query: query,
     options: {
       limit: limit,
       skip: skip,
-      sort: sort
-//      fields:{
-////        a:1,
-//        'b.x':1
-//      }
+      sort: sort,
+      fields: fields
     }
   }
 }
@@ -85,6 +85,7 @@ exports.find = function (req, res) {
       });
     },
     function (collection, callback) {
+      console.log(queryString.options)
       mongoCollection.find(collection, queryString.query, queryString.options, callback)
     }
   ], function (err, result) {

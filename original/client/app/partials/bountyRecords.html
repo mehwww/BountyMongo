@@ -9,7 +9,7 @@
                          items-per-page="pageSize">
       </bounty-pagination>
     </div>
-    <div ng-show="isMore" class="action-advance">
+    <div ng-if="isMore" class="action-advance">
       <div class="row">
         <div class="col-md-8">
           <div class="action-block action-operation">
@@ -32,9 +32,7 @@
             <div class="btn btn-default item-group-value" ng-click="switchValue($index)">{{item.value|fields}}</div>
             <div class="btn btn-default item-group-remove" ng-click="removeItem($index)">&times;</div>
           </div>
-          <a class="btn btn-default btn-block" ng-click="find()">
-            find
-          </a>
+          <a class="btn btn-default btn-block" ng-click="find()"> find </a>
         </div>
       </div>
 

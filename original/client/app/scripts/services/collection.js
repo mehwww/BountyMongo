@@ -46,7 +46,7 @@ bountyMongo.factory('collection', [
       }
 
       Resource.count = function (queryOptions) {
-        var url = urlFactory([serverName, databaseName, collectionName], queryOptions) + '/count/';
+        var url = urlFactory([serverName, databaseName, collectionName,'/count'], queryOptions);
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         return $http.get(url, config).then(function (response) {
           return response.data

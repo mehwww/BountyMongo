@@ -85,7 +85,6 @@ exports.find = function (req, res) {
       });
     },
     function (collection, callback) {
-      console.log(queryString.options)
       mongoCollection.find(collection, queryString.query, queryString.options, callback)
     }
   ], function (err, result) {
@@ -99,12 +98,13 @@ exports.count = function (req, res) {
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
 
-  var queryString = queryStringParser(req);
-  if (!queryString) {
-    res.statusCode = 400;
-    res.send(respond('Invaild query string', null))
+  try {
+    queryString = queryStringParser(req.query);
   }
-
+  catch (e) {
+    res.statusCode = 400;
+    res.send(respond(new BountyError('Invaild query string'), null))
+  }
 
   async.waterfall([
     function (callback) {

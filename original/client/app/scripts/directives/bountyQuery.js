@@ -2,15 +2,12 @@ bountyMongo.directive('bountyQuery', [
   function () {
     return{
       restrict: 'E',
-      scope: {
-        query: '='
-      },
+      scope: true,
       templateUrl: '/partials/bountyQuery.html',
       replace: true,
       //have to use controller rather than link caz ace editor
       controller: ['$scope', function ($scope) {
-        $scope.query = ''
-
+//        $scope.query = ''
 
         var aceLoad = function (_editor) {
           var _session = _editor.getSession();
@@ -26,8 +23,8 @@ bountyMongo.directive('bountyQuery', [
           onLoad: aceLoad
         }
 
-//        $scope.$watch('query', function (newValue, oldValue) {
-//          console.log(newValue)
+//        $scope.$watch('queryString', function (newValue, oldValue) {
+//          console.log('query directive',newValue)
 //        });
       }]
     }

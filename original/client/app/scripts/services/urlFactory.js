@@ -10,6 +10,7 @@ bountyMongo.factory('urlFactory', [function () {
         ? paramsName[i] + encodeURIComponent(params[i])
         : ''
     }
+    url += params[3] ? params[3] : ''
 
     if (query === false) return url.slice(apiUrl.length)
     if (query === undefined) return url;

@@ -31,7 +31,9 @@ bountyMongo.controller('RecordsCtrl', [
           console.log('Get Records Fail', response)
         })
 
-      collection(serverName, databaseName, collectionName).count().then(function (response) {
+      collection(serverName, databaseName, collectionName).count({
+        q: JSON.stringify(options.query || $scope.query),
+      }).then(function (response) {
         $scope.count = response.count;
       }, function (response) {
         console.log('count fail', response)
@@ -50,9 +52,15 @@ bountyMongo.controller('RecordsCtrl', [
     $scope.sort = {};
     $scope.fields = {};
 
+    $scope.queryStr = {string:''};
     $scope.sortArray = [];
     $scope.fieldsArray = [];
 
+    $scope.$watch('query', function (newValue, oldValue) {
+      console.log(newValue)
+    },true);
+    
+    
     self.loadRecords();
 
     $scope.$on('selectPage', function (event, page) {
@@ -87,12 +95,12 @@ bountyMongo.controller('RecordsCtrl', [
       self.toObj($scope.fieldsArray,$scope.fields)
 
       $scope.query = {}
-      if($scope.queryString.length !== 0){
+      if($scope.queryStr.string.length !== 0){
         try {
-          $scope.query = angular.fromJson($scope.queryString)
+          $scope.query = angular.fromJson($scope.queryStr.string)
         }
         catch (e) {
-          console.log('Invaild query JSON')
+          console.log('Invaild query JSON');
         }
       }
       $scope.page = 1

@@ -29,22 +29,26 @@ clearInstanceClock()
 exports.getClient = function (serverUrl, callback) {
   var server = urlParser(serverUrl);
 
-  if (clientInstance[server.name] !== undefined) {
-    if (clientInstance[server.name] instanceof Db) {
+  if (clientInstance[server.name] instanceof Db) {
+    return callback(null, clientInstance[server.name])
+  }
+  if (clientInstance[server.name]) {
+    return eventEmitter.once('getInstance', function (err, instance) {
+      if (err) return callback(new MongoError('connect failed'), null)
       return callback(null, clientInstance[server.name])
-    }
-    else {
-      return eventEmitter.once('getInstance', function (instance) {
-//        clientInstance[server.name] = instance;
-        return callback(null, clientInstance[server.name])
-      })
-    }
+    })
   }
 
   clientInstance[server.name] = {};
-  eventEmitter.once('getInstance', function (instance) {
+  eventEmitter.once('getInstance', function (err, instance) {
+    if (err) {
+      console.log(err);
+      clientInstance[server.name] = null;
+      return callback(new MongoError('connect failed'), null);
+    }
     clientInstance[server.name] = instance;
-    return callback(null, clientInstance[server.name])
+    console.log('new client instance: ', server.name);
+    return callback(null, clientInstance[server.name]);
   })
 
   var mongoClient = new MongoClient(new Server(server.host, server.port, {
@@ -54,28 +58,17 @@ exports.getClient = function (serverUrl, callback) {
   }));
 
   mongoClient.open(function (err, client) {
-    if (err) {
-      console.log(err)
-      return callback(new MongoError('connect failed'), client)
-    }
+    if (err) return eventEmitter.emit('getInstance', err, null)
+
     var db = client.db(server.dbName);
-    if (server.username) {
-      db.authenticate(server.username, server.password, function (err, result) {
-        if (err)return callback(err, result)
-        console.log('new client instance: ', server.name)
-        eventEmitter.emit('getInstance', db)
 
-//        clientInstance[server.name] = db;
-//        return callback(null, db)
-      })
-    }
-    else {
-      console.log('new client instance: ', server.name)
-      eventEmitter.emit('getInstance', db)
+    if (!server.username) return eventEmitter.emit('getInstance', null, db)
 
-//      clientInstance[server.name] = db;
-//      return callback(null, db)
-    }
+    db.authenticate(server.username, server.password, function (err, result) {
+      if (err) return eventEmitter.emit('getInstance', err, null)
+      return eventEmitter.emit('getInstance', null, db)
+    })
+
   })
 };
 

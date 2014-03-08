@@ -5,12 +5,27 @@ bountyMongo.directive('bountyPagination', [
       restrict: 'E',
       scope: {
         currentPage: '=',
-        totalItems:'=',
-        itemsPerPage:'='
+        totalItems: '=',
+        itemsPerPage: '='
       },
       templateUrl: '/partials/bountyPagination.html',
       replace: true,
       link: function (scope, element, attrs) {
+
+        var $page = angular.element(window)
+        $page.on('scroll', function () {
+            if ($page.scrollTop() - 70 > 0) {
+              !(element.css("position") == "fixed") && element.css({
+                left: element.offset().left,
+                top: 15
+              }).css("position", "fixed");
+            }
+            else {
+              element.css({position: "", top: "", left: ""});
+            }
+          }
+        )
+
 
         var isActive = function (page) {
           return scope.currentPage === page;
@@ -74,23 +89,23 @@ bountyMongo.directive('bountyPagination', [
         scope.selectPage = function (page) {
           if (!isActive(page) && page > 0 && page <= scope.totalPages) {
             scope.currentPage = page;
-            scope.$emit('selectPage',page);
+            scope.$emit('selectPage', page);
           }
         }
 
-        scope.$watch('currentPage', function (newValue,oldValue) {
+        scope.$watch('currentPage', function (newValue, oldValue) {
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
 
         scope.$watch('totalItems', function (newValue) {
           scope.currentPage = 1;
-          scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
+          scope.totalPages = calculateTotalPages(scope.totalItems, scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
 
         scope.$watch('itemsPerPage', function (newValue) {
           scope.currentPage = 1;
-          scope.totalPages =  calculateTotalPages(scope.totalItems,scope.itemsPerPage)
+          scope.totalPages = calculateTotalPages(scope.totalItems, scope.itemsPerPage)
           scope.pages = getPages(scope.currentPage, scope.totalPages);
         });
       }

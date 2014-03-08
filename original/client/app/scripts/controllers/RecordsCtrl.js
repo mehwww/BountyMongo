@@ -56,11 +56,10 @@ bountyMongo.controller('RecordsCtrl', [
     $scope.sortArray = [];
     $scope.fieldsArray = [];
 
-    $scope.$watch('query', function (newValue, oldValue) {
-      console.log(newValue)
-    },true);
-    
-    
+//    $scope.$watch('query', function (newValue, oldValue) {
+//      console.log(newValue)
+//    },true);
+
     self.loadRecords();
 
     $scope.$on('selectPage', function (event, page) {

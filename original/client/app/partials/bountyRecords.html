@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body action-panel">
     <div class="action-primary">
-      <a class="btn btn-default" ng-click="addDocument()">
+      <a class="btn btn-default" ng-class="{disabled:isConstant}" ng-click="addDocument()">
         Add Document
       </a>
       <bounty-pagination current-page="page"

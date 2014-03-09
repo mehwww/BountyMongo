@@ -3,12 +3,15 @@
 </div>
 <div class="document-action">
   <div class="btn-group">
-    <a class="btn btn-default">Edit</a>
-    <a class="btn btn-default" ng-click="deleteDocument($index)">Delete</a>
+    <a class="btn btn-default" ng-if="!isEditing" ng-class="{disabled:isConstant}" ng-click="edit()">Edit</a>
+    <a class="btn btn-default" ng-if="!isEditing" ng-class="{disabled:isConstant}" ng-click="delete($index)">Delete</a>
+    <a class="btn btn-default" ng-if="isEditing" ng-click="save()">Save</a>
+    <a class="btn btn-default" ng-if="isEditing" ng-click="cancel()">Cancel</a>
   </div>
 </div>
-<pre class="document">
-{{document|json}}
-</pre>
+<div class="document">
+  <pre ng-if="!isEditing">{{document|json}}</pre>
+  <div ng-if="isEditing" ui-ace="aceOption" ng-model="documentModel.string"></div>
+</div>
 
 

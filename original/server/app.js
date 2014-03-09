@@ -67,10 +67,8 @@ app.get('/api/servers/:serverName/databases/:databaseName/collections',collectio
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.find)
 app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName/count', collections.count)
-//add new document
-//app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+app.put('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.updateOne)
 app.delete('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.removeOne)
-//app.delete('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 
 app.get('*',function(req,res){

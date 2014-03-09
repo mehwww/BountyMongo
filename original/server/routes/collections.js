@@ -31,11 +31,11 @@ var queryStringParser = function (queryString) {
   //skip parameters
   skip = queryString.p ? (queryString.p - 1) * limit : 0;
 
-  if(typeof query._id === 'string'){
-    try{
+  if (typeof query._id === 'string') {
+    try {
       query._id = new ObjectID(query._id)
     }
-    catch (e){
+    catch (e) {
     }
   }
 
@@ -186,7 +186,40 @@ exports.removeOne = function (req, res) {
     }
   ], function (err, result) {
     if (err) res.statusCode = 404;
-    res.send(respond(err, {'remove count':result}))
+    res.send(respond(err, {'remove count': result}))
+  })
+}
+
+exports.updateOne = function (req, res) {
+  var serverUrl = req.headers['mongodb-url']
+  var databaseName = req.param('databaseName');
+  var collectionName = req.param('collectionName');
+  var document = req.body.document;
+  var queryString;
+
+  try {
+    queryString = queryStringParser(req.query);
+  }
+  catch (e) {
+    res.statusCode = 400;
+    res.send(respond(new BountyError('Invaild query string'), null))
+  }
+
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverUrl, callback)
+    },
+    function (db, callback) {
+      db.db(databaseName).collection(collectionName, function (err, collection) {
+        callback(err, collection)
+      });
+    },
+    function (collection, callback) {
+      mongoCollection.update(collection, {'_id': queryString.query._id}, document, {}, callback)
+    }
+  ], function (err, result) {
+    if (err) res.statusCode = 404;
+    res.send(respond(err, {'update count': result}))
   })
 }
 

@@ -45,7 +45,7 @@ bountyMongo.factory('collection', [
       }
 
       Resource.delete = function (queryOptions) {
-        var url = urlFactory([serverName, databaseName, collectionName],queryOptions)
+        var url = urlFactory([serverName, databaseName, collectionName], queryOptions)
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         return $http.delete(url, config).then(function (response) {
           return response.data;
@@ -55,13 +55,25 @@ bountyMongo.factory('collection', [
       }
 
       Resource.count = function (queryOptions) {
-        var url = urlFactory([serverName, databaseName, collectionName,'/count'], queryOptions);
+        var url = urlFactory([serverName, databaseName, collectionName, '/count'], queryOptions);
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         return $http.get(url, config).then(function (response) {
           return response.data;
         }, function (response) {
           return response.data;
         });
+      }
+
+      Resource.update = function (document, queryOptions) {
+        var url = urlFactory([serverName, databaseName, collectionName], queryOptions);
+        var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}};
+        var data = {document:angular.copy(document)};
+        delete data.document._id;
+        return $http.put(url, data, config).then(function (response) {
+          return response.data;
+        }, function (response) {
+          return response.data;
+        })
       }
 
 

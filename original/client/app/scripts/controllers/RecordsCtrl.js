@@ -38,6 +38,8 @@ bountyMongo.controller('RecordsCtrl', [
         }, function (response) {
           console.log('count fail', response)
         })
+
+      $scope.isConstant = $scope.collectionName === 'system.indexes' || $scope.collectionName === 'system.users'
     }
 
     self.toObj = function (array, obj) {

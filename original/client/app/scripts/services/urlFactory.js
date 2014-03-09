@@ -19,16 +19,8 @@ bountyMongo.factory('urlFactory', [function () {
     url = url + '?';
     angular.forEach(query, function (value, key) {
       var value = angular.isObject(value) ? JSON.stringify(value) : value
-      url += key + '=' + value + '&'
+      if (value !== '{}') url += key + '=' + value + '&';
     })
     return url.slice(0, -1);
-//
-//    url+=query.q
-//      ?'q='+query.q + '&'
-//      :''
-//    if (queryOptions.q)url = url + 'q=' + queryOptions.q + '&';
-//    if (queryOptions.p)url = url + 'p=' + queryOptions.p + '&';
-//    if (queryOptions.l)url = url + 'l=' + queryOptions.l + '&';
-//    if (queryOptions.s)url = url + 's=' + queryOptions.s + '&';
   }
 }])

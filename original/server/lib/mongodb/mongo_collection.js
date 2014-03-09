@@ -15,3 +15,9 @@ exports.insert = function (collection, doc, callback) {
     callback(err, result)
   })
 }
+
+exports.remove = function(collection,selector,options,callback){
+  collection.remove(selector,options,function(err,numberOfRemovedDocs){
+    callback(err,numberOfRemovedDocs);
+  })
+}

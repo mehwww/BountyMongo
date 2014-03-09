@@ -1,6 +1,7 @@
 var mongoClient = require('../lib/mongodb/mongo_client');
 var mongoDatabase = require('../lib/mongodb/mongo_database');
 var mongoCollection = require('../lib/mongodb/mongo_collection');
+var ObjectID = require('mongodb').ObjectID;
 var BountyError = require('../lib/customError').bountyError;
 var respond = require('../lib/respond')
 var async = require('async');
@@ -12,6 +13,7 @@ var queryStringParser = function (queryString) {
   var skip;
   var sort;
   var fields;
+
   //query parameters
   query = queryString.q
     ? JSON.parse(queryString.q)
@@ -28,6 +30,14 @@ var queryStringParser = function (queryString) {
   limit = queryString.l ? queryString.l : 20;
   //skip parameters
   skip = queryString.p ? (queryString.p - 1) * limit : 0;
+
+  if(typeof query._id === 'string'){
+    try{
+      query._id = new ObjectID(query._id)
+    }
+    catch (e){
+    }
+  }
 
   return {
     query: query,
@@ -61,7 +71,6 @@ exports.list = function (req, res) {
 }
 
 exports.find = function (req, res) {
-//  var serverName = req.param('serverName');
   var serverUrl = req.headers['mongodb-url']
   var databaseName = req.param('databaseName');
   var collectionName = req.param('collectionName');
@@ -146,6 +155,38 @@ exports.add = function (req, res) {
   ], function (err, result) {
     if (err) res.statusCode = 404;
     res.send(respond(err, {count: result}))
+  })
+}
+
+exports.removeOne = function (req, res) {
+  var serverUrl = req.headers['mongodb-url']
+  var databaseName = req.param('databaseName');
+  var collectionName = req.param('collectionName');
+  var queryString;
+
+  try {
+    queryString = queryStringParser(req.query);
+  }
+  catch (e) {
+    res.statusCode = 400;
+    res.send(respond(new BountyError('Invaild query string'), null))
+  }
+
+  async.waterfall([
+    function (callback) {
+      mongoClient.getClient(serverUrl, callback)
+    },
+    function (db, callback) {
+      db.db(databaseName).collection(collectionName, function (err, collection) {
+        callback(err, collection)
+      });
+    },
+    function (collection, callback) {
+      mongoCollection.remove(collection, {'_id': queryString.query._id}, {single: true}, callback)
+    }
+  ], function (err, result) {
+    if (err) res.statusCode = 404;
+    res.send(respond(err, {'remove count':result}))
   })
 }
 

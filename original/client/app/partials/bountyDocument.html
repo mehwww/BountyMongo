@@ -1,15 +1,14 @@
-<div class="document-wrapper">
-  <div class="document-title">
-    <h3>{{document._id}}</h3>
+<div class="document-title">
+  <h3>{{document._id}}</h3>
+</div>
+<div class="document-action">
+  <div class="btn-group">
+    <a class="btn btn-default">Edit</a>
+    <a class="btn btn-default" ng-click="deleteDocument($index)">Delete</a>
   </div>
-  <div class="document-action">
-    <div class="btn-group">
-      <a class="btn btn-default">Edit</a>
-      <a class="btn btn-default">Delete</a>
-    </div>
-  </div>
+</div>
 <pre class="document">
 {{document|json}}
 </pre>
-</div>
+
 

@@ -69,6 +69,7 @@ app.post('/api/servers/:serverName/databases/:databaseName/collections/:collecti
 app.get('/api/servers/:serverName/databases/:databaseName/collections/:collectionName/count', collections.count)
 //add new document
 //app.post('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.add)
+app.delete('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.removeOne)
 //app.delete('/api/servers/:serverName/databases/:databaseName/collections/:collectionName', collections.delete)
 
 

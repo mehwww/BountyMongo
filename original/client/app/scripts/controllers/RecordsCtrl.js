@@ -11,19 +11,19 @@ bountyMongo.controller('RecordsCtrl', [
 
   function ($scope, $location, $route, $routeParams, $modal, server, database, collection) {
     var self = this;
-    var serverName = $routeParams.serverName;
-    var databaseName = $routeParams.databaseName;
-    var collectionName = $routeParams.collectionName;
+    $scope.serverName = $routeParams.serverName;
+    $scope.databaseName = $routeParams.databaseName;
+    $scope.collectionName = $routeParams.collectionName;
 
     self.loadRecords = function (options) {
       var options = options || {};
-      collection(serverName, databaseName, collectionName)
+      collection($scope.serverName, $scope.databaseName, $scope.collectionName)
         .query({
           p: options.page || $scope.page,
           l: options.pageSize || $scope.pageSize,
-          q: JSON.stringify(options.query || $scope.query),
-          s: JSON.stringify(options.sort || $scope.sort),
-          f: JSON.stringify(options.fields || $scope.fields)
+          q: options.query || $scope.query,
+          s: options.sort || $scope.sort,
+          f: options.fields || $scope.fields
         })
         .then(function (response) {
           $scope.records = response
@@ -31,16 +31,16 @@ bountyMongo.controller('RecordsCtrl', [
           console.log('Get Records Fail', response)
         })
 
-      collection(serverName, databaseName, collectionName).count({
-        q: JSON.stringify(options.query || $scope.query),
+      collection($scope.serverName, $scope.databaseName, $scope.collectionName).count({
+        q: options.query || $scope.query
       }).then(function (response) {
-        $scope.count = response.count;
-      }, function (response) {
-        console.log('count fail', response)
-      })
+          $scope.count = response.count;
+        }, function (response) {
+          console.log('count fail', response)
+        })
     }
 
-    self.toObj = function(array,obj){
+    self.toObj = function (array, obj) {
       angular.forEach(array, function (item) {
         this[item.name] = item.value
       }, obj)
@@ -52,7 +52,7 @@ bountyMongo.controller('RecordsCtrl', [
     $scope.sort = {};
     $scope.fields = {};
 
-    $scope.queryStr = {string:''};
+    $scope.queryStr = {string: ''};
     $scope.sortArray = [];
     $scope.fieldsArray = [];
 
@@ -88,13 +88,13 @@ bountyMongo.controller('RecordsCtrl', [
 
     $scope.find = function () {
       $scope.sort = {};
-      self.toObj($scope.sortArray,$scope.sort)
+      self.toObj($scope.sortArray, $scope.sort)
 
       $scope.fields = {};
-      self.toObj($scope.fieldsArray,$scope.fields)
+      self.toObj($scope.fieldsArray, $scope.fields)
 
       $scope.query = {}
-      if($scope.queryStr.string.length !== 0){
+      if ($scope.queryStr.string.length !== 0) {
         try {
           $scope.query = angular.fromJson($scope.queryStr.string)
         }

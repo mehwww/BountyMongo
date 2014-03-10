@@ -19,7 +19,7 @@ bountyMongo.directive('bountyQuery', [
 
         $scope.aceOption = {
           useWrapMode: false,
-          mode: 'json',
+          mode: 'javascript',
           onLoad: aceLoad
         }
 

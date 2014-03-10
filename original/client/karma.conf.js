@@ -15,6 +15,8 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       'app/vendor/jquery/dist/jquery.js',
+      'app/vendor/esprima/esprima.js',
+      'app/vendor/underscore/underscore.js',
       'app/vendor/angular/angular.js',
       'app/vendor/angular-mocks/angular-mocks.js',
       'app/vendor/angular-bootstrap/ui-bootstrap.js',

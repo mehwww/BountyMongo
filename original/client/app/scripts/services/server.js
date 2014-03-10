@@ -3,10 +3,9 @@ bountyMongo.factory('server', [
   '$http',
   '$q',
   'localStorageService',
-  'mongodbUrlParser',
-  'urlFactory',
+  'bountyUrl',
 
-  function ($http, $q, localStorage, urlParser, urlFactory) {
+  function ($http, $q, localStorage, bountyUrl) {
     if (!localStorage.get('bounty_servers')) {
       localStorage.add('bounty_servers', [])
     }
@@ -31,7 +30,7 @@ bountyMongo.factory('server', [
       };
 
       Resource.query = function () {
-        var url = urlFactory([serverName])
+        var url = bountyUrl.apiUrl([serverName])
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         return $http.get(url, config).then(function (response) {
           return response.data;
@@ -42,7 +41,7 @@ bountyMongo.factory('server', [
 
       Resource.add = function (mongodbUrl) {
         var serverList = localStorage.get('bounty_servers');
-        var server = urlParser(mongodbUrl)
+        var server = bountyUrl.mongodbUrl.parse(mongodbUrl)
         if (!angular.isObject(serverList) || angular.isArray(serverList)) serverList = {};
         serverList[server.name] = server.url
         localStorage.add('bounty_servers', serverList)
@@ -53,7 +52,7 @@ bountyMongo.factory('server', [
       }
 
       Resource.delete = function () {
-        var url = urlFactory([serverName])
+        var url = bountyUrl.apiUrl([serverName])
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         var serverList = localStorage.get('bounty_servers');
         delete serverList[serverName];
@@ -69,7 +68,7 @@ bountyMongo.factory('server', [
       }
 
       Resource.databases = function () {
-        var url = urlFactory([serverName]) + '/databases/'
+        var url = bountyUrl.apiUrl([serverName]) + '/databases/'
         var config = {headers: {'Mongodb-Url': 'mongodb://' + serverUrl}}
         return $http.get(url, config).then(function (response) {
           var databases = [];

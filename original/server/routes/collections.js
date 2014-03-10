@@ -98,6 +98,7 @@ exports.find = function (req, res) {
     }
   ], function (err, result) {
     if (err) res.statusCode = 404;
+//    console.log(result[1].date instanceof Date)
     res.send(respond(err, result))
   })
 }

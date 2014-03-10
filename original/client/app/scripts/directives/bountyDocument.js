@@ -43,12 +43,12 @@ bountyMongo.directive('bountyDocument', [
             collection(scope.serverName, scope.databaseName, scope.collectionName)
               .update(doc,{q: {_id: id}})
               .then(function (data) {
-                console.log(data)
+                console.log('success',data)
                 scope.document = doc
                 scope.document.$$hashKey = hashKey
                 scope.isEditing = false
               }, function (data) {
-                console.log(data)
+                console.log('err',data)
               })
           }
           catch (e) {
@@ -57,9 +57,10 @@ bountyMongo.directive('bountyDocument', [
           }
         }
 
-        scope.$watch('documentModel.string', function (newValue, oldValue) {
-          console.log(newValue)
-        });
+        console.log(jsonFilter({a:'asdf'}))
+//        scope.$watch('documentModel.string', function (newValue, oldValue) {
+//          console.log(newValue)
+//        });
 
         scope.cancel = function () {
           scope.isEditing = false

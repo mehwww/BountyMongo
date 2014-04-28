@@ -1,0 +1,25 @@
+{
+  "name": "BountyMongo",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "async": "^0.7.0",
+    "body-parser": "^1.0.2",
+    "errorhandler": "^1.0.0",
+    "express": "^4.0.0",
+    "mongodb": "^1.4.2",
+    "morgan": "^1.0.0",
+    "q": "~1.0.0",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-less": "~0.8.3",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-concurrent": "^0.5.0",
+    "grunt-supervisor": "^0.2.1",
+    "grunt-shell": "^0.7.0"
+  }
+}
